@@ -9,3 +9,17 @@ run = "npx --yes likec4@1.60.0 start docs/likec4"
 [tasks."likec4:export"]
 description = "Export the LikeC4 views to PNG under docs/likec4/export"
 run = "npx --yes likec4@1.60.0 export png docs/likec4 --output docs/likec4/export"
+
+[tasks."deps:check-backend"]
+description = "List available backend dependency updates (does not apply them)"
+dir = "backend"
+run = "./gradlew dependencyUpdates -Drevision=release"
+
+[tasks."deps:check-frontend"]
+description = "List available frontend dependency updates (does not apply them)"
+dir = "frontend"
+run = "pnpm outdated -r"
+
+[tasks."deps:check"]
+description = "List available backend + frontend dependency updates"
+depends = ["deps:check-backend", "deps:check-frontend"]
