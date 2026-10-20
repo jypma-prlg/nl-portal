@@ -1,0 +1,23 @@
+views {
+  view index {
+    title 'NL Portal - C1 Systeemcontext'
+    include *
+  }
+
+  view containers of nlPortal {
+    title 'NL Portal - C2 Containers'
+    include *
+    include burger, ketenpartner
+    include keycloak, openZaak, openKlant, openObject, openNotificaties, openProduct, haalCentraalBrp, haalCentraalBewoning, clamav
+  }
+
+  view backendComponents of nlPortal.backend {
+    title 'NL Portal Backend - C3 Componenten'
+    include *
+  }
+
+  view frontendComponents of nlPortal.frontend {
+    title 'NL Portal Frontend - C3 Componenten'
+    include *
+  }
+}

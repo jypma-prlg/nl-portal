@@ -1,0 +1,13 @@
+specification {
+  element actor {
+    style {
+      shape person
+    }
+  }
+  element system
+  element container
+  element component
+
+  relationship uses
+  relationship calls
+}
