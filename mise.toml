@@ -1,0 +1,11 @@
+[tasks."likec4:validate"]
+description = "Validate the LikeC4 architecture model (docs/likec4)"
+run = "npx --yes likec4@1.60.0 validate docs/likec4"
+
+[tasks."likec4:start"]
+description = "Preview the LikeC4 architecture model in a local dev server"
+run = "npx --yes likec4@1.60.0 start docs/likec4"
+
+[tasks."likec4:export"]
+description = "Export the LikeC4 views to PNG under docs/likec4/export"
+run = "npx --yes likec4@1.60.0 export png docs/likec4 --output docs/likec4/export"

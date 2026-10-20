@@ -1,0 +1,86 @@
+model {
+  actor burger 'Burger / ondernemer' {
+    description 'Klant die inzicht wil in zaken, berichten, taken en eigen gegevens.'
+  }
+  actor ketenpartner 'Ketenpartner-medewerker' {
+    description 'Medewerker van een organisatie die bijdraagt aan de afhandeling van een verzoek.'
+  }
+
+  system nlPortal 'NL Portal' {
+    description 'Mijn Omgeving-platform voor communicatie tussen klant en overheid, op basis van Common Ground.'
+
+    container frontend 'Frontend' {
+      description 'React/TypeScript single-page application die de klant gebruikt.'
+      technology 'React, TypeScript, Vite'
+    }
+
+    container backend 'Backend' {
+      description 'Spring Boot applicatie die GraphQL/REST aanbiedt en de ZGW-integraties orkestreert.'
+      technology 'Kotlin, Spring Boot, GraphQL'
+    }
+
+    container database 'NL Portal database' {
+      description 'Opslag voor portal-specifieke state (o.a. autorisatie, formulierinzendingen, caches).'
+      technology 'PostgreSQL'
+      style {
+        shape storage
+      }
+    }
+
+    frontend -> backend 'Bevraagt' 'GraphQL / REST, OIDC-token'
+    backend -> database 'Leest/schrijft' 'JDBC'
+  }
+
+  system keycloak 'Keycloak' {
+    description 'Identity broker: federeert DigiD (burgers) en eHerkenning (ondernemers/ketenpartners) als OIDC voor NL Portal.'
+  }
+
+  system openZaak 'Open Zaak' {
+    description 'Zaakregistratiecomponent: Zaken-, Catalogi-, Documenten- en Besluiten-API (ZGW).'
+  }
+
+  system openKlant 'OpenKlant 2' {
+    description 'Klant- en contactmomentenregistratie (ZGW Klantinteracties-API).'
+  }
+
+  system openObject 'Open Object' {
+    description 'Objecten- en Objecttypen-API: opslag van taakobjecten en (vooruitlopend op een Verzoeken API) verzoeken.'
+  }
+
+  system openNotificaties 'Open Notificaties' {
+    description 'Notificatiecomponent: stuurt webhooks bij wijzigingen in ZGW-bronnen.'
+  }
+
+  system openProduct 'OpenProduct' {
+    description 'Productencatalogus (UPL) voor het tonen van productinformatie aan de klant.'
+  }
+
+  system haalCentraalBrp 'Haal Centraal BRP' {
+    description 'Basisregistratie Personen: persoonsgegevens van de ingelogde burger.'
+  }
+
+  system haalCentraalBewoning 'Haal Centraal Bewoning' {
+    description 'Bewoningsgegevens (wie staat waar ingeschreven) t.b.v. volmachten/machtigingen.'
+  }
+
+  system clamav 'ClamAV' {
+    description 'Virusscanner voor door de klant of ketenpartner geuploade documenten.'
+  }
+
+  burger -> nlPortal.frontend 'Gebruikt' 'HTTPS'
+  ketenpartner -> nlPortal.frontend 'Gebruikt' 'HTTPS'
+
+  nlPortal.frontend -> keycloak 'Logt in via' 'OIDC'
+  nlPortal.backend -> keycloak 'Valideert tokens bij' 'OIDC/JWT'
+
+  nlPortal.backend -> openZaak 'Haalt zaken, documenten en besluiten op' 'ZGW zaken/catalogi/documenten/besluiten-API'
+  nlPortal.backend -> openKlant 'Haalt klant- en contactmomenten op' 'ZGW klantinteracties-API'
+  nlPortal.backend -> openObject 'Beheert taken als objecten' 'ZGW objecten-API'
+  nlPortal.backend -> openProduct 'Haalt productinformatie op' 'REST'
+  nlPortal.backend -> haalCentraalBrp 'Haalt persoonsgegevens op' 'Haal Centraal BRP-API'
+  nlPortal.backend -> haalCentraalBewoning 'Haalt bewoningsgegevens op' 'Haal Centraal Bewoning-API'
+  nlPortal.backend -> clamav 'Scant geuploade documenten' 'ICAP'
+
+  openNotificaties -> nlPortal.backend 'Stuurt notificaties bij wijzigingen' 'Webhook'
+  openZaak -> openNotificaties 'Publiceert notificaties bij' 'ZGW notificaties-API'
+}

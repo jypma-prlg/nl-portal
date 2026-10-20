@@ -1,0 +1,64 @@
+model {
+  extend nlPortal.backend {
+    component core 'Core' {
+      description 'Gedeelde domeinbegrippen, configuratie en security-basis.'
+    }
+    component graphqlApi 'GraphQL API' {
+      description 'GraphQL schema en resolvers: het externe contract van de backend.'
+    }
+    component caseModule 'Case' {
+      description 'Zaakdossier: orkestreert Open Zaak voor zaakweergave en -acties.'
+    }
+    component form 'Form' {
+      description 'Formulierinzendingen en -definities.'
+    }
+    component zgwIntegrations 'ZGW-integraties' {
+      description 'Eén module per ZGW-bron: openklant, taak, documenten-api, berichten, besluiten, zaken, zaken-api, verificatie, objectenapi, catalogi-api, common-ground-authentication.'
+    }
+    component haalCentraalIntegrations 'Haal Centraal-integraties' {
+      description 'haalcentraal2 (BRP) en haalcentraal-hr (bewoning/volmachten).'
+    }
+    component payment 'Payment' {
+      description 'payment-direct: betaalprovider-integratie.'
+    }
+    component product 'Product' {
+      description 'Productinformatie voor de klant, gevoed door OpenProduct.'
+    }
+    component portalAuthentication 'Portal authentication' {
+      description 'Keycloak/OIDC-integratie en autorisatieregels.'
+    }
+
+    graphqlApi -> caseModule 'Roept aan'
+    graphqlApi -> form 'Roept aan'
+    graphqlApi -> zgwIntegrations 'Roept aan'
+    graphqlApi -> haalCentraalIntegrations 'Roept aan'
+    graphqlApi -> payment 'Roept aan'
+    graphqlApi -> product 'Roept aan'
+    caseModule -> zgwIntegrations 'Gebruikt'
+    product -> zgwIntegrations 'Gebruikt'
+    zgwIntegrations -> core 'Gebruikt'
+    haalCentraalIntegrations -> core 'Gebruikt'
+    payment -> core 'Gebruikt'
+    form -> core 'Gebruikt'
+    portalAuthentication -> core 'Gebruikt'
+  }
+
+  extend nlPortal.frontend {
+    component userInterface 'User interface' {
+      description 'Gedeelde React-componenten en paginas (@nl-portal/nl-portal-user-interface).'
+    }
+    component api 'Api client' {
+      description 'Gegenereerde GraphQL client + hooks (@nl-portal/nl-portal-api).'
+    }
+    component authentication 'Authentication' {
+      description 'OIDC-login/sessiebeheer aan de kant van de SPA (@nl-portal/nl-portal-authentication).'
+    }
+    component localization 'Localization' {
+      description 'Vertalingen en locale-afhandeling (@nl-portal/nl-portal-localization).'
+    }
+
+    userInterface -> api 'Gebruikt'
+    userInterface -> authentication 'Gebruikt'
+    userInterface -> localization 'Gebruikt'
+  }
+}
