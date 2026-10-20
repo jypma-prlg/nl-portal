@@ -4,6 +4,8 @@ pnpm = "11.28.4"
 # Keep in sync with the jvmTarget in backend/build.gradle.kts.
 java = "temurin-21"
 syft = "1.55.0"
+grype = "0.121.0"
+gitleaks = "8.30.1"
 
 [tasks."likec4:validate"]
 description = "Validate the LikeC4 architecture model (docs/likec4)"
@@ -46,3 +48,17 @@ run = "syft dir:. -o cyclonedx-json=sbom.cyclonedx.json"
 [tasks."sbom:all"]
 description = "Generate CycloneDX SBOMs for both backend and frontend"
 depends = ["sbom:backend", "sbom:frontend"]
+
+[tasks."security:secrets-scan"]
+description = "Scan the working tree for secrets (not git history; see .gitleaks.toml for the allowlist)"
+run = "gitleaks detect --source . --no-banner --no-git --config .gitleaks.toml"
+
+[tasks."security:frontend-vuln-scan"]
+description = "Generate the frontend SBOM and scan it for known vulnerabilities (fails on high/critical)"
+depends = ["sbom:frontend"]
+run = "grype sbom:frontend/sbom.cyclonedx.json --fail-on high"
+
+[tasks."security:backend-vuln-scan"]
+description = "Generate the backend SBOM and scan it for known vulnerabilities (fails on high/critical)"
+depends = ["sbom:backend"]
+run = "grype sbom:backend/sbom.cyclonedx.json --fail-on high"
