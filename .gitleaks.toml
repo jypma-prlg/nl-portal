@@ -7,6 +7,10 @@ useDefault = true
 # - docker-compose/imports/** and backend/docker-resources/imports/**: committed Keycloak realm
 #   exports and ZGW-service fixtures for the local dev stack (see docker-compose/README.md).
 # - **/src/test/**: test-only config and certificates (e.g. backend/core/src/test/resources/ssl).
+# - backend/*/build/**: Gradle's own copies of the above (resources/test, test-results,
+#   reports/tests) under a gitignored, generated directory. CI always scans a fresh checkout (no
+#   build/ present), so this only matters for `mise run security:secrets-scan` run locally after a
+#   build - without it, the exact same test fixtures above get re-flagged from their build/ copy.
 # - backend/app-dev/**: the never-shipped developer sandbox app.
 # - *.example: example files whose whole point is to show the shape of a real config file.
 [allowlist]
@@ -15,6 +19,7 @@ paths = [
   '''docker-compose/imports/.*''',
   '''backend/docker-resources/imports/.*''',
   '''backend/.*/src/test/.*''',
+  '''backend/.*/build/.*''',
   '''backend/app-dev/.*''',
   '''.*\.example$''',
 ]
