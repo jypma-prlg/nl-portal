@@ -26,6 +26,6 @@ class PrefillConfig {
 
     class PrefillConfigProperties {
         var typeUrl: String = ""
-        var prefillShaVersion: String = ShaVersion.SHA1.version
+        var prefillShaVersion: String = ShaVersion.SHA512.version
     }
 }
