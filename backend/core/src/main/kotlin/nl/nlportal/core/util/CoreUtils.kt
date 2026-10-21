@@ -15,7 +15,6 @@
  */
 package nl.nlportal.core.util
 
-import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.util.Base64
 import java.util.UUID
@@ -25,25 +24,13 @@ object CoreUtils {
     @JvmStatic
     fun extractId(url: String): UUID = UUID.fromString(url.substringAfterLast("/"))
 
+    // shaVersion is kept for source/binary compatibility with existing callers and published
+    // consumers; every version now resolves to SHA-512, so the value itself no longer matters.
     @JvmStatic
-    @Throws(NoSuchAlgorithmException::class)
     fun createHash(
         input: String,
         shaVersion: String,
-    ): String =
-        when (shaVersion) {
-            ShaVersion.SHA256.version -> {
-                DigestUtils.sha512Hex(input)
-            }
-
-            ShaVersion.SHA512.version -> {
-                DigestUtils.sha512Hex(input)
-            }
-
-            else -> {
-                DigestUtils.sha512Hex(input)
-            }
-        }
+    ): String = DigestUtils.sha512Hex(input)
 
     @JvmStatic
     fun generateNonce(byteLength: Int = 16): String {
