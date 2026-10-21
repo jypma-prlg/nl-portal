@@ -113,12 +113,17 @@ class OpenProductDmnService(
             val variablesMapping = mutableMapOf<String, OpenProductDmnVariable>()
             // add the product mapping
             if (actie.mapping != null) {
-                variablesMapping.putAll(
-                    mapActieMappingVariables(
-                        actieMappingVariables = actie.mapping[ACTIE_MAPPING_KEY_PRODUCT]!!,
-                        source = Mapper.get().writeValueAsString(product),
-                    ),
-                )
+                // handle the configured product variables, same pattern as the static mapping
+                // below: a missing "product" key means no product variables to add, not a reason
+                // to abort the whole decision (kotlin:S6611 - this used to be an unsafe `!!`).
+                actie.mapping[ACTIE_MAPPING_KEY_PRODUCT]?.let {
+                    variablesMapping.putAll(
+                        mapActieMappingVariables(
+                            actieMappingVariables = it,
+                            source = Mapper.get().writeValueAsString(product),
+                        ),
+                    )
+                }
 
                 // add the static mapping
                 // handle the configured static variables
