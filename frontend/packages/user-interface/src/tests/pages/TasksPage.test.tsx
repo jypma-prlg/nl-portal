@@ -49,6 +49,60 @@ describe("TasksPage", () => {
     );
   });
 
+  describe("when a search refetch succeeds", () => {
+    it("resets the page index back to the first page", async () => {
+      const searchMock = {
+        request: {
+          query: QUERY_GET_TAKEN_V2,
+          variables: { title: "zoekterm" },
+        },
+        result: {
+          data: {
+            getTakenV2: {
+              content: [
+                {
+                  ...getTaken({}).result.data.getTakenV2.content[0],
+                  id: "search-result-task",
+                  titel: "GEVONDEN TAAK",
+                },
+              ],
+              totalElements: 1,
+              totalPages: 1,
+              __typename: "TaakPageV2",
+            },
+          },
+        },
+      };
+
+      render(
+        <TestProvider
+          mocks={[getTaken({}), searchMock]}
+          routes={[
+            {
+              path: paths.tasks,
+              children: [{ index: true, element: <TasksPage /> }],
+            },
+          ]}
+          initialIndex={0}
+          initialEntries={[paths.tasks]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText("OPEN TAAK 1")).toBeVisible();
+      });
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "zoekterm" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "Zoeken" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("GEVONDEN TAAK")).toBeVisible();
+      });
+    });
+  });
+
   describe("when a search refetch fails", () => {
     afterEach(() => {
       vi.restoreAllMocks();
@@ -99,6 +153,70 @@ describe("TasksPage", () => {
           "Error fetching tasks:",
           expect.anything(),
         );
+      });
+    });
+  });
+
+  describe("pagination", () => {
+    it("fetches the next page and renders its content when a page button is clicked", async () => {
+      const firstPage = getTaken({});
+      const secondPage = {
+        request: {
+          query: QUERY_GET_TAKEN_V2,
+          variables: { pageNumber: 2 },
+        },
+        result: {
+          data: {
+            getTakenV2: {
+              content: [
+                {
+                  ...firstPage.result.data.getTakenV2.content[0],
+                  id: "second-page-task",
+                  titel: "OPEN TAAK OP PAGINA 2",
+                },
+              ],
+              totalElements: 7,
+              totalPages: 2,
+              __typename: "TaakPageV2",
+            },
+          },
+        },
+      };
+      const firstPageWithTotalPages = {
+        ...firstPage,
+        result: {
+          data: {
+            getTakenV2: {
+              ...firstPage.result.data.getTakenV2,
+              totalElements: 7,
+              totalPages: 2,
+            },
+          },
+        },
+      };
+
+      render(
+        <TestProvider
+          mocks={[firstPageWithTotalPages, secondPage]}
+          routes={[
+            {
+              path: paths.tasks,
+              children: [{ index: true, element: <TasksPage /> }],
+            },
+          ]}
+          initialIndex={0}
+          initialEntries={[paths.tasks]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText("OPEN TAAK 1")).toBeVisible();
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: "Page 2" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("OPEN TAAK OP PAGINA 2")).toBeVisible();
       });
     });
   });
