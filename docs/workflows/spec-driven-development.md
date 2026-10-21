@@ -17,7 +17,7 @@ en waarom".
 
 ### 1. Schrijf de spec
 
-Open een issue in [`nl-portal/nl-portal-issues`](https://github.com/nl-portal/nl-portal-issues) met
+Open een issue in de Issues van deze repository met
 [`docs/workflows/feature-spec-template.md`](feature-spec-template.md). De secties "Geraakte
 bouwblokken" en "Nieuwe externe integratie?" zijn niet optioneel — ze dwingen je om vóór het bouwen
 even in `docs/arc42`/`docs/likec4` te kijken in plaats van pas bij de PR-review te ontdekken dat er

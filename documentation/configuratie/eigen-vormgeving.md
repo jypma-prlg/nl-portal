@@ -39,7 +39,7 @@ In het voorbeeld hierboven is een knop geselecteerd. In het omcirkelde deel is z
 
 ## Geavanceerd: eigen vormgeving via code
 
-Als je de vormgeving wilt beheren in versiebeheer of meer controle nodig hebt, kun je de design tokens ook aanpassen in een fork van de [NL Portal monorepo](https://github.com/nl-portal/nl-portal).
+Als je de vormgeving wilt beheren in versiebeheer of meer controle nodig hebt, kun je de design tokens ook direct in deze repository aanpassen.
 
 Ga naar het bestand `frontend/packages/app/src/styles/nl-portal-design-tokens.css` en voeg je eigen designtokens toe die de standaard waardes overschrijven. Bouw vervolgens je eigen images met `RUN_MODE=local docker compose --profile zgw --profile haalcentraal up -d --build`.
 

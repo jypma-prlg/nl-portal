@@ -115,8 +115,9 @@ jobs:
 
     image-be:
         needs: [prepare, stage-be, gate]
-        # Pushes to ghcr.io/nl-portal/* and the fork's GITHUB_TOKEN can't publish there.
-        if: github.repository == 'nl-portal/nl-portal'
+        # Pushes to ghcr.io/nl-portal/*, which pinkroccade doesn't own; this will fail until
+        # pinkroccade's own registry is set up (tracked as a backlog issue).
+        if: github.repository == 'pinkroccade/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: backend
@@ -130,8 +131,9 @@ jobs:
 
     image-fe:
         needs: [prepare, stage-fe, gate]
-        # Pushes to ghcr.io/nl-portal/* and the fork's GITHUB_TOKEN can't publish there.
-        if: github.repository == 'nl-portal/nl-portal'
+        # Pushes to ghcr.io/nl-portal/*, which pinkroccade doesn't own; this will fail until
+        # pinkroccade's own registry is set up (tracked as a backlog issue).
+        if: github.repository == 'pinkroccade/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: frontend

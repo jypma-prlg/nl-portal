@@ -1,7 +1,6 @@
 # Feature-spec sjabloon
 
-Kopieer dit in het issue dat je opent in
-[`nl-portal/nl-portal-issues`](https://github.com/nl-portal/nl-portal-issues/issues) (zie
+Kopieer dit in het issue dat je opent in de Issues van deze repository (zie
 `CONTRIBUTING.md`, "Open an issue first") voor elke RFC/grotere feature. Zie
 [`docs/workflows/spec-driven-development.md`](spec-driven-development.md) voor de volledige
 werkwijze eromheen. Een kleine bugfix heeft dit sjabloon niet nodig.
@@ -53,8 +52,7 @@ _Welke scenario's uit `docs/arc42/10-kwaliteitseisen.md` worden hiermee getest? 
 
 ## Waarom dit sjabloon hier staat, en niet als GitHub issue-template
 
-Issues voor dit project worden aangemaakt in het aparte repository
-[`nl-portal/nl-portal-issues`](https://github.com/nl-portal/nl-portal-issues), niet in dit
-monorepo — een `.github/ISSUE_TEMPLATE/` hier zou dus nooit gebruikt worden. Zodra iemand toegang
-heeft om dat andere repository aan te passen, is het daar toevoegen van dit sjabloon als
-issue-template een logische vervolgstap.
+Issues voor dit project worden aangemaakt in de Issues van deze repository zelf. Dit sjabloon
+staat (nog) als losstaand Markdown-document in `docs/workflows/` in plaats van als
+`.github/ISSUE_TEMPLATE/`; het daarheen verplaatsen is een logische vervolgstap, maar is hier niet
+doorgevoerd.

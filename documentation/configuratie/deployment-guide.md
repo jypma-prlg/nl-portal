@@ -23,12 +23,9 @@ Bij properties waarvan alleen het voorste deel een koppelteken heeft — zoals `
 
 ### Deployen met Helm (Kubernetes)
 
-Voor Kubernetes-omgevingen zijn er officiële Helm charts beschikbaar in de [helm-charts repository](https://github.com/nl-portal/helm-charts). Deze repository bevat charts voor de NL Portal backend, frontend en het Configuratiepaneel (backend en frontend). De beschikbare configuratiewaarden per chart, installatie-instructies en de changelogs met migratie-instructies per versie staan in de README van die repository.
-
-```shell
-helm repo add nl-portal https://nl-portal.github.io/helm-charts
-helm repo update
-```
+Dit verwees eerder naar officiële Helm charts in Ritense's `helm-charts` repository, met charts voor
+de NL Portal backend, frontend en het Configuratiepaneel (backend en frontend). Pinkroccade's eigen
+equivalent is nog niet ingericht; zie [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
 
 ### Backend: module-configuratie
 

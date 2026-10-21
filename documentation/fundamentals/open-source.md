@@ -11,11 +11,11 @@
 
 ### Bijdrage leveren
 
-Alle code is publiek beschikbaar op onze [github](https://github.com/nl-portal/). We zijn trots op ons werk, tonen je graag meer en staan klaar om je op gang te helpen.
+Alle code is publiek beschikbaar in deze GitHub-repository. We zijn trots op ons werk, tonen je graag meer en staan klaar om je op gang te helpen.
 
 ### Feature of bugfixes toevoegen
 
-1. Maak een issue aan in de [nl-portal-issues](https://github.com/nl-portal/nl-portal-issues) repository (de centrale issue tracker voor alle NL Portal repositories). Hiermee willen we zorgen dat alle bugfixes en features afgestemd zijn op elkaar zodat we geen dubbel werk doen
+1. Maak een issue aan in de Issues van deze repository. Hiermee willen we zorgen dat alle bugfixes en features afgestemd zijn op elkaar zodat we geen dubbel werk doen
 2. Implementeer de feature of bugfix, test deze en maak een PullRequest naar `main`
 3. Schrijf de release notes en documentatie
 4. Merge de branch als je een akkoord hebt van het Portal team
@@ -24,4 +24,8 @@ We streven naar een maandelijkse release, mocht je sneller een fix of feature no
 
 ### Deelnemers
 
+Oorspronkelijk ontwikkeld door:
+
 ![deelnemers](img/denhaag_amsterdam_ritense.jpg)
+
+Sinds deze repository als zelfstandig project verderging, wordt het onderhouden door pinkroccade.

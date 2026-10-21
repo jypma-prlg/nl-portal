@@ -1,7 +1,7 @@
 # NL Portal Code of Conduct
 
 
-We – the project maintainers @ritense – work with pleasure on building this open source product. We welcome all contributions, questions, opinions and suggestions. We strive to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
+We – the project maintainers – work with pleasure on building this open source product. We welcome all contributions, questions, opinions and suggestions. We strive to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 ## Our Standards
 
@@ -29,14 +29,14 @@ All NL Portal public spaces are meant for professional interactions, and any beh
 
 ## Our Responsibilities
 
-Ritense is responsible for clarifying the standards of acceptable behavior and will take appropriate and fair corrective action in response to any instances of unacceptable behavior.
+The project maintainers are responsible for clarifying the standards of acceptable behavior and will take appropriate and fair corrective action in response to any instances of unacceptable behavior.
 
-Ritense has the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, or to ban temporarily or permanently any contributor for other behaviors that they deem inappropriate, threatening, offensive, or harmful.
+The project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, or to ban temporarily or permanently any contributor for other behaviors that they deem inappropriate, threatening, offensive, or harmful.
 
 
 ## Scope
 
-This Code of Conduct applies to all content on Github.com/nl-portal, https://nl-portal.nl/, Slack and or any other official NL Portal web presence allowing for community interactions, as well as at all official NL Portal events, whether offline or online.
+This Code of Conduct applies to all content on this repository's GitHub space, as well as at any other official NL Portal web presence allowing for community interactions, whether offline or online.
 
 
 ## Conflict Resolution
@@ -55,7 +55,7 @@ If you are experiencing or witnessing conflict, we ask you to use the following 
 
 ## Reporting Violations
 
-If someone makes you or anyone else feel unsafe or unwelcome, report it as soon as possible, to help us make the community a better place. Please include as much detail as possible in your report as it is easier for us to address issues when we have more context. Please email to security@ritense.com or contact via +31 20 3460800
+If someone makes you or anyone else feel unsafe or unwelcome, report it as soon as possible, to help us make the community a better place. Please include as much detail as possible in your report as it is easier for us to address issues when we have more context. A reporting contact for this project has not been published yet; tracked in [issue #16](https://github.com/jypma-prlg/nl-portal/issues/16).
 
 ## Attribution
 

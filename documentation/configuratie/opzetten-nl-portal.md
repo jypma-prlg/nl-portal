@@ -9,12 +9,12 @@ Om de NL Portal lokaal op te zetten is enige basiskennis van de CLI (command-lin
 
 #### Waar kan ik de code vinden
 
-Alle code en informatie is opensource en kan gevonden worden op [github.com](https://github.com/nl-portal). De backend, frontend, docker-compose stack en documentatie leven samen in één monorepo.
+Alle code en informatie is opensource en kan gevonden worden in deze GitHub-repository. De backend, frontend, docker-compose stack en documentatie leven samen in één monorepo.
 
 | Onderdeel                                                                         | Beschrijving                                                                                                    |
 | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| [nl-portal/nl-portal](https://github.com/nl-portal/nl-portal)                     | De monorepo: backend (`backend/`), frontend (`frontend/`), docker-compose demo (`docker-compose/`) en docs.    |
-| [Helm Charts](https://github.com/nl-portal/helm-charts)                           | Kubernetes Helm charts voor het deployen van een NL Portal omgeving.                                           |
+| Deze repository                                                                   | De monorepo: backend (`backend/`), frontend (`frontend/`), docker-compose demo (`docker-compose/`) en docs.    |
+| Helm Charts                                                                       | Nog niet ingericht voor pinkroccade; zie [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).       |
 
 Voor de meeste implementaties gebruik je de gepubliceerde images (zie Route 1). Voor maatwerk dienen de app-directories (`backend/app`, `frontend/packages/app`) als startpunt.
 
@@ -63,7 +63,7 @@ Voor actieve ontwikkeling draai je alleen de ondersteunende services in compose 
 docker compose --profile zgw up -d
 ```
 
-Start daarna de backend (`./gradlew :app:bootRun` vanuit `backend/`; vereist een `.env.properties`, zie `backend/app/README.md`) en de frontend (`pnpm install && pnpm dev` vanuit `frontend/`). Zie [`GETTING_STARTED.md`](https://github.com/nl-portal/nl-portal/blob/main/GETTING_STARTED.md) en `docker-compose/README.md` voor de details.
+Start daarna de backend (`./gradlew :app:bootRun` vanuit `backend/`; vereist een `.env.properties`, zie `backend/app/README.md`) en de frontend (`pnpm install && pnpm dev` vanuit `frontend/`). Zie [`GETTING_STARTED.md`](../../GETTING_STARTED.md) en `docker-compose/README.md` voor de details.
 
 ### Configureren via het Configuration Panel
 

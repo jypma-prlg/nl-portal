@@ -32,9 +32,10 @@ live together and release at a single, shared version.
 | `backend/`        | Kotlin/Spring Boot backend libraries + the shippable backend application. One Gradle build. See [backend/README.md](./backend/README.md). |
 | `frontend/`       | pnpm workspace of `@nl-portal/*` React libraries + the shippable frontend application. See [frontend/README.md](./frontend/README.md). |
 | `docker-compose/` | Local development stack (Keycloak, databases, ZGW services) + fixtures. See [docker-compose/README.md](./docker-compose/README.md). |
-| `documentation/`  | Product documentation, published to https://nl-portal.nl via GitBook.                        |
+| `documentation/`  | Product documentation. Not yet published anywhere outside this repository; see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18). |
 
-Helm charts live in a separate repository: [`nl-portal/helm-charts`](https://github.com/nl-portal/helm-charts).
+Helm charts previously lived in Ritense's separate `nl-portal/helm-charts` repository; pinkroccade's
+own equivalent is tracked in [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
 
 ## Running NL Portal
 
@@ -44,7 +45,7 @@ Three ways, by purpose - see [GETTING_STARTED.md](./GETTING_STARTED.md) for the 
 - **Local** - build and run your changes as they'd ship.
 - **From sources** - run the backend/frontend from your IDE for fast development.
 
-For deployment, see the [documentation](https://nl-portal.nl) and the helm-charts repository.
+For deployment, see [`documentation/`](./documentation) (see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18) for the helm-charts follow-up).
 
 ## Developing
 
@@ -60,8 +61,9 @@ also read the [Code of Conduct](./CODE_OF_CONDUCT.md). Report vulnerabilities pr
 
 ## Documentation
 
-Full product documentation - architecture, configuration, and feature/theme guides - lives at
-https://nl-portal.nl (source in [`documentation/`](./documentation)).
+Full product documentation - architecture, configuration, and feature/theme guides - lives in
+[`documentation/`](./documentation). It is not currently published anywhere outside this
+repository; see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
 
 ## License
 

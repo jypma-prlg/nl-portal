@@ -10,7 +10,7 @@ zit) en `docs/likec4` (het diagrammodel).
 | [Security](security.md) | Learn/Break/Defend/Repeat, geïnspireerd op nullpointer.studio |
 | [Threat-model werkblad](threat-model-template.md) | STRIDE per nieuwe externe integratie |
 | [Spec-driven development](spec-driven-development.md) | Hoe je nieuwe functionaliteit toevoegt, van issue tot PR |
-| [Feature-spec sjabloon](feature-spec-template.md) | Kopieer dit in een nl-portal-issues-issue |
+| [Feature-spec sjabloon](feature-spec-template.md) | Kopieer dit in een issue van deze repository |
 
 Begin bij [spec-driven-development.md](spec-driven-development.md) als je nieuwe functionaliteit
 gaat toevoegen — die bindt de rest samen.

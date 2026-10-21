@@ -97,4 +97,4 @@ command from the terminal.
 
 ## More information
 
-See the [monorepo README](../README.md) and the [documentation](https://nl-portal.nl).
+See the [monorepo README](../README.md) and the [documentation](../documentation).

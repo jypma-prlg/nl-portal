@@ -1,12 +1,14 @@
 # Security Policy
 
-## Have you discovered a security issue in NL-Portal? Let us know! 
-Ritense is strongly committed to responding to disclosed security-related issues.  Security is of the essence for all users of this software stack. Keeping software secure is complex job - we value all suggestions to keep the software secure. 
+## Have you discovered a security issue in NL-Portal? Let us know!
+We are strongly committed to responding to disclosed security-related issues. Security is of the essence for all users of this software stack. Keeping software secure is a complex job - we value all suggestions to keep the software secure.
 
 ## How to report?
-Send an email to security@ritense.com. If you want to notify us anonymously you can use a anonymous email address, for example Apple’s Hide My Email. Do note we cannot send you feedback, a thank you or additional questions if you use a temporary email address.  
+A security contact address for this project has not been published yet; tracked in
+[issue #15](https://github.com/jypma-prlg/nl-portal/issues/15). Until it is, please do not open a
+public issue for a vulnerability — check back on that issue for the designated contact.
 
-Please clearly explain how the vulnerability can be exploited, preferably with screenshots and a step-by-step explanation. If possible include the version of NL Portal you used. If it concerns a running instance, please note the url and state the exact date and time you used the vulnerability. This helps us with our analysis of your report. 
+Please clearly explain how the vulnerability can be exploited, preferably with screenshots and a step-by-step explanation. If possible include the version of NL Portal you used. If it concerns a running instance, please note the url and state the exact date and time you used the vulnerability. This helps us with our analysis of your report.
 
 ## Information about the processing of your personal data 
 We ask you to provide your name, email address and telephone number in order to communicate with you regarding your report. Providing a name and telephone number is optional. If you are eligible for a reward, we will also need your address if you wish us to send it to you. We may therefore ask for your address after your report is processed. Your data will not be shared with third parties unless disclosure of these data is compelled by law or by a court ruling.
@@ -31,14 +33,7 @@ We ask you to provide your name, email address and telephone number in order to 
 * We will keep you informed of the progress of solving the problem.
 * We will, if you wish, include your name as the discoverer in reporting about the reported problem.
 
-## As a thank you
+## Bug bounty
 
-As a thank you for your help, we offer a reward for every report of a security problem unknown to us. We determine the size of the reward based on the severity of the leak and the quality of the report, minimum € 50 and a maximum of € 500. The total amount of awards per year is 3, and 1 per person / organisation / group. Note this project is an open source project with very limited funding.
-
-We determine whether a reward applies and which reward is offered, based on the risk of the security problem. To be eligible, a report must be valid and unreported, and the reported vulnerability must be significant in terms of risk.
-
-A Reward is not offered if a reporter or the report does not comply with the rules of this procedure. If the report does not concern a security issue or poses a low risk, no reward may be offered.
-
-When duplicate reports are received about a specific vulnerability, the reward will be awarded to the first person to report this vulnerability. A reward awarded will only be provided to one person.
-
-We try to award equal rewards for similar security vulnerabilities. However, the rewards and the eligible security vulnerabilities are subject to change. Remunerations awarded in the past do not guarantee rewards offered in the future. Anonymous reports are excluded from participation in the rewards program.
+This project does not currently run a bug-bounty/reward program. Whether to start one is tracked
+in [issue #15](https://github.com/jypma-prlg/nl-portal/issues/15).

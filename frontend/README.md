@@ -117,8 +117,8 @@ Runtime configuration comes from two places:
   (local dev defaults) and, in a container, `config.template.js` (populated from environment
   variables at startup via nginx `envsubst`).
 
-See the [documentation](https://nl-portal.nl) for the feature and theming configuration.
+See the [documentation](../documentation) for the feature and theming configuration.
 
 ## More information
 
-See the [monorepo README](../README.md) and the [documentation](https://nl-portal.nl).
+See the [monorepo README](../README.md) and the [documentation](../documentation).

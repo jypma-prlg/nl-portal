@@ -6,7 +6,8 @@ die niet:
 
 - [`documentation/fundamentals/architectuur`](../../documentation/fundamentals/architectuur) beschrijft
   het **product** (scope, Common Ground-principes, authenticatie, integratiepatronen) voor een breed
-  publiek, gepubliceerd op [nl-portal.nl](https://nl-portal.nl).
+  publiek. Niet gepubliceerd buiten deze repository; zie
+  [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
 - `docs/arc42` (dit pad) beschrijft de **software-architectuur** voor ontwikkelaars en architecten:
   bouwblokken, runtime-gedrag, verdeling, dwarsdoorsnede-concepten, risico's en beslissingen.
 - [`docs/likec4`](../likec4) bevat het navigeerbare C4-diagrammodel waarnaar dit document verwijst

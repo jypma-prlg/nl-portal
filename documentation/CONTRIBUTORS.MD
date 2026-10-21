@@ -1,6 +1,6 @@
 # Deelnemers
 
-NL Portal wordt actief ontwikkeld door
+NL Portal werd oorspronkelijk ontwikkeld door
 
 [Gemeente Den Haag](https://www.denhaag.nl/)<br>
 <img src="img/denhaag.png" height="150">
@@ -10,3 +10,5 @@ NL Portal wordt actief ontwikkeld door
 
 [Ritense](https://ritense.com/)<br>
 <img src="img/ritense.png" height="100">
+
+Sinds deze repository als zelfstandig project verderging, wordt het onderhouden door pinkroccade.

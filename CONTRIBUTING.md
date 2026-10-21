@@ -6,15 +6,17 @@ stack and the documentation. Backend and frontend release at a single, shared ve
 
 ## Ownership
 
-This project is owned by [Ritense](https://ritense.com/) and developed together with its community.
+This project is owned and maintained by pinkroccade. It was originally built by
+[Ritense](https://ritense.com/) together with its community; this repository is now developed
+independently.
 
 ## How to contribute
 
-1. **Open an issue first.** Every pull request needs a linked issue in
-   [NL Portal Issues](https://github.com/nl-portal/nl-portal-issues/issues): an RFC for a bigger
-   feature, a bug report or task for smaller work. For anything beyond a small fix, let a
-   maintainer weigh in before you start building. A pull request without a linked issue may be
-   closed without review. Typos, documentation fixes and dependency bumps are exempt.
+1. **Open an issue first.** Every pull request needs a linked issue in this repository's own
+   Issues: an RFC for a bigger feature, a bug report or task for smaller work. For anything beyond
+   a small fix, let a maintainer weigh in before you start building. A pull request without a
+   linked issue may be closed without review. Typos, documentation fixes and dependency bumps are
+   exempt.
 2. **Fork, or branch.** External contributors work on a branch in their own fork; contributors
    with write access branch directly in this repository. See [Branch model](#branch-model) for
    which line your change starts from and how to name the branch.

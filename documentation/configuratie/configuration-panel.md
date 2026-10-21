@@ -2,7 +2,7 @@
 
 Het Configuration Panel is een beheerapplicatie waarmee je de NL Portal backend en theming kunt configureren via een gebruiksvriendelijke interface — zonder code aan te passen of eigen images te bouwen.
 
-Zie de [nl-portal-configuration-panel repository](https://github.com/nl-portal/nl-portal-configuration-panel) voor installatie-instructies, environment variabelen en versiecompatibiliteit.
+Dit verwees eerder naar Ritense's `nl-portal-configuration-panel` repository voor installatie-instructies, environment variabelen en versiecompatibiliteit; pinkroccade's eigen equivalent is nog niet ingericht, zie [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
 
 ## Wat kun je configureren
 
@@ -76,4 +76,6 @@ De NL Portal backend haalt bij opstarten de configuratie op uit het Configuratio
 
 ## Helm charts
 
-Voor Kubernetes-omgevingen zijn er Helm charts beschikbaar (`nl-portal-configpanel-backend` en `nl-portal-configpanel-frontend`). Zie de [helm-charts repository](https://github.com/nl-portal/helm-charts) voor installatie-instructies.
+Voor Kubernetes-omgevingen bestonden er Helm charts (`nl-portal-configpanel-backend` en
+`nl-portal-configpanel-frontend`) in Ritense's `helm-charts` repository; pinkroccade's eigen
+equivalent is nog niet ingericht, zie [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
