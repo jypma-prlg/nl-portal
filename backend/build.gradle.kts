@@ -144,6 +144,7 @@ subprojects {
                 dependency("org.apache.httpcomponents.core5:httpcore5-h2:${Versions.httpCore5}")
                 dependency("org.apache.logging.log4j:log4j-api:${Versions.log4j2}")
                 dependency("org.apache.logging.log4j:log4j-to-slf4j:${Versions.log4j2}")
+                dependency("org.bouncycastle:bcprov-jdk18on:${Versions.bouncyCastle}")
             }
         }
     }
