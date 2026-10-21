@@ -30,6 +30,7 @@ object Versions {
     const val log4j2 = "2.26.1" // override Boot 4.1.0 BOM (2.25.4), CVE-2026-49844 fix
     const val netty = "4.2.18.Final" // override Boot 4.1.0 BOM (4.2.15.Final), CVE-2026-44891/-55831/-55833 fix
     const val bouncyCastle = "1.85" // override Spring Cloud 5.0.2's bcprov-jdk18on (1.81.1), CVE-2026-8763 fix
+    const val jackson = "3.1.8" // override Boot 4.1.1's jackson-bom (3.1.5), GHSA-q4xh-88c3-wmh7/-p6pp-m3f8-5c89/-gx83-3vf8-gh7j/-7hhh-6rmp-j9qf/-cxp5-3px4-pw24/-wv8q-qhhj-9h54/-wjgm-6hv5-3cvf fix
 
     // Test versions
     const val hamcrest = "3.0"
