@@ -45,7 +45,8 @@ const usePayment = () => {
   const startPayment = (paymentRequestPayload: PaymentRequestPayload) => {
     setLoading(true);
     returnUrl.searchParams.set("category", paymentRequestPayload.identifier);
-    mutateFunction({
+    // fire-and-forget: success/failure are both already handled via onCompleted/onError below.
+    void mutateFunction({
       variables: {
         amount: paymentRequestPayload.amount,
         identifier: paymentRequestPayload.identifier,

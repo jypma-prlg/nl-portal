@@ -139,7 +139,7 @@ const EditContactInfoPage = () => {
       return;
     }
 
-    navigate(paths.account, {
+    void navigate(paths.account, {
       state: {
         notification: {
           id: "edit-contact-info-success",
@@ -156,7 +156,7 @@ const EditContactInfoPage = () => {
   };
 
   if (!type || !typeParams.includes(type)) {
-    navigate(paths.account);
+    void navigate(paths.account);
     return null;
   }
 
@@ -193,7 +193,9 @@ const EditContactInfoPage = () => {
           error={Boolean(!mutationLoading && mutationCalled && mutationError)}
           onSubmit={(event) => {
             event.preventDefault();
-            onSubmit();
+            onSubmit().catch((error) => {
+              console.error("Error submitting contact info:", error);
+            });
           }}
           onCancel={() => navigate(paths.account)}
           onChange={mutationReset}

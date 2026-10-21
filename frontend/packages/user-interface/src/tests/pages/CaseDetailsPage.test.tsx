@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll, vi, afterEach } from "vitest";
 import {
   render,
   screen,
@@ -22,6 +22,7 @@ import {
 } from "@testing-library/react";
 import {
   MockCaseDetailsPage,
+  MockCaseDetailsPageWithFailingContactMoments,
   MockCaseDetailsPageWithoutContactMoments,
   MockCaseDetailsPageWithoutDocuments,
 } from "../mock/pages/CaseDetailsPage.mock.tsx";
@@ -82,5 +83,29 @@ describe("CaseDetailsPage", () => {
     expect(screen.getByText("Documenten"));
     expect(screen.getByText("Certificaat WWJB")).toBeVisible();
     expect(screen.queryByText("Eerdere contactmomenten")).toBeNull();
+  });
+
+  describe("when fetching contact moments fails", () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("should report the error through console.error instead of an unhandled rejection (typescript:S9383 pattern)", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      render(MockCaseDetailsPageWithFailingContactMoments());
+
+      await waitFor(skeleton);
+      await waitForElementToBeRemoved(skeleton);
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          "Error fetching contact moments:",
+          expect.anything(),
+        );
+      });
+    });
   });
 });

@@ -57,3 +57,14 @@ export const getObjectContactMomenten = {
     },
   },
 };
+
+export const getFailingObjectContactMomenten = {
+  request: {
+    query: QUERY_GET_USER_KLANT_CONTACTEN,
+    variables: {
+      identificatorType: "ZAAK",
+      identificatorId: "82cb13cf-d2f9-4e3e-ac07-751373035ecb",
+    },
+  },
+  error: new Error("Network error"),
+};
