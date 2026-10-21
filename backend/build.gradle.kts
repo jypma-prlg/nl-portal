@@ -226,9 +226,9 @@ subprojects {
 
 sonar {
     properties {
-        property("sonar.projectKey", "nl-portal_nl-portal-backend")
+        property("sonar.projectKey", "pinkroccade_nl-portal-backend")
         property("sonar.projectName", "nl-portal-backend")
-        property("sonar.organization", "nl-portal")
+        property("sonar.organization", "pinkroccade")
         property("sonar.token", System.getenv("SONAR_TOKEN"))
     }
 }
