@@ -115,6 +115,8 @@ jobs:
 
     image-be:
         needs: [prepare, stage-be, gate]
+        # Pushes to ghcr.io/nl-portal/* and the fork's GITHUB_TOKEN can't publish there.
+        if: github.repository == 'nl-portal/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: backend
@@ -128,6 +130,8 @@ jobs:
 
     image-fe:
         needs: [prepare, stage-fe, gate]
+        # Pushes to ghcr.io/nl-portal/* and the fork's GITHUB_TOKEN can't publish there.
+        if: github.repository == 'nl-portal/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: frontend
