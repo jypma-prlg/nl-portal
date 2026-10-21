@@ -12,8 +12,8 @@ losse afbeeldingen.
 | -------------------- | ----------------------------------------------------------------------- |
 | `specification.c4`  | Toegestane elementsoorten (`actor`, `system`, `container`, `component`). |
 | `model.c4`          | C1/C2: actoren, het NL Portal-systeem met zijn containers (frontend, backend, database), en de externe ZGW/Common Ground-systemen waarmee het samenwerkt. |
-| `components.c4`     | C3: de interne compositie van de backend- en frontend-container, als `extend`-blokken op `model.c4`. |
-| `views.c4`          | De vier views: `index` (C1), `containers` (C2), `backendComponents` en `frontendComponents` (C3). |
+| `components.c4`     | C3: de interne compositie van de backend- en frontend-container, als `extend`-blokken op `model.c4`. `zgwIntegrations` en `haalCentraalIntegrations` zijn zelf weer uitgesplitst naar hun daadwerkelijke Gradle-modules, inclusief hun onderlinge afhankelijkheden. |
+| `views.c4`          | De zes views: `index` (C1), `containers` (C2), `backendComponents` en `frontendComponents` (C3), en `zgwIntegrationComponents`/`haalCentraalIntegrationComponents` (verdieping van de twee C3-componenten die meerdere modules bundelen). |
 
 LikeC4 leest alle `.c4`-bestanden in deze map en voegt ze samen tot één model; de indeling in
 bestanden is alleen leesbaarheid, geen technische grens.
@@ -43,6 +43,20 @@ De C3-componentindeling volgt de Gradle-modules (`backend/settings.gradle.kts`) 
 pnpm-workspacepakketten (`frontend/pnpm-workspace.yaml`) zoals die nu in de code bestaan; het is een
 beschrijving van de huidige structuur, geen streefbeeld. Zie de architectuur-review (deliverable 1)
 voor voorstellen om die structuur te verdiepen.
+
+Twee C3-componenten bundelen op hun beurt meerdere Gradle-modules achter één beschrijving:
+`zgwIntegrations` (alle `zgw:*`-modules) en `haalCentraalIntegrations` (`haalcentraal2`,
+`haalcentraal-hr`). Die zijn daarom zelf verder uitgesplitst naar hun werkelijke modules, inclusief de
+afhankelijkheden daartussen (views `zgwIntegrationComponents`/`haalCentraalIntegrationComponents`) —
+nog steeds C3, maar met meer detail, niet een officieel vierde C4-niveau (LikeC4 kent geen
+code-niveau, en dat niveau wordt in de C4-methodologie sowieso meestal door een IDE gegenereerd in
+plaats van handmatig onderhouden). Test-only modules (zoals `zgw:common-ground-authentication-test`)
+zijn buiten het diagram gelaten, consistent met de rest van het model dat runtime-structuur toont.
+
+Deze uitsplitsing beschrijft de huidige structuur van `zgw:*`. [ADR 0002](../adr/0002-zgw-client-consolidation.md)
+beschrijft een nog niet geïmplementeerd vervolg dat `objectenapi`/`catalogi-api`/`zaken-api`/
+`documenten-api` consolideert in een nieuwe `zgw-client`-module (waarbij `zaken` vervalt); werk dit
+diagram bij zodra die migratie landt.
 
 ## Onderhoud
 

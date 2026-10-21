@@ -20,4 +20,14 @@ views {
     title 'NL Portal Frontend - C3 Componenten'
     include *
   }
+
+  view zgwIntegrationComponents of nlPortal.backend.zgwIntegrations {
+    title 'NL Portal Backend - ZGW-integraties, uitgesplitst naar modules'
+    include *
+  }
+
+  view haalCentraalIntegrationComponents of nlPortal.backend.haalCentraalIntegrations {
+    title 'NL Portal Backend - Haal Centraal-integraties, uitgesplitst naar modules'
+    include *
+  }
 }

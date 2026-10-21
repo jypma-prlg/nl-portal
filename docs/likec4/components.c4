@@ -13,10 +13,94 @@ model {
       description 'Formulierinzendingen en -definities.'
     }
     component zgwIntegrations 'ZGW-integraties' {
-      description 'Eén module per ZGW-bron: openklant, taak, documenten-api, berichten, besluiten, zaken, zaken-api, verificatie, objectenapi, catalogi-api, common-ground-authentication.'
+      description 'Eén module per ZGW-bron: openklant, taak, documenten-api, berichten, besluiten, zaken, zaken-api, verificatie, objectenapi, catalogi-api, openproduct, common-ground-authentication, idtoken-authentication. Huidige structuur (backend/settings.gradle.kts, zgw:*); zie ADR 0002 voor het geplande vervolg dat objectenapi/catalogi-api/zaken-api/documenten-api consolideert in zgw-client.'
+
+      component idtokenAuthentication 'idtoken-authentication' {
+        description 'Token-gebaseerde authenticatie voor ZGW-aanroepen vanuit de backend.'
+      }
+      component commonGroundAuthentication 'common-ground-authentication' {
+        description 'Gedeelde Common Ground/OIDC-autorisatielogica voor alle ZGW-integraties.'
+      }
+      component objectenapi 'objectenapi' {
+        description 'Integratie met Open Object (objecten-API), o.a. voor taken.'
+      }
+      component catalogiApi 'catalogi-api' {
+        description 'Integratie met Open Zaak catalogi-API (zaaktypen, statustypen).'
+      }
+      component openklant 'openklant' {
+        description 'Integratie met OpenKlant 2 (klant- en contactmomentenregistratie).'
+      }
+      component taak 'taak' {
+        description 'Externe taken: verzoeken aan klant/ketenpartner tijdens zaakafhandeling.'
+      }
+      component documentenApi 'documenten-api' {
+        description 'Integratie met Open Zaak documenten-API.'
+      }
+      component berichten 'berichten' {
+        description 'Berichtenuitwisseling rond zaken, op basis van documenten en objecten.'
+      }
+      component besluiten 'besluiten' {
+        description 'Integratie met Open Zaak besluiten-API (formele besluiten binnen een zaak).'
+      }
+      component zakenApi 'zaken-api' {
+        description 'Integratie met Open Zaak zaken-API.'
+      }
+      component openproduct 'openproduct' {
+        description 'Integratie met OpenProduct (productencatalogus).'
+      }
+      component verificatie 'verificatie' {
+        description 'Verificatie van identiteit/machtiging bij ZGW-aanroepen.'
+      }
+      component zaken 'zaken' {
+        description 'Orkestratielaag boven zaken-API, besluiten, documenten en objecten voor zaakweergave; heeft zelf geen client.'
+      }
+
+      idtokenAuthentication -> commonGroundAuthentication 'Gebruikt'
+      catalogiApi -> idtokenAuthentication 'Gebruikt'
+      openklant -> commonGroundAuthentication 'Gebruikt'
+      openklant -> idtokenAuthentication 'Gebruikt'
+      openklant -> verificatie 'Gebruikt'
+      taak -> commonGroundAuthentication 'Gebruikt'
+      taak -> objectenapi 'Gebruikt'
+      taak -> documentenApi 'Gebruikt'
+      documentenApi -> commonGroundAuthentication 'Gebruikt'
+      documentenApi -> idtokenAuthentication 'Gebruikt'
+      berichten -> commonGroundAuthentication 'Gebruikt'
+      berichten -> objectenapi 'Gebruikt'
+      berichten -> documentenApi 'Gebruikt'
+      besluiten -> idtokenAuthentication 'Gebruikt'
+      besluiten -> catalogiApi 'Gebruikt'
+      besluiten -> documentenApi 'Gebruikt'
+      besluiten -> zakenApi 'Gebruikt'
+      zakenApi -> catalogiApi 'Gebruikt'
+      zakenApi -> commonGroundAuthentication 'Gebruikt'
+      zakenApi -> documentenApi 'Gebruikt'
+      zakenApi -> idtokenAuthentication 'Gebruikt'
+      zakenApi -> objectenapi 'Gebruikt'
+      openproduct -> commonGroundAuthentication 'Gebruikt'
+      openproduct -> zakenApi 'Gebruikt'
+      openproduct -> taak 'Gebruikt'
+      openproduct -> documentenApi 'Gebruikt'
+      verificatie -> commonGroundAuthentication 'Gebruikt'
+      verificatie -> idtokenAuthentication 'Gebruikt'
+      zaken -> zakenApi 'Gebruikt'
+      zaken -> commonGroundAuthentication 'Gebruikt'
+      zaken -> documentenApi 'Gebruikt'
+      zaken -> idtokenAuthentication 'Gebruikt'
+      zaken -> objectenapi 'Gebruikt'
+      zaken -> besluiten 'Gebruikt'
     }
     component haalCentraalIntegrations 'Haal Centraal-integraties' {
-      description 'haalcentraal2 (BRP) en haalcentraal-hr (bewoning/volmachten).'
+      description 'haalcentraal2 (BRP) en haalcentraal-hr (bewoning/volmachten). Huidige structuur (backend/settings.gradle.kts).'
+
+      component haalcentraal2 'haalcentraal2' {
+        description 'Integratie met Haal Centraal BRP (persoonsgegevens).'
+      }
+      component haalcentraalHr 'haalcentraal-hr' {
+        description 'Integratie met Haal Centraal Bewoning (machtigingen/bewoning).'
+      }
+
+      haalcentraal2 -> haalcentraalHr 'Gebruikt'
     }
     component payment 'Payment' {
       description 'payment-direct: betaalprovider-integratie.'
@@ -41,6 +125,9 @@ model {
     payment -> core 'Gebruikt'
     form -> core 'Gebruikt'
     portalAuthentication -> core 'Gebruikt'
+
+    haalCentraalIntegrations.haalcentraal2 -> zgwIntegrations.commonGroundAuthentication 'Gebruikt'
+    haalCentraalIntegrations.haalcentraalHr -> zgwIntegrations.commonGroundAuthentication 'Gebruikt'
   }
 
   extend nlPortal.frontend {
