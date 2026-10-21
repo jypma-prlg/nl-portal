@@ -62,3 +62,7 @@ run = "grype sbom:frontend/sbom.cyclonedx.json --fail-on high"
 description = "Generate the backend SBOM and scan it for known vulnerabilities (fails on high/critical)"
 depends = ["sbom:backend"]
 run = "grype sbom:backend/sbom.cyclonedx.json --fail-on high"
+
+[tasks."sonar:issues"]
+description = "List open SonarCloud Bug issues for both projects, grouped by rule (pass BUG/CODE_SMELL/VULNERABILITY as an arg to change the type)"
+run = "node scripts/sonar-issues.mjs"
