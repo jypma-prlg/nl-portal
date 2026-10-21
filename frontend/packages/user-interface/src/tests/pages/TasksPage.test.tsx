@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 import { MockTasksPage } from "../mock/pages/TasksPage.mock";
-import { describe, it, expect } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import { testPaths as paths } from "../../providers/TestProvider";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import TestProvider, { testPaths as paths } from "../../providers/TestProvider";
+import { QUERY_GET_TAKEN_V2 } from "@nl-portal/nl-portal-api";
+import TasksPage from "../../pages/TasksPage";
+import { getTaken } from "../mock/data/taken.mock";
 
 describe("TasksPage", () => {
   const takenAlgemeneInformatie = () => screen.getByText("OPEN TAAK 1");
@@ -44,5 +47,59 @@ describe("TasksPage", () => {
       "href",
       paths.case("66fecaa3-24b4-4739-a7c8-eb58f39e9aae"),
     );
+  });
+
+  describe("when a search refetch fails", () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("should report the error through console.error instead of an unhandled rejection (kotlin:S9383/typescript:S9383 pattern)", async () => {
+      // given: handleFormSubmit calls refetch(...) inside a non-async try/catch - before this
+      // fix, the catch block can never see a refetch rejection (the promise it returns is never
+      // awaited), so a failed search silently became an unhandled promise rejection instead of
+      // the intended console.error.
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      const searchErrorMock = {
+        request: {
+          query: QUERY_GET_TAKEN_V2,
+          variables: { title: "faalzoekterm" },
+        },
+        error: new Error("Network error"),
+      };
+
+      render(
+        <TestProvider
+          mocks={[getTaken({}), searchErrorMock]}
+          routes={[
+            {
+              path: paths.tasks,
+              children: [{ index: true, element: <TasksPage /> }],
+            },
+          ]}
+          initialIndex={0}
+          initialEntries={[paths.tasks]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText("OPEN TAAK 1")).toBeVisible();
+      });
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "faalzoekterm" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "Zoeken" }));
+
+      // then
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          "Error fetching tasks:",
+          expect.anything(),
+        );
+      });
+    });
   });
 });

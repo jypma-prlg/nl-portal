@@ -25,17 +25,17 @@ const TasksPage = () => {
   const { data, loading, error, refetch } = useQuery(GetTakenV2Document);
   const tasks = data?.getTakenV2.content as TaakV2[] | undefined;
 
-  const handleFormSubmit = (searchValue: string) => {
+  const handleFormSubmit = async (searchValue: string) => {
     try {
-      refetch({ title: searchValue });
+      await refetch({ title: searchValue });
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
-  const onPageChange = (index: number) => {
+  const onPageChange = async (index: number) => {
     try {
-      refetch({ pageNumber: index + 1 });
+      await refetch({ pageNumber: index + 1 });
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }

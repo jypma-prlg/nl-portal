@@ -29,17 +29,17 @@ const MessagesPage = () => {
   });
   const messages = data?.getBerichten.content as Bericht[] | undefined;
 
-  const handleFormSubmit = (searchValue: string) => {
+  const handleFormSubmit = async (searchValue: string) => {
     try {
-      refetch({ onderwerp: searchValue });
+      await refetch({ onderwerp: searchValue });
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
   };
 
-  const onPageChange = (index: number) => {
+  const onPageChange = async (index: number) => {
     try {
-      refetch({ pageNumber: index + 1 });
+      await refetch({ pageNumber: index + 1 });
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
