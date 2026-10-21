@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { GetTakenV2Document, TaakV2 } from "@nl-portal/nl-portal-api";
 import { useQuery } from "@apollo/client/react";
@@ -24,18 +25,23 @@ import SearchForm from "../components/SearchForm";
 const TasksPage = () => {
   const { data, loading, error, refetch } = useQuery(GetTakenV2Document);
   const tasks = data?.getTakenV2.content as TaakV2[] | undefined;
+  // GetTakenV2's response has no "current page number" field (unlike e.g. getOpenProducten), so
+  // the page index is tracked locally instead of derived from the query result.
+  const [pageIndex, setPageIndex] = useState(0);
 
-  const handleFormSubmit = (searchValue: string) => {
+  const handleFormSubmit = async (searchValue: string) => {
     try {
-      refetch({ title: searchValue });
+      await refetch({ title: searchValue });
+      setPageIndex(0);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
-  const onPageChange = (index: number) => {
+  const onPageChange = async (index: number) => {
     try {
-      refetch({ pageNumber: index + 1 });
+      await refetch({ pageNumber: index + 1 });
+      setPageIndex(index);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -57,6 +63,8 @@ const TasksPage = () => {
         titleTranslationId={null}
         tasks={tasks}
         onChange={onPageChange}
+        index={pageIndex}
+        indexLimit={(data?.getTakenV2.totalPages || 1) - 1}
         openInContext={true}
       />
     </PageGrid>

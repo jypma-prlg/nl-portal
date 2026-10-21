@@ -30,9 +30,9 @@ const ProductsPage = () => {
   const producten = data?.getOpenProducten?.content as
     OpenProductProduct[] | undefined;
 
-  const onPageChange = (index: number) => {
+  const onPageChange = async (index: number) => {
     try {
-      refetch({ pageNumber: index + 1 });
+      await refetch({ pageNumber: index + 1 });
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }

@@ -14,10 +14,128 @@
  * limitations under the License.
  */
 import { describe, it, expect } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import TestProvider, { testPaths as paths } from "../../providers/TestProvider";
+import { GetBerichtenDocument } from "@nl-portal/nl-portal-api";
 import MessagesPage from "../../pages/MessagesPage";
+
+const message = (onderwerp: string) => ({
+  id: `${onderwerp}-id`,
+  einddatumHandelingstermijn: null,
+  publicatiedatum: "2024-06-15T21:59:59.999Z",
+  geopend: true,
+  onderwerp,
+  __typename: "Bericht",
+});
+
+const firstPage = {
+  request: {
+    query: GetBerichtenDocument,
+    variables: { pageSize: 10 },
+  },
+  result: {
+    data: {
+      getBerichten: {
+        content: [message("BERICHT OP PAGINA 1")],
+        totalElements: 11,
+        totalPages: 2,
+        __typename: "BerichtPage",
+      },
+    },
+  },
+};
+
+const secondPage = {
+  request: {
+    query: GetBerichtenDocument,
+    variables: { pageSize: 10, pageNumber: 2 },
+  },
+  result: {
+    data: {
+      getBerichten: {
+        content: [message("BERICHT OP PAGINA 2")],
+        totalElements: 11,
+        totalPages: 2,
+        __typename: "BerichtPage",
+      },
+    },
+  },
+};
+
+const searchResult = {
+  request: {
+    query: GetBerichtenDocument,
+    variables: { pageSize: 10, onderwerp: "zoekterm" },
+  },
+  result: {
+    data: {
+      getBerichten: {
+        content: [message("GEVONDEN BERICHT")],
+        totalElements: 1,
+        totalPages: 1,
+        __typename: "BerichtPage",
+      },
+    },
+  },
+};
 
 describe("MessagesPage", () => {
   it("is truthy", () => {
     expect(MessagesPage).toBeTruthy();
+  });
+
+  it("fetches the next page and renders its content when a page button is clicked", async () => {
+    render(
+      <TestProvider
+        mocks={[firstPage, secondPage]}
+        routes={[
+          {
+            path: paths.messages,
+            children: [{ index: true, element: <MessagesPage /> }],
+          },
+        ]}
+        initialIndex={0}
+        initialEntries={[paths.messages]}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("BERICHT OP PAGINA 1")).toBeVisible();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Page 2" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("BERICHT OP PAGINA 2")).toBeVisible();
+    });
+  });
+
+  it("fetches search results when the search form is submitted", async () => {
+    render(
+      <TestProvider
+        mocks={[firstPage, searchResult]}
+        routes={[
+          {
+            path: paths.messages,
+            children: [{ index: true, element: <MessagesPage /> }],
+          },
+        ]}
+        initialIndex={0}
+        initialEntries={[paths.messages]}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("BERICHT OP PAGINA 1")).toBeVisible();
+    });
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "zoekterm" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Zoeken" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("GEVONDEN BERICHT")).toBeVisible();
+    });
   });
 });
