@@ -1,4 +1,0 @@
-# Code owners are automatically requested for review on pull requests that change matching files.
-# Format: <file pattern> <owner(s)>. Later matches take precedence.
-
-* @nl-portal/maintainers
