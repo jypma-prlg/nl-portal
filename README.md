@@ -2,6 +2,22 @@
 
 ![License EUPL 1.2](https://img.shields.io/badge/License-EUPL%201.2-blue)
 
+**Frontend**
+
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-frontend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-frontend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-frontend)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-frontend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-frontend)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-frontend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-frontend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-frontend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-frontend)
+
+**Backend**
+
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-backend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-backend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-backend)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-backend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-backend)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-backend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-backend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=pinkroccade_nl-portal-backend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=pinkroccade_nl-portal-backend)
+
 NL Portal is an open-source application for communicating with citizens and third parties, built for
 use with the Dutch 'VNG API's voor Zaakgericht Werken' and based on Common Ground principles. Under
 the motto 'create once, use 340 times', any (government) organization can use and improve it freely.
