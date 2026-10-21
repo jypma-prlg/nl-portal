@@ -79,3 +79,7 @@ Thumbs.db
 !.env.template
 !backend/case/.env
 !backend/form/.env
+
+# mise's personal-override config (e.g. a local SONAR_TOKEN) - never commit the real one.
+mise.local.toml
+!mise.local.toml.example

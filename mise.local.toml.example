@@ -1,0 +1,18 @@
+# Copy this file to `mise.local.toml` (gitignored, never commit the real one) and fill in your
+# own personal SonarCloud token. mise merges it with the committed mise.toml automatically.
+#
+# Optional for `mise run sonar:issues`: both SonarCloud projects are public, so listing issues
+# needs no token. Set this up anyway if you'll ever need write access (e.g. marking an issue
+# resolved) or if the project's visibility changes to private later.
+#
+# How to get a token:
+#   1. https://sonarcloud.io/account/security (log in with the account that has access to the
+#      "pinkroccade" organization).
+#   2. Under "Generate Tokens", give it a name (e.g. "nl-portal-local") and generate a User Token.
+#   3. Copy it immediately - SonarCloud only shows it once.
+#
+# After creating mise.local.toml, run `mise trust` once in this repo (mise refuses to read an
+# untrusted local config file).
+
+[env]
+SONAR_TOKEN = "paste-your-personal-sonarcloud-token-here"
