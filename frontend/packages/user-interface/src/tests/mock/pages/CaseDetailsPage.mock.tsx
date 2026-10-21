@@ -16,7 +16,10 @@
 import CaseDetailsPage from "../../../pages/CaseDetailsPage";
 import TestProvider, { testPaths } from "../../../providers/TestProvider";
 import { getZaak } from "../data/zaak.mock";
-import { getObjectContactMomenten } from "../data/contactMomenten.mock";
+import {
+  getObjectContactMomenten,
+  getFailingObjectContactMomenten,
+} from "../data/contactMomenten.mock";
 import { getTakenById } from "../data/taken.mock";
 import { getPersoon } from "../data/persoon.mock";
 import { cloneDeep } from "lodash-es";
@@ -84,6 +87,27 @@ export const MockCaseDetailsPageWithoutDocuments = () => (
       getObjectContactMomenten,
       getTakenById,
       getPersoon,
+    ]}
+    routes={routes}
+    initialIndex={2}
+    initialEntries={[
+      testPaths.overview,
+      testPaths.cases,
+      testPaths.case(caseId),
+    ]}
+  ></TestProvider>
+);
+
+export const MockCaseDetailsPageWithFailingContactMoments = () => (
+  <TestProvider
+    mocks={[
+      getProduct,
+      getUnopenedBerichten,
+      getZaak,
+      getFailingObjectContactMomenten,
+      getTakenById,
+      getPersoon,
+      getUserDigitaleAdressen,
     ]}
     routes={routes}
     initialIndex={2}
