@@ -208,6 +208,8 @@ const CaseDetailsPage = () => {
         identificatorType: OnderwerpObjectIndentificatorType.Zaak,
         identificatorId: caseData.getZaak.uuid,
       },
+    }).catch((error) => {
+      console.error("Error fetching contact moments:", error);
     });
   }, [caseData, features]);
 

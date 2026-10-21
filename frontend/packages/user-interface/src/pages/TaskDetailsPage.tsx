@@ -118,7 +118,9 @@ const TaskDetailsPage = () => {
     if (!task?.getTaakByIdV2?.portaalformulier) return;
     if (task?.getTaakByIdV2?.status !== TaakStatus.Open) return;
 
-    getFormByTaskId({ variables: { taskId: id } });
+    getFormByTaskId({ variables: { taskId: id } }).catch((error) => {
+      console.error("Error fetching form definition:", error);
+    });
   }, [task, getFormByTaskId, id]);
 
   /* eslint-disable @typescript-eslint/no-explicit-any */

@@ -41,7 +41,8 @@ export const ProtectedApp = ({
   useEffect(() => {
     // Redirect to oidc provider when not loading and user isn't authenticated or if there is no oidc token in the state (after hard refresh for example)
     if (!auth.isLoading && (!auth.isAuthenticated || !oidcToken)) {
-      auth.signinRedirect();
+      // fire-and-forget: this triggers a full-page redirect to the OIDC provider.
+      void auth.signinRedirect();
     }
   }, [oidcToken, auth.isLoading, auth.isAuthenticated]);
 
@@ -82,7 +83,8 @@ export const ProtectedApp = ({
                   }),
                   variant: "secondary-action",
                   onClick: () => {
-                    auth.signoutRedirect();
+                    // fire-and-forget: this triggers a full-page redirect to the OIDC provider.
+                    void auth.signoutRedirect();
                   },
                 },
                 {

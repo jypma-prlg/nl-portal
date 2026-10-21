@@ -38,10 +38,14 @@ const ProductDecisionsList = ({
         naam: key,
         productId: productId,
       },
-    }).then((result) => {
-      const data = result?.data;
-      window.location.href = `${data?.getOpenProductActiePrefill?.formulierUrl}?initial_data_reference=${data?.getOpenProductActiePrefill?.objectId}`;
-    });
+    })
+      .then((result) => {
+        const data = result?.data;
+        window.location.href = `${data?.getOpenProductActiePrefill?.formulierUrl}?initial_data_reference=${data?.getOpenProductActiePrefill?.objectId}`;
+      })
+      .catch((error) => {
+        console.error("Error fetching decision prefill:", error);
+      });
   };
 
   return (

@@ -78,13 +78,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (isCompany) {
-      loadBedrijf({ variables: {} });
+      loadBedrijf({ variables: {} }).catch((error) => {
+        console.error("Error fetching bedrijf:", error);
+      });
     } else {
-      loadPersoon({ variables: {} });
+      loadPersoon({ variables: {} }).catch((error) => {
+        console.error("Error fetching persoon:", error);
+      });
     }
 
     if (isProxy) {
-      loadGemachtigde({ variables: {} });
+      loadGemachtigde({ variables: {} }).catch((error) => {
+        console.error("Error fetching gemachtigde:", error);
+      });
     }
   }, [isCompany, isProxy, loadBedrijf, loadPersoon, loadGemachtigde]);
 
