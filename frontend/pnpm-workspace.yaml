@@ -33,3 +33,6 @@ overrides:
   rolldown: 1.2.8
   uuid@9: 11.1.1
   lodash-es: 4.18.1
+  # Critical CVE (GHSA-pqg4-j6r4-53mv), pulled in transitively via
+  # @graphql-codegen/cli (devDependency only). Fixed in 1.11.0, pinning to latest.
+  shell-quote: 1.12.0
