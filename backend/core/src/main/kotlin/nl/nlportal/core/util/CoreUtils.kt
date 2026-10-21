@@ -41,7 +41,7 @@ object CoreUtils {
             }
 
             else -> {
-                DigestUtils.sha1Hex(input)
+                DigestUtils.sha512Hex(input)
             }
         }
 
