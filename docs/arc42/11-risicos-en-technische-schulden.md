@@ -8,7 +8,8 @@ waarom deze review is uitgevoerd):
 
 | Risico/schuld | Impact op nieuwe functionaliteit | Kandidaat in review |
 |---|---|---|
-| Geen gedeelde HTTP-adapter voor ZGW-clients (auth-token-injectie en statuscode-mapping 10+ keer gedupliceerd) | Een nieuwe ZGW-integratie kopieert bestaande bugs mee; geen unit-testbaarheid zonder live API | #1 |
+| Geen gedeelde HTTP-adapter voor ZGW-clients (auth-token-injectie en statuscode-mapping 10+ keer gedupliceerd; bij nader onderzoek bleken het zelfs 4 verschillende, deels ontbrekende foutafhandelingen) | Een nieuwe ZGW-integratie kopieert bestaande bugs mee; geen unit-testbaarheid zonder live API | #1 — **in uitvoering, zie [ADR 0002](../adr/0002-zgw-client-consolidation.md)** |
+| 4 byte-identieke, los van elkaar gedefinieerde `ResultPage<T>`-klassen (`besluiten`, `objectenapi`, `catalogi-api`, `documenten-api`) | Een paginatiebug wordt los per module gefixt | gevonden tijdens het grillen van #1 — **in uitvoering, zie [ADR 0002](../adr/0002-zgw-client-consolidation.md)** |
 | 20 bijna-identieke `*Page`-wrapperklassen (backend paginatie) | Een nieuwe resource-lijst voegt kopie #21 toe tenzij bewust vermeden | #2 |
 | Geen gedeeld GraphQL-fragment voor de zaak-samenvatting (7x gedupliceerd) | Een veldwijziging aan "wat een zaak toont" moet 7x worden doorgevoerd | #3 |
 | Geen data-fetching-hook-laag tussen pagina's en Apollo | Een nieuwe pagina herhaalt loading/error-boilerplate in plaats van een hook te hergebruiken | #4 |
@@ -22,7 +23,7 @@ waarom deze review is uitgevoerd):
 - **Twee onderhouden major-releaselijnen tegelijk** (`CONTRIBUTING.md`): een architectuurwijziging
   die moeilijk cherry-pickbaar is naar de vorige major, vertraagt security-/bugfix-propagatie. Geen
   concreet incident gevonden, maar het is een structureel risico dat meeweegt bij elke grote
-  herstructurering (zie hoofdstuk 9, kandidaat-ADR 1).
+  herstructurering (zie hoofdstuk 9 en [ADR 0002](../adr/0002-zgw-client-consolidation.md)).
 - **SBOM-generatie is backend-only en release-only** (zie hoofdstuk 8.6): een kwetsbaarheid die
   alleen in een snapshot-/dev-afhankelijkheid zit, of alleen in de frontend, is niet zichtbaar in het
   huidige SBOM-proces. Wordt uitgewerkt in deliverable 5.

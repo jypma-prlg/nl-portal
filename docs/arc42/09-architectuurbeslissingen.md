@@ -5,18 +5,22 @@ Individuele beslissingen staan als Architecture Decision Records (ADR's) in
 hele hoofdstuk te herschrijven, en kan naar één beslissing specifiek gelinkt worden.
 
 De eerste ADR, [`0001-record-architecture-decisions.md`](../adr/0001-record-architecture-decisions.md),
-legt vast *dat* en *hoe* beslissingen worden vastgelegd. Op het moment van schrijven zijn er nog geen
-inhoudelijke ADR's — de bestaande architecturale keuzes (hoofdstuk 4) zijn impliciet in de code
-aanwezig, maar nooit als expliciete, afgewogen beslissing gedocumenteerd.
+legt vast *dat* en *hoe* beslissingen worden vastgelegd.
 
-## Kandidaten voor een eerste inhoudelijke ADR
+## Vastgelegde beslissingen
 
-Deze volgen direct uit de architectuurreview (deliverable 1) en uit de grilling-stap die daarop kan
-volgen (zie de `improve-codebase-architecture`-skill):
+- [`0002-zgw-client-consolidation.md`](../adr/0002-zgw-client-consolidation.md) — **in uitvoering**.
+  Vervangt "kandidaat-ADR 1" hieronder: in plaats van één Gradle-module per ZGW-bron met een eigen
+  HTTP-client, komt er één gedeelde, diepe `AuthenticatedZgwClient` (module `backend/zgw/zgw-client`)
+  met een uniform, RFC 9457-gebaseerd foutafhandelingsbeleid. Zie de bijbehorende
+  [spec](../adr/0002-zgw-client-consolidation-spec.md) voor de concrete, nog te zetten
+  implementatiestappen (nog niet uitgevoerd op het moment van schrijven).
 
-1. **"Eén Gradle-module per ZGW-bron, zonder gedeelde HTTP-adapter"** — vastleggen als bewuste
-   keuze, óf vervangen door de in de review voorgestelde gedeelde adapter (kandidaat 1 in het
-   review-rapport). Beide uitkomsten verdienen een ADR: vasthouden aan de huidige vorm is dan een
-   expliciete, beargumenteerde keuze in plaats van "het is nu eenmaal zo gegroeid".
-2. **Keuze van test-dubbel-strategie voor ZGW-clients** (in-memory fake vs. tegen een lokale
-   docker-compose-instantie testen) — relevant zodra kandidaat 1 wordt opgepakt.
+## Overige kandidaten
+
+Nog niet als ADR vastgelegd:
+
+1. **Keuze van test-dubbel-strategie voor de resterende ZGW-clients** (`openklant`, `taak`,
+   `berichten`, `verificatie`, `besluiten`, `openproduct` — buiten de scope van ADR 0002):
+   `MockWebServer` is het precedent dat ADR 0002 volgt voor de vier modules die het wél meeneemt;
+   relevant zodra die overige modules aan de beurt zijn.
