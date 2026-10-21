@@ -54,6 +54,8 @@ jobs:
 
     image-be:
         needs: [prepare, stage-be]
+        # Pushes to ghcr.io/nl-portal/* and the fork's GITHUB_TOKEN can't publish there.
+        if: github.repository == 'nl-portal/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: backend
@@ -65,6 +67,8 @@ jobs:
 
     image-fe:
         needs: [prepare, stage-fe]
+        # Pushes to ghcr.io/nl-portal/* and the fork's GITHUB_TOKEN can't publish there.
+        if: github.repository == 'nl-portal/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: frontend
@@ -76,6 +80,8 @@ jobs:
 
     publish-be-s3:
         needs: [prepare, stage-be]
+        # Needs AWS_* secrets that only exist on the upstream repo, not a fork.
+        if: github.repository == 'nl-portal/nl-portal'
         uses: ./.github/workflows/_publish-be-s3.yml
         with:
             version: ${{ needs.prepare.outputs.version }}
@@ -83,6 +89,8 @@ jobs:
 
     publish-fe-s3:
         needs: [prepare, stage-fe]
+        # Needs AWS_* secrets that only exist on the upstream repo, not a fork.
+        if: github.repository == 'nl-portal/nl-portal'
         uses: ./.github/workflows/_publish-fe-s3.yml
         with:
             version: ${{ needs.prepare.outputs.version }}
