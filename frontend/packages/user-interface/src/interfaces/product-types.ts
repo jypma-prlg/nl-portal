@@ -17,7 +17,11 @@ import { OpenProductProduct } from "@nl-portal/nl-portal-api";
 
 export type DataObjectPath = `dataobject.${string}`;
 
-export type DataMappingFn = (product: OpenProductProduct) => React.ReactNode;
+// Excludes the thenable member React.ReactNode gained for async components,
+// since DataMappingFn is always synchronous (Sonar typescript:S6544).
+export type SyncReactNode = Exclude<React.ReactNode, Promise<unknown>>;
+
+export type DataMappingFn = (product: OpenProductProduct) => SyncReactNode;
 
 export type DataMappingItem =
   DataMappingFn | keyof OpenProductProduct | DataObjectPath;

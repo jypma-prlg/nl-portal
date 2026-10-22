@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import { OpenProductProduct } from "@nl-portal/nl-portal-api";
-import { ReactNode } from "react";
 import {
   DataMappingFn,
   DataMappingItem,
   DataObjectPath,
+  SyncReactNode,
 } from "../interfaces/product-types";
 
 const isMappingFn = (m: DataMappingItem): m is DataMappingFn =>
@@ -30,7 +30,7 @@ const isDataObjectPath = (m: DataMappingItem): m is DataObjectPath =>
 export const getProductValue = (
   product: OpenProductProduct,
   map: DataMappingItem,
-): ReactNode => {
+): SyncReactNode => {
   if (isMappingFn(map)) {
     return map(product);
   }
