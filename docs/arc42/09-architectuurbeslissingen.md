@@ -16,6 +16,11 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   [spec](../adr/0002-zgw-client-consolidation-spec.md) voor de concrete, nog te zetten
   implementatiestappen (nog niet uitgevoerd op het moment van schrijven).
 
+- [`0004-changelog-release-proces.md`](../adr/0004-changelog-release-proces.md) — **voorgesteld**.
+  `CHANGELOG.md` (Keep a Changelog + SemVer) wordt automatisch afgeleid uit Conventional Commits via
+  `mise run release:cut-rc`, bij het cutten van een `rc/*`-branch. Zie de bijbehorende
+  [spec](../adr/0004-changelog-release-proces-spec.md).
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:

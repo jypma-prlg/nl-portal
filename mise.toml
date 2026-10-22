@@ -67,6 +67,10 @@ run = "grype sbom:backend/sbom.cyclonedx.json --fail-on high"
 description = "List open SonarCloud Bug issues for both projects, grouped by rule (pass BUG/CODE_SMELL/VULNERABILITY as an arg to change the type)"
 run = "node scripts/sonar-issues.mjs"
 
+[tasks."release:cut-rc"]
+description = "Compute the next SemVer version from Conventional Commits since the last tag, update version.txt + CHANGELOG.md, and commit both on a new rc/<version> branch (does not push; see ADR 0004)"
+run = "node scripts/release-cut-rc.mjs"
+
 [tasks."security:verify-dependencies"]
 description = "Regenerate backend/gradle/verification-metadata.xml (sha256 checksums for every resolved dependency) - run after any dependency bump, including the weekly Renovate PR, and commit the result"
 dir = "backend"
