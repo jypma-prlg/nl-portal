@@ -74,7 +74,37 @@ controleren dat een nieuwe afhankelijkheid geen EUPL-incompatibele licentie meeb
 (`_stage-be.yml`), maar is niet verplicht bij elke PR — overweeg het expliciet te checken bij een
 nieuwe (niet alleen geüpdatete) afhankelijkheid.
 
-## 4. Wat hier bewust niet in staat
+## 5. Dependency-integriteit (supply-chain): Gradle dependency-verificatie
+
+`backend/gradle/verification-metadata.xml` bevat een sha256-checksum per opgehaald artefact
+(jar + pom) van elke backend-afhankelijkheid. Gradle detecteert dit bestand automatisch en
+weigert vanaf nu een build als een afhankelijkheid een andere checksum heeft dan vastgelegd —
+dit beschermt tegen een gecompromitteerde/gemanipuleerde download (bijv. een MITM op een
+Maven-repository), los van of de versie zelf kwetsbaar is (dat is `security.md`'s terrein).
+Dit lost SonarCloud's `kotlin:S6474`/`text:S8569`-bevindingen op (ontbrekend verificatie-/
+lockbestand).
+
+**Belangrijk operationeel gevolg**: een versie-bump introduceert een nieuw artefact waarvan de
+checksum nog niet in dit bestand staat — de build faalt dan met een duidelijke
+`Dependency verification failed`-foutmelding totdat het bestand is bijgewerkt. Dit raakt met name
+de wekelijkse Renovate-PR (sectie 1). Na **elke** backend-dependency-bump (Renovate-PR vóór merge,
+of een handmatige major-update uit sectie 2):
+
+```bash
+mise run security:verify-dependencies
+```
+
+Commit de bijgewerkte `backend/gradle/verification-metadata.xml` in dezelfde PR. Dit is bewust een
+**handmatige** stap — Renovate's `postUpgradeTasks` zou dit kunnen automatiseren, maar dat vereist
+"Allow Scripts" op het Renovate-app-niveau (buiten deze repo's eigen configuratie om) en is hier
+niet geverifieerd; een vergeten regeneratie faalt zichtbaar in CI (`_validate-build.yml`), niet
+stilzwijgend.
+
+Alleen de backend heeft dit vandaag — het frontend-equivalent (pnpm's eigen
+`pnpm-lock.yaml`-integriteitshashes) bestaat al impliciet via `pnpm-lock.yaml` zelf, dat elke
+install al verifieert.
+
+## 6. Wat hier bewust niet in staat
 
 Kwetsbaarheden in een specifieke dependency-versie horen bij het beveiligingsproces
 ([`docs/workflows/security.md`](security.md)), niet hier — dit document gaat over *bijblijven*,

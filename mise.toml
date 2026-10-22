@@ -66,3 +66,9 @@ run = "grype sbom:backend/sbom.cyclonedx.json --fail-on high"
 [tasks."sonar:issues"]
 description = "List open SonarCloud Bug issues for both projects, grouped by rule (pass BUG/CODE_SMELL/VULNERABILITY as an arg to change the type)"
 run = "node scripts/sonar-issues.mjs"
+
+[tasks."security:verify-dependencies"]
+description = "Regenerate backend/gradle/verification-metadata.xml (sha256 checksums for every resolved dependency) - run after any dependency bump, including the weekly Renovate PR, and commit the result"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew --write-verification-metadata sha256 build -x integrationTest --continue"

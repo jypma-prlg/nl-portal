@@ -34,6 +34,7 @@ betekent*. Voor NL Portal:
 | Secret-scanning | Beide | **✅ nieuw**: `secret-scan.yml` (gitleaks, elke push/PR) |
 | SBOM | Beide | ✅ backend (release-only, zie `docs/workflows/sbom.md`), **✅ nieuw**: frontend on-demand |
 | Dependency-updates | Beide | ✅ Renovate, zie `docs/workflows/dependency-updates.md` |
+| Dependency-integriteit (supply-chain) | **Alleen backend** | **✅ nieuw**: Gradle dependency-verificatie (`backend/gradle/verification-metadata.xml`, sha256 per artefact) - zie `docs/workflows/dependency-updates.md`, sectie 5 |
 
 **Concrete bevinding tijdens het schrijven van dit document** (`mise run security:frontend-vuln-scan`,
 2026-10-20): de frontend-dependency-tree bevatte op dat moment een **Critical**-kwetsbaarheid
