@@ -105,8 +105,8 @@ test("parseGitleaksFindings normalizes every finding and never includes the raw 
       Description: "Generic API Key",
       File: "backend/app/src/main/resources/application.yml",
       StartLine: 12,
-      Secret: "sk_live_abc123SUPERSECRET",
-      Match: "api_key: sk_live_abc123SUPERSECRET",
+      Secret: "the-raw-secret-value-must-never-leak-into-an-issue",
+      Match: "api_key: the-raw-secret-value-must-never-leak-into-an-issue",
       Fingerprint: "abcdef1234567890:application.yml:generic-api-key:12",
     },
   ];
@@ -122,7 +122,10 @@ test("parseGitleaksFindings normalizes every finding and never includes the raw 
     },
   ]);
   const serialized = JSON.stringify(findings);
-  assert.ok(!serialized.includes("SUPERSECRET"), "raw secret material must never appear in a finding");
+  assert.ok(
+    !serialized.includes("must-never-leak-into-an-issue"),
+    "raw secret material must never appear in a finding",
+  );
 });
 
 test("buildIssueTitle embeds the finding id so dedup can find it again", () => {
