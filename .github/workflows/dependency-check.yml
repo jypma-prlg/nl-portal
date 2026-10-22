@@ -7,10 +7,14 @@ on:
 
 permissions:
     contents: read
+    issues: write
 
 concurrency:
     group: dependency-check-${{ github.ref }}
     cancel-in-progress: true
+
+env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
     dependency-check:
@@ -52,3 +56,12 @@ jobs:
                     name: dependency-check-result
                     path: backend/dependency-check
                     retention-days: 7
+            -   name: Set up Node.js
+                if: always()
+                uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+                with:
+                    node-version: "24"
+            -   name: Escaleer Critical/High-bevindingen
+                if: always()
+                working-directory: ${{ github.workspace }}
+                run: node scripts/escalate-findings.mjs --source=dependency-check --report=backend/dependency-check/dependency-check-report.json
