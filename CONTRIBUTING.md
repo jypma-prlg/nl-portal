@@ -17,6 +17,12 @@ independently.
    a small fix, let a maintainer weigh in before you start building. A pull request without a
    linked issue may be closed without review. Typos, documentation fixes and dependency bumps are
    exempt.
+
+   For a bigger feature, follow the project's spec-driven workflow:
+   [`docs/workflows/spec-driven-development.md`](docs/workflows/spec-driven-development.md). Write
+   the issue with [`docs/workflows/feature-spec-template.md`](docs/workflows/feature-spec-template.md)
+   and get the spec reviewed *before* you start building - that is the cheapest point to redirect a
+   wrong approach, not during PR review.
 2. **Fork, or branch.** External contributors work on a branch in their own fork; contributors
    with write access branch directly in this repository. See [Branch model](#branch-model) for
    which line your change starts from and how to name the branch.
@@ -35,7 +41,13 @@ NL Portal follows a Spring-style branch model:
 - **`release/<major>.x`** - a long-lived maintenance line per major version (for example
   `release/3.x`, `release/4.x`). Minor and patch releases are **tags** on these branches. At most
   two lines are kept alive at once: the current major and the previous one.
-- **`rc/*`** - ephemeral release-candidate branches cut from `main` when preparing a release.
+- **`rc/*`** - ephemeral release-candidate branches cut from `main` when preparing a release. Cut
+  with `mise run release:cut-rc`, which computes the next SemVer version from the Conventional
+  Commits merged since the previous release tag, updates `version.txt` and `CHANGELOG.md`, and
+  commits both locally - review the result, then push and dispatch
+  `build-and-publish-release-candidate.yml` yourself (see
+  [ADR 0004](docs/adr/0004-changelog-release-proces.md)). `CHANGELOG.md` is generated this way at
+  release time; it isn't hand-edited between releases.
 
 Contributor branches are cut from `main`:
 

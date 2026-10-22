@@ -19,6 +19,7 @@ jobs:
         outputs:
             backend: ${{ steps.filter.outputs.backend }}
             frontend: ${{ steps.filter.outputs.frontend }}
+            scripts: ${{ steps.filter.outputs.scripts }}
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
             -   uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
@@ -29,6 +30,8 @@ jobs:
                             - 'backend/**'
                         frontend:
                             - 'frontend/**'
+                        scripts:
+                            - 'scripts/**'
 
     validate:
         needs: changes
@@ -37,16 +40,34 @@ jobs:
             runBackend: ${{ needs.changes.outputs.backend == 'true' }}
             runFrontend: ${{ needs.changes.outputs.frontend == 'true' }}
 
+    test-scripts:
+        needs: changes
+        if: ${{ needs.changes.outputs.scripts == 'true' }}
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            -   name: Set up Node.js
+                uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+                with:
+                    node-version: "24"
+            -   name: Run scripts tests
+                run: node --test "scripts/**/*.test.mjs"
+
     ci-required:
-        needs: [changes, validate]
+        needs: [changes, validate, test-scripts]
         if: always()
         runs-on: ubuntu-latest
         steps:
             -   name: Aggregate result
                 env:
                     VALIDATE_RESULT: ${{ needs.validate.result }}
+                    SCRIPTS_RESULT: ${{ needs.test-scripts.result }}
                 run: |
                     echo "::notice::validate result = ${VALIDATE_RESULT}"
+                    echo "::notice::test-scripts result = ${SCRIPTS_RESULT}"
                     if [ "${VALIDATE_RESULT}" = "failure" ] || [ "${VALIDATE_RESULT}" = "cancelled" ]; then
+                      exit 1
+                    fi
+                    if [ "${SCRIPTS_RESULT}" = "failure" ] || [ "${SCRIPTS_RESULT}" = "cancelled" ]; then
                       exit 1
                     fi
