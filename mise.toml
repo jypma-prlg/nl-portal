@@ -76,3 +76,15 @@ description = "Regenerate backend/gradle/verification-metadata.xml (sha256 check
 dir = "backend"
 shell = "bash -c"
 run = "./gradlew --write-verification-metadata sha256 build -x integrationTest --continue"
+
+[tasks."security:license-report"]
+description = "Generate the backend dependency-license report (does not fail the build; see docs/workflows/dependency-updates.md §3)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew generateLicenseReport"
+
+[tasks."security:check-license"]
+description = "Check backend dependency licenses against the allowlist (backend/gradle/license-report/allowed-licenses.json) - known broken on main, see docs/workflows/periodic-checks.md"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew checkLicense"

@@ -1,0 +1,37 @@
+name: Periodic maintenance check
+
+on:
+    schedule:
+        -   cron: "0 6 1 * *"
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    issues: write
+
+concurrency:
+    group: periodic-maintenance-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+    periodic-maintenance:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            -   name: Set up mise (installs java + pnpm from mise.toml's [tools])
+                uses: jdx/mise-action@fc42bcc7ddbf51124c30f95a877a0c5168a3bfde # v5.2.1
+            -   name: Set up Gradle
+                uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+            -   name: Set up Node.js
+                uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+                with:
+                    node-version: "24"
+            -   name: Install frontend dependencies
+                working-directory: frontend
+                run: pnpm install
+            -   name: Run the monthly maintenance checklist
+                run: node scripts/periodic-maintenance.mjs

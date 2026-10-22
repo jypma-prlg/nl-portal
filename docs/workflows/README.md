@@ -8,6 +8,7 @@ zit) en `docs/likec4` (het diagrammodel).
 | [Dependency-updates](dependency-updates.md) | Renovate (al aanwezig) + de handmatige major-update-check |
 | [SBOM](sbom.md) | Lokaal/on-demand SBOM genereren voor backend én frontend |
 | [Security](security.md) | Learn/Break/Defend/Repeat, geïnspireerd op nullpointer.studio |
+| [Periodieke checks](periodic-checks.md) | Maandelijkse cadans voor oordeel-vereisende checks + directe escalatie bij Critical/High |
 | [Threat-model werkblad](threat-model-template.md) | STRIDE per nieuwe externe integratie |
 | [Spec-driven development](spec-driven-development.md) | Hoe je nieuwe functionaliteit toevoegt, van issue tot PR |
 | [Feature-spec sjabloon](feature-spec-template.md) | Kopieer dit in een issue van deze repository |

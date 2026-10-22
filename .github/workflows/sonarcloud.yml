@@ -10,6 +10,7 @@ on:
 permissions:
     contents: read
     pull-requests: read
+    issues: write
 
 concurrency:
     group: sonarcloud-${{ github.ref }}
@@ -17,6 +18,7 @@ concurrency:
 
 env:
     SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
     backend:
@@ -65,3 +67,24 @@ jobs:
                 uses: SonarSource/sonarqube-scan-action@c7ee0f9df90b7aa20e8dcf9695dcfe2e7da5b4f2 # v7
                 with:
                     projectBaseDir: frontend
+
+    escalate:
+        name: Escalate Blocker/Critical vulnerabilities
+        needs: [backend, frontend]
+        # Alleen op main - een PR-analyse hoort nog niet bij "productie", en escaleren voor
+        # code die nog niet gemerged is levert ruis op. SonarCloud's eigen analyse-verwerking
+        # loopt soms een paar minuten achter op deze job; een gemiste bevinding komt dan op de
+        # eerstvolgende push naar main alsnog naar boven (zie docs/workflows/periodic-checks.md).
+        if: always() && github.event_name == 'push'
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            -   name: Set up Node.js
+                uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+                with:
+                    node-version: "24"
+            -   name: Escaleer backend
+                run: node scripts/escalate-findings.mjs --source=sonarcloud --component=pinkroccade_nl-portal-backend
+            -   name: Escaleer frontend
+                run: node scripts/escalate-findings.mjs --source=sonarcloud --component=pinkroccade_nl-portal-frontend
