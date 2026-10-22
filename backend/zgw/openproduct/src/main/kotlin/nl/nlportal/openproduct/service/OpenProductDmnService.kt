@@ -38,28 +38,25 @@ class OpenProductDmnService(
     /**
      * Get decision of a product
      * @param: product
-     * @return: List of decisions
+     * @return: List of decisions. One actie whose decision fails to load is logged and skipped
+     *   (deliberate resilience - see ADR 0003) rather than failing the whole product decision.
      */
     suspend fun getProductDecision(
         product: OpenProductProduct,
     ): List<Map<String, OpenProductDmnResponse>> {
-        val acties = openProductService.getProductActies(product.producttype.uuid)
+        // only get a DMN decision if mapping is not null. In the future we need to check if soort/type = DMN
+        val acties = openProductService.getProductActies(product.producttype.uuid).filter { it.mapping != null }
 
-        val decisions = mutableListOf<Map<String, OpenProductDmnResponse>>()
-
-        acties.forEach {
-            // only get a DMN decision if mapping is not null. In the future we need to check if soort/type = DMN
-            if (it.mapping != null) {
-                decisions.addAll(
-                    getDecision(
-                        product = product,
-                        actie = it,
-                    ),
-                )
-            }
-        }
-
-        return decisions
+        return mapSkippingFailures(
+            items = acties,
+            logger = logger,
+            describe = { "decision for actie ${it.naam}" },
+        ) { actie ->
+            getDecision(
+                product = product,
+                actie = actie,
+            )
+        }.flatten()
     }
 
     /**
@@ -109,51 +106,46 @@ class OpenProductDmnService(
         product: OpenProductProduct,
         actie: OpenProductActie,
     ): List<Map<String, OpenProductDmnResponse>> {
-        try {
-            val variablesMapping = mutableMapOf<String, OpenProductDmnVariable>()
-            // add the product mapping
-            if (actie.mapping != null) {
-                // handle the configured product variables, same pattern as the static mapping
-                // below: a missing "product" key means no product variables to add, not a reason
-                // to abort the whole decision (kotlin:S6611 - this used to be an unsafe `!!`).
-                actie.mapping[ACTIE_MAPPING_KEY_PRODUCT]?.let {
-                    variablesMapping.putAll(
-                        mapActieMappingVariables(
-                            actieMappingVariables = it,
-                            source = Mapper.get().writeValueAsString(product),
-                        ),
-                    )
-                }
-
-                // add the static mapping
-                // handle the configured static variables
-                actie.mapping[ACTIE_MAPPING_KEY_STATIC]?.let {
-                    variablesMapping.putAll(
-                        mapActieMappingVariables(
-                            it,
-                        ),
-                    )
-                }
+        val variablesMapping = mutableMapOf<String, OpenProductDmnVariable>()
+        // add the product mapping
+        if (actie.mapping != null) {
+            // handle the configured product variables, same pattern as the static mapping
+            // below: a missing "product" key means no product variables to add, not a reason
+            // to abort the whole decision (kotlin:S6611 - this used to be an unsafe `!!`).
+            actie.mapping[ACTIE_MAPPING_KEY_PRODUCT]?.let {
+                variablesMapping.putAll(
+                    mapActieMappingVariables(
+                        actieMappingVariables = it,
+                        source = Mapper.get().writeValueAsString(product),
+                    ),
+                )
             }
 
-            val dmnRequest =
-                OpenProductDmnRequest(
-                    key = actie.naam,
-                    mapping =
-                        OpenProductDmnRequestMapping(
-                            variables = variablesMapping,
-                        ),
+            // add the static mapping
+            // handle the configured static variables
+            actie.mapping[ACTIE_MAPPING_KEY_STATIC]?.let {
+                variablesMapping.putAll(
+                    mapActieMappingVariables(
+                        it,
+                    ),
                 )
-
-            return openProductDmnClient
-                .getDecision(
-                    url = actie.url,
-                    dmnRequest = dmnRequest,
-                ).filter { it.isNotEmpty() }
-        } catch (ex: Exception) {
-            logger.warn { "Problem with getting decision: ${ex.message}" }
+            }
         }
-        return emptyList()
+
+        val dmnRequest =
+            OpenProductDmnRequest(
+                key = actie.naam,
+                mapping =
+                    OpenProductDmnRequestMapping(
+                        variables = variablesMapping,
+                    ),
+            )
+
+        return openProductDmnClient
+            .getDecision(
+                url = actie.url,
+                dmnRequest = dmnRequest,
+            ).filter { it.isNotEmpty() }
     }
 
     private fun mapActieMappingVariables(
