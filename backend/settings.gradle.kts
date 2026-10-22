@@ -77,6 +77,5 @@ include(
     "zgw:zaken-api",
     "zgw:openproduct",
     "zgw:verificatie",
-    "product",
     "zgw:zaken",
 )
