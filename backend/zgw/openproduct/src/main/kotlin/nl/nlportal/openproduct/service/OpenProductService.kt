@@ -105,31 +105,22 @@ class OpenProductService(
         pageSize: Int,
         extraSearchVariables: List<Pair<OpenProductThemasFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductThema> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductThemasFilters, Any>>(
-                    OpenProductThemasFilters.PAGE to pageNumber.toString(),
-                    OpenProductThemasFilters.PAGE_SIZE to pageSize.toString(),
-                    OpenProductThemasFilters.GEPUBLICEERD to true,
-                )
+        val searchVariables =
+            mutableListOf<Pair<OpenProductThemasFilters, Any>>(
+                OpenProductThemasFilters.PAGE to pageNumber.toString(),
+                OpenProductThemasFilters.PAGE_SIZE to pageSize.toString(),
+                OpenProductThemasFilters.GEPUBLICEERD to true,
+            )
 
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-
-            authenticationMachtigingsDienstService.productTypes(authentication)?.let {
-                searchVariables.add(OpenProductThemasFilters.PRODUCTTYPEN_UUID_IN to it.joinToString(","))
-            }
-
-            return openProductTypeClient.path<Themas>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting themas with cause: " + e.message }
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
         }
 
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        authenticationMachtigingsDienstService.productTypes(authentication)?.let {
+            searchVariables.add(OpenProductThemasFilters.PRODUCTTYPEN_UUID_IN to it.joinToString(","))
+        }
+
+        return openProductTypeClient.path<Themas>().get(searchVariables)
     }
 
     /**
@@ -153,47 +144,44 @@ class OpenProductService(
     suspend fun getHoofdThemasByProducten(
         authentication: CommonGroundAuthentication,
     ): List<OpenProductThema> {
-        try {
-            val producten =
-                getProducten(
-                    authentication = authentication,
-                    pageNumber = 1,
-                    pageSize = 999,
-                ).results
+        val producten =
+            getProducten(
+                authentication = authentication,
+                pageNumber = 1,
+                pageSize = 999,
+            ).results
 
-            if (producten.isNotEmpty()) {
-                val hoofdThemas = mutableSetOf<OpenProductThema>()
-                val themas =
-                    getThemas(
-                        authentication = authentication,
-                        pageNumber = 1,
-                        pageSize = 999,
-                    ).results
+        if (producten.isEmpty()) {
+            return emptyList()
+        }
 
-                // loop through producten to get via the producttypes the hoofdthemas
-                producten.forEach { product ->
-                    themas
-                        .filter { thema ->
-                            thema.producttypen.any { productType ->
-                                productType.uuid == product.producttype.uuid
-                            }
-                        }.forEach { thema ->
-                            collectThemaHierarchyUpFromSubThema(
-                                themaId = thema.uuid,
-                                themas = themas,
-                            ).filter { collectThemaHierarchyUpFromSubThema -> collectThemaHierarchyUpFromSubThema.hoofdThema == null }
-                                .let { hoofdThemaList ->
-                                    hoofdThemas.addAll(hoofdThemaList)
-                                }
+        val hoofdThemas = mutableSetOf<OpenProductThema>()
+        val themas =
+            getThemas(
+                authentication = authentication,
+                pageNumber = 1,
+                pageSize = 999,
+            ).results
+
+        // loop through producten to get via the producttypen the hoofdthemas
+        producten.forEach { product ->
+            themas
+                .filter { thema ->
+                    thema.producttypen.any { productType ->
+                        productType.uuid == product.producttype.uuid
+                    }
+                }.forEach { thema ->
+                    collectThemaHierarchyUpFromSubThema(
+                        themaId = thema.uuid,
+                        themas = themas,
+                    ).filter { collectThemaHierarchyUpFromSubThema -> collectThemaHierarchyUpFromSubThema.hoofdThema == null }
+                        .let { hoofdThemaList ->
+                            hoofdThemas.addAll(hoofdThemaList)
                         }
                 }
-
-                return hoofdThemas.toList()
-            }
-        } catch (e: Exception) {
-            logger.error { "Error getting hoofdthemas by producten with cause: " + e.message }
         }
-        return emptyList()
+
+        return hoofdThemas.toList()
     }
 
     /**
@@ -227,35 +215,26 @@ class OpenProductService(
     /**
      * Get thema
      * @param: id, uuid of the thema
-     * @return: thema of null
+     * @return: thema of null (an upstream not-found becomes null; every other failure propagates)
      */
     suspend fun getThema(
         authentication: CommonGroundAuthentication,
         id: UUID,
     ): OpenProductThema? {
-        try {
-            val thema =
-                openProductTypeClient.path<Themas>().get(
-                    id = id,
-                )
+        val thema =
+            notFoundAsNull {
+                openProductTypeClient.path<Themas>().get(id = id)
+            } ?: return null
 
-            if (thema == null) {
-                return null
-            }
-
-            if (!authenticationMachtigingsDienstService.isAllowedProductTypes(
-                    authentication = authentication,
-                    productTypeUUIDs = thema.producttypen.map { it.uuid },
-                )
-            ) {
-                throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied to this thema")
-            }
-
-            return thema
-        } catch (e: Exception) {
-            logger.error { "Error getting thema with id: $id with cause: " + e.message }
+        if (!authenticationMachtigingsDienstService.isAllowedProductTypes(
+                authentication = authentication,
+                productTypeUUIDs = thema.producttypen.map { it.uuid },
+            )
+        ) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied to this thema")
         }
-        return null
+
+        return thema
     }
 
     /**
@@ -267,21 +246,15 @@ class OpenProductService(
         authentication: CommonGroundAuthentication,
         id: UUID,
     ): List<OpenProductThemaHierarchy> {
-        try {
-            val thema =
-                openProductTypeClient.path<Themas>().get(
-                    id = id,
-                )
-            if (thema != null) {
-                return buildThemaHierachy(
-                    authentication = authentication,
-                    thema = thema,
-                )
-            }
-        } catch (e: Exception) {
-            logger.error { "Error building thema hierarchy id: $id with cause: " + e.message }
-        }
-        return emptyList()
+        val thema =
+            notFoundAsNull {
+                openProductTypeClient.path<Themas>().get(id = id)
+            } ?: return emptyList()
+
+        return buildThemaHierachy(
+            authentication = authentication,
+            thema = thema,
+        )
     }
 
     /**
@@ -298,28 +271,19 @@ class OpenProductService(
         language: String? = null,
         extraSearchVariables: List<Pair<OpenProductProductTypesFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductProductType> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductProductTypesFilters, Any>>(
-                    OpenProductProductTypesFilters.PAGE to pageNumber.toString(),
-                    OpenProductProductTypesFilters.PAGE_SIZE to pageSize.toString(),
-                    OpenProductProductTypesFilters.GEPUBLICEERD to true,
-                )
-
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<ProductTypes>().get(
-                searchFilters = searchVariables,
-                language = language,
+        val searchVariables =
+            mutableListOf<Pair<OpenProductProductTypesFilters, Any>>(
+                OpenProductProductTypesFilters.PAGE to pageNumber.toString(),
+                OpenProductProductTypesFilters.PAGE_SIZE to pageSize.toString(),
+                OpenProductProductTypesFilters.GEPUBLICEERD to true,
             )
-        } catch (e: Exception) {
-            logger.error { "Error getting productTypes with cause: " + e.message }
-        }
 
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
+        }
+        return openProductTypeClient.path<ProductTypes>().get(
+            searchFilters = searchVariables,
+            language = language,
         )
     }
 
@@ -327,22 +291,18 @@ class OpenProductService(
      * Get producttype
      * @param: id, uuid of the producttype
      * @param: language, language of productype, is optional
-     * @return: Producttype or null
+     * @return: Producttype or null (an upstream not-found becomes null; every other failure propagates)
      */
     suspend fun getProductType(
         id: UUID,
         language: String? = null,
-    ): OpenProductProductType? {
-        try {
-            return openProductTypeClient.path<ProductTypes>().get(
+    ): OpenProductProductType? =
+        notFoundAsNull {
+            openProductTypeClient.path<ProductTypes>().get(
                 id = id,
                 language = language,
             )
-        } catch (e: Exception) {
-            logger.error { "Error getting producttype with id: $id with cause: " + e.message }
         }
-        return null
-    }
 
     /**
      * Get acties
@@ -356,42 +316,27 @@ class OpenProductService(
         pageSize: Int,
         extraSearchVariables: List<Pair<OpenProductActiesFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductActie> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductActiesFilters, Any>>(
-                    OpenProductActiesFilters.PAGE to pageNumber.toString(),
-                    OpenProductActiesFilters.PAGE_SIZE to pageSize.toString(),
-                )
+        val searchVariables =
+            mutableListOf<Pair<OpenProductActiesFilters, Any>>(
+                OpenProductActiesFilters.PAGE to pageNumber.toString(),
+                OpenProductActiesFilters.PAGE_SIZE to pageSize.toString(),
+            )
 
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<Acties>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting acties with cause: $e.message" }
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
         }
-
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        return openProductTypeClient.path<Acties>().get(searchVariables)
     }
 
     /**
      * Get actie
      * @param: id, uuid of actie
-     * @return: actie or null
+     * @return: actie or null (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getActie(id: UUID): OpenProductActie? {
-        try {
-            return openProductTypeClient.path<Acties>().get(
-                id = id,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting actie with id: $id with cause: " + e.message }
+    suspend fun getActie(id: UUID): OpenProductActie? =
+        notFoundAsNull {
+            openProductTypeClient.path<Acties>().get(id = id)
         }
-        return null
-    }
 
     /**
      * Get bestanden
@@ -407,46 +352,31 @@ class OpenProductService(
         naam: String? = null,
         extraSearchVariables: List<Pair<OpenProductBestandenFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductBestand> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductBestandenFilters, Any>>(
-                    OpenProductBestandenFilters.PAGE to pageNumber.toString(),
-                    OpenProductBestandenFilters.PAGE_SIZE to pageSize.toString(),
-                )
+        val searchVariables =
+            mutableListOf<Pair<OpenProductBestandenFilters, Any>>(
+                OpenProductBestandenFilters.PAGE to pageNumber.toString(),
+                OpenProductBestandenFilters.PAGE_SIZE to pageSize.toString(),
+            )
 
-            naam?.let {
-                searchVariables.add(OpenProductBestandenFilters.NAAM_CONTAINS to it)
-            }
-
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<Bestanden>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting bestanden with cause: " + e.message }
+        naam?.let {
+            searchVariables.add(OpenProductBestandenFilters.NAAM_CONTAINS to it)
         }
 
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
+        }
+        return openProductTypeClient.path<Bestanden>().get(searchVariables)
     }
 
     /**
      * Get bestand
      * @param: id, uuid of bestand
-     * @return: bestand or null
+     * @return: bestand or null (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getBestand(id: UUID): OpenProductBestand? {
-        try {
-            return openProductTypeClient.path<Bestanden>().get(
-                id = id,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting bestand with id: $id with cause: " + e.message }
+    suspend fun getBestand(id: UUID): OpenProductBestand? =
+        notFoundAsNull {
+            openProductTypeClient.path<Bestanden>().get(id = id)
         }
-        return null
-    }
 
     /**
      * Get conatcten
@@ -462,46 +392,31 @@ class OpenProductService(
         naam: String? = null,
         extraSearchVariables: List<Pair<OpenProductContactenFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductContact> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductContactenFilters, Any>>(
-                    OpenProductContactenFilters.PAGE to pageNumber.toString(),
-                    OpenProductContactenFilters.PAGE_SIZE to pageSize.toString(),
-                )
+        val searchVariables =
+            mutableListOf<Pair<OpenProductContactenFilters, Any>>(
+                OpenProductContactenFilters.PAGE to pageNumber.toString(),
+                OpenProductContactenFilters.PAGE_SIZE to pageSize.toString(),
+            )
 
-            naam?.let {
-                searchVariables.add(OpenProductContactenFilters.NAAM to it)
-            }
-
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<Contacten>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting contacten with cause: " + e.message }
+        naam?.let {
+            searchVariables.add(OpenProductContactenFilters.NAAM to it)
         }
 
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
+        }
+        return openProductTypeClient.path<Contacten>().get(searchVariables)
     }
 
     /**
      * Get contact
      * @param: id, uuid of contact
-     * @return: contact or null
+     * @return: contact or null (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getContact(id: UUID): OpenProductContact? {
-        try {
-            return openProductTypeClient.path<Contacten>().get(
-                id = id,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting contact with id: $id with cause: " + e.message }
+    suspend fun getContact(id: UUID): OpenProductContact? =
+        notFoundAsNull {
+            openProductTypeClient.path<Contacten>().get(id = id)
         }
-        return null
-    }
 
     /**
      * Get locaties
@@ -517,45 +432,30 @@ class OpenProductService(
         naam: String? = null,
         extraSearchVariables: List<Pair<OpenProductLocatiesFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductLocatie> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductLocatiesFilters, Any>>(
-                    OpenProductLocatiesFilters.PAGE to pageNumber.toString(),
-                    OpenProductLocatiesFilters.PAGE_SIZE to pageSize.toString(),
-                )
+        val searchVariables =
+            mutableListOf<Pair<OpenProductLocatiesFilters, Any>>(
+                OpenProductLocatiesFilters.PAGE to pageNumber.toString(),
+                OpenProductLocatiesFilters.PAGE_SIZE to pageSize.toString(),
+            )
 
-            naam?.let {
-                searchVariables.add(OpenProductLocatiesFilters.NAAM_EXACT to it)
-            }
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<Locaties>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting locaties with cause: " + e.message }
+        naam?.let {
+            searchVariables.add(OpenProductLocatiesFilters.NAAM_EXACT to it)
         }
-
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
+        }
+        return openProductTypeClient.path<Locaties>().get(searchVariables)
     }
 
     /**
      * Get locatie
      * @param: id, uuid of locatie
-     * @return: locatie or null
+     * @return: locatie or null (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getLocatie(id: UUID): OpenProductLocatie? {
-        try {
-            return openProductTypeClient.path<Locaties>().get(
-                id = id,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting locatie with id: $id with cause: " + e.message }
+    suspend fun getLocatie(id: UUID): OpenProductLocatie? =
+        notFoundAsNull {
+            openProductTypeClient.path<Locaties>().get(id = id)
         }
-        return null
-    }
 
     /**
      * Get organisaties
@@ -571,45 +471,30 @@ class OpenProductService(
         naam: String? = null,
         extraSearchVariables: List<Pair<OpenProductOrganisatiesFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductOrganisatie> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductOrganisatiesFilters, Any>>(
-                    OpenProductOrganisatiesFilters.PAGE to pageNumber.toString(),
-                    OpenProductOrganisatiesFilters.PAGE_SIZE to pageSize.toString(),
-                )
+        val searchVariables =
+            mutableListOf<Pair<OpenProductOrganisatiesFilters, Any>>(
+                OpenProductOrganisatiesFilters.PAGE to pageNumber.toString(),
+                OpenProductOrganisatiesFilters.PAGE_SIZE to pageSize.toString(),
+            )
 
-            naam?.let {
-                searchVariables.add(OpenProductOrganisatiesFilters.NAAM_EXACT to it)
-            }
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<Organisaties>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting organisaties with cause: " + e.message }
+        naam?.let {
+            searchVariables.add(OpenProductOrganisatiesFilters.NAAM_EXACT to it)
         }
-
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
+        }
+        return openProductTypeClient.path<Organisaties>().get(searchVariables)
     }
 
     /**
      * Get organisatie
      * @param: id, uuid of organisatie
-     * @return: organisatie or null
+     * @return: organisatie or null (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getOrganisatie(id: UUID): OpenProductOrganisatie? {
-        try {
-            return openProductTypeClient.path<Organisaties>().get(
-                id = id,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting organisatie with id: $id with cause: " + e.message }
+    suspend fun getOrganisatie(id: UUID): OpenProductOrganisatie? =
+        notFoundAsNull {
+            openProductTypeClient.path<Organisaties>().get(id = id)
         }
-        return null
-    }
 
     /**
      * Get prijzen
@@ -623,41 +508,26 @@ class OpenProductService(
         pageSize: Int,
         extraSearchVariables: List<Pair<OpenProductPrijzenFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductPrijs> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductPrijzenFilters, Any>>(
-                    OpenProductPrijzenFilters.PAGE to pageNumber.toString(),
-                    OpenProductPrijzenFilters.PAGE_SIZE to pageSize.toString(),
-                )
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<Prijzen>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting prijzen with cause: " + e.message }
+        val searchVariables =
+            mutableListOf<Pair<OpenProductPrijzenFilters, Any>>(
+                OpenProductPrijzenFilters.PAGE to pageNumber.toString(),
+                OpenProductPrijzenFilters.PAGE_SIZE to pageSize.toString(),
+            )
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
         }
-
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        return openProductTypeClient.path<Prijzen>().get(searchVariables)
     }
 
     /**
      * Get prijs
      * @param: id, uuid if prijs
-     * @return: prijs or null
+     * @return: prijs or null (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getPrijs(id: UUID): OpenProductPrijs? {
-        try {
-            return openProductTypeClient.path<Prijzen>().get(
-                id = id,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting prijs with id: $id with cause: " + e.message }
+    suspend fun getPrijs(id: UUID): OpenProductPrijs? =
+        notFoundAsNull {
+            openProductTypeClient.path<Prijzen>().get(id = id)
         }
-        return null
-    }
 
     /**
      * Get schemas
@@ -671,41 +541,26 @@ class OpenProductService(
         pageSize: Int,
         extraSearchVariables: List<Pair<OpenProductSchemasFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductSchema> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductSchemasFilters, Any>>(
-                    OpenProductSchemasFilters.PAGE to pageNumber.toString(),
-                    OpenProductSchemasFilters.PAGE_SIZE to pageSize.toString(),
-                )
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<Schemas>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting schemas with cause: " + e.message }
+        val searchVariables =
+            mutableListOf<Pair<OpenProductSchemasFilters, Any>>(
+                OpenProductSchemasFilters.PAGE to pageNumber.toString(),
+                OpenProductSchemasFilters.PAGE_SIZE to pageSize.toString(),
+            )
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
         }
-
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        return openProductTypeClient.path<Schemas>().get(searchVariables)
     }
 
     /**
      * Get schema
      * @param: id, uuid of schema
-     * @return: schema or null
+     * @return: schema or null (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getSchema(id: UUID): OpenProductSchema? {
-        try {
-            return openProductTypeClient.path<Schemas>().get(
-                id = id,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting schema with id: $id with cause: " + e.message }
+    suspend fun getSchema(id: UUID): OpenProductSchema? =
+        notFoundAsNull {
+            openProductTypeClient.path<Schemas>().get(id = id)
         }
-        return null
-    }
 
     /**
      * Get links
@@ -719,57 +574,36 @@ class OpenProductService(
         pageSize: Int,
         extraSearchVariables: List<Pair<OpenProductLinksFilters, Any>> = emptyList(),
     ): ResultPage<OpenProductLink> {
-        try {
-            val searchVariables =
-                mutableListOf<Pair<OpenProductLinksFilters, Any>>(
-                    OpenProductLinksFilters.PAGE to pageNumber.toString(),
-                    OpenProductLinksFilters.PAGE_SIZE to pageSize.toString(),
-                )
-            if (extraSearchVariables.isNotEmpty()) {
-                searchVariables.addAll(extraSearchVariables)
-            }
-            return openProductTypeClient.path<Links>().get(searchVariables)
-        } catch (e: Exception) {
-            logger.error { "Error getting links with cause: " + e.message }
+        val searchVariables =
+            mutableListOf<Pair<OpenProductLinksFilters, Any>>(
+                OpenProductLinksFilters.PAGE to pageNumber.toString(),
+                OpenProductLinksFilters.PAGE_SIZE to pageSize.toString(),
+            )
+        if (extraSearchVariables.isNotEmpty()) {
+            searchVariables.addAll(extraSearchVariables)
         }
-
-        return ResultPage(
-            count = 0,
-            results = emptyList(),
-        )
+        return openProductTypeClient.path<Links>().get(searchVariables)
     }
 
     /**
      * Get link
      * @param: id, uuid of link
-     * @return: link or null
+     * @return: link or null (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getLink(id: UUID): OpenProductLink? {
-        try {
-            return openProductTypeClient.path<Links>().get(
-                id = id,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting link with id: $id with cause: " + e.message }
+    suspend fun getLink(id: UUID): OpenProductLink? =
+        notFoundAsNull {
+            openProductTypeClient.path<Links>().get(id = id)
         }
-        return null
-    }
 
     /**
      * Get content of producttype
      * @param: productTypeId, producttype id
-     * @return: List of producttype content
+     * @return: List of producttype content (an upstream not-found becomes null; every other failure propagates)
      */
-    suspend fun getProductTypeContent(productTypeId: UUID): List<OpenProductContentElement>? {
-        try {
-            return openProductTypeClient.path<ProductTypes>().get(
-                id = productTypeId,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting producttype content with id: $productTypeId with cause: " + e.message }
+    suspend fun getProductTypeContent(productTypeId: UUID): List<OpenProductContentElement>? =
+        notFoundAsNull {
+            openProductTypeClient.path<ProductTypes>().get(id = productTypeId)
         }
-        return null
-    }
 
     /**
      * Get producten
@@ -839,49 +673,31 @@ class OpenProductService(
     /**
      * Get product
      * @param: id, uuid of product
-     * @return: product or null
+     * @return: product or null (an upstream not-found becomes null; every other failure, including
+     *   the authorization checks below, propagates)
      */
     suspend fun getProduct(
         authentication: CommonGroundAuthentication,
         id: UUID,
     ): OpenProductProduct? {
-        try {
-            val product =
-                openProductClient.path<Producten>().get(
-                    id = id,
-                )
+        val product =
+            notFoundAsNull {
+                openProductClient.path<Producten>().get(id = id)
+            } ?: return null
 
-            if (product == null) {
-                return null
-            }
-
-            if (isAuthorizedForProduct(
-                    authentication = authentication,
-                    product = product,
-                )
-            ) {
-                if (!authenticationMachtigingsDienstService.isAllowedProductType(
-                        authentication = authentication,
-                        productTypeUUID = product.producttype.uuid,
-                    )
-                ) {
-                    throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied to this thema")
-                }
-                return product
-            }
-
-            throw ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
-                "Not authorized",
-            )
-        } catch (e: Exception) {
-            if (e is ResponseStatusException) {
-                throw e
-            } else {
-                logger.error { "Error getting product with id: $id with cause: " + e.message }
-            }
+        if (!isAuthorizedForProduct(authentication = authentication, product = product)) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized")
         }
-        return null
+
+        if (!authenticationMachtigingsDienstService.isAllowedProductType(
+                authentication = authentication,
+                productTypeUUID = product.producttype.uuid,
+            )
+        ) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied to this thema")
+        }
+
+        return product
     }
 
     /**
@@ -894,25 +710,16 @@ class OpenProductService(
         authentication: CommonGroundAuthentication,
         themaId: UUID,
     ): List<OpenProductProduct> {
-        try {
-            val thema =
-                getThema(
-                    authentication = authentication,
-                    id = themaId,
-                )
-            if (thema == null) {
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not find thema with id: $themaId")
-            }
-
-            return getThemaProducten(
+        val thema =
+            getThema(
                 authentication = authentication,
-                thema = thema,
-            )
-        } catch (e: Exception) {
-            logger.error { "Error getting products by thema id: $themaId with cause: " + e.message }
-        }
+                id = themaId,
+            ) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not find thema with id: $themaId")
 
-        return emptyList()
+        return getThemaProducten(
+            authentication = authentication,
+            thema = thema,
+        )
     }
 
     /**
@@ -925,22 +732,16 @@ class OpenProductService(
         authentication: CommonGroundAuthentication,
         thema: OpenProductThema,
     ): List<OpenProductProduct> {
-        try {
-            val searchVariables =
-                listOf(
-                    OpenProductProductenFilters.THEMA_UUID to thema.uuid.toString(),
-                )
-            return getProducten(
-                authentication = authentication,
-                pageNumber = 1,
-                pageSize = 999,
-                extraSearchVariables = searchVariables,
-            ).results
-        } catch (e: Exception) {
-            logger.error { "Error getting products by thema id: ${thema.uuid} with cause: " + e.message }
-        }
-
-        return emptyList()
+        val searchVariables =
+            listOf(
+                OpenProductProductenFilters.THEMA_UUID to thema.uuid.toString(),
+            )
+        return getProducten(
+            authentication = authentication,
+            pageNumber = 1,
+            pageSize = 999,
+            extraSearchVariables = searchVariables,
+        ).results
     }
 
     suspend fun getThemaLinks(
@@ -1127,53 +928,44 @@ class OpenProductService(
     /**
      * Get zaken of a product
      * @param: zaken, list of zaken
-     * @return: list of zaken
+     * @return: list of zaken. One zaak that fails to load is logged and skipped (deliberate
+     *   resilience - see ADR 0003) rather than failing the whole list.
      */
     suspend fun getProductZaken(
         authentication: CommonGroundAuthentication,
         zaken: List<OpenProductUrl>,
-    ): List<Zaak> {
-        val zaakList = mutableListOf<Zaak>()
-        zaken.forEach {
-            try {
-                zaakList.add(
-                    zakenApiService.getZaak(
-                        authentication = authentication,
-                        id = extractId(it.url!!),
-                    ),
-                )
-            } catch (e: Exception) {
-                logger.error(e) { "Error while fetching product zaken: " + e.message }
-            }
+    ): List<Zaak> =
+        mapSkippingFailures(
+            items = zaken,
+            logger = logger,
+            describe = { "zaak ${it.url}" },
+        ) { zaak ->
+            zakenApiService.getZaak(
+                authentication = authentication,
+                id = extractId(zaak.url!!),
+            )
         }
-        return zaakList
-    }
 
     /**
      * Get taken of a product
      * @param: taken, list of taken
-     * @return: list of taken
+     * @return: list of taken. One taak that fails to load is logged and skipped (deliberate
+     *   resilience - see ADR 0003) rather than failing the whole list.
      */
     suspend fun getProductTaken(
         authentication: CommonGroundAuthentication,
         taken: List<OpenProductUrl>,
-    ): List<TaakV2> {
-        val takenList = mutableSetOf<TaakV2>()
-        taken.forEach {
-            try {
-                takenList.add(
-                    taakService.getTaakByIdV2(
-                        authentication = authentication,
-                        id = extractId(it.url!!),
-                    ),
-                )
-            } catch (e: Exception) {
-                logger.error { "Error getting product taken: " + e.message }
-            }
-        }
-
-        return takenList.toList()
-    }
+    ): List<TaakV2> =
+        mapSkippingFailures(
+            items = taken,
+            logger = logger,
+            describe = { "taak ${it.url}" },
+        ) { taak ->
+            taakService.getTaakByIdV2(
+                authentication = authentication,
+                id = extractId(taak.url!!),
+            )
+        }.distinct()
 
     /**
      * Get acties of a product
@@ -1185,26 +977,21 @@ class OpenProductService(
         productTypeId: UUID,
         naam: String? = null,
     ): List<OpenProductActie> {
-        try {
-            val extraSearchVariables =
-                mutableListOf<Pair<OpenProductActiesFilters, Any>>(
-                    OpenProductActiesFilters.PRODUCTTYPE_UUID to productTypeId.toString(),
-                )
+        val extraSearchVariables =
+            mutableListOf<Pair<OpenProductActiesFilters, Any>>(
+                OpenProductActiesFilters.PRODUCTTYPE_UUID to productTypeId.toString(),
+            )
 
-            naam?.let {
-                extraSearchVariables.add(
-                    OpenProductActiesFilters.NAAM to naam,
-                )
-            }
-            return getActies(
-                pageNumber = 1,
-                pageSize = 999,
-                extraSearchVariables = extraSearchVariables,
-            ).results
-        } catch (e: Exception) {
-            logger.error { "Error getting product acties: " + e.message }
+        naam?.let {
+            extraSearchVariables.add(
+                OpenProductActiesFilters.NAAM to naam,
+            )
         }
-        return emptyList()
+        return getActies(
+            pageNumber = 1,
+            pageSize = 999,
+            extraSearchVariables = extraSearchVariables,
+        ).results
     }
 
     suspend fun getProductDocumentContent(
@@ -1251,20 +1038,21 @@ class OpenProductService(
         }
     }
 
+    /**
+     * @return: documents of the product. One document that fails to load is logged and skipped
+     *   (deliberate resilience - see ADR 0003) rather than failing the whole list.
+     */
     suspend fun getOpenProductDocumenten(
         openProductProduct: OpenProductProduct,
     ): List<Document> {
-        val documents = mutableListOf<Document>()
-        openProductProduct.documenten.forEach {
-            try {
-                documents.add(
-                    documentenApiService
-                        .getDocument(it.url!!),
-                )
-            } catch (e: Exception) {
-                logger.error { "Error getting product document: ${e.message}" }
+        val documents =
+            mapSkippingFailures(
+                items = openProductProduct.documenten,
+                logger = logger,
+                describe = { "document ${it.url}" },
+            ) { documentUrl ->
+                documentenApiService.getDocument(documentUrl.url!!)
             }
-        }
         return documentenApiService.filterDocuments(documents)
     }
 

@@ -31,9 +31,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import java.time.ZonedDateTime
 import java.util.UUID
+import kotlin.test.assertFailsWith
 
 class OpenProductDmnServiceTest {
     @Mock
@@ -85,6 +87,79 @@ class OpenProductDmnServiceTest {
             // then: the DMN client was actually called and its result returned, instead of the
             // caught-NPE empty list.
             assertEquals(expectedDecision, decision)
+        }
+
+    @Test
+    fun `getDecision propagates a client failure instead of swallowing it to an empty list`() =
+        runTest {
+            // red, pre-ADR-0003: this used to be caught by a blanket catch(Exception) and logged
+            // away to an empty list, indistinguishable from "no decision configured".
+            val actie =
+                OpenProductActie(
+                    uuid = UUID.randomUUID(),
+                    naam = "test-actie",
+                    url = "http://localhost/dmn",
+                    mapping = null,
+                )
+            whenever(openProductDmnClient.getDecision(any(), any())).thenThrow(RuntimeException("Camunda is down"))
+
+            assertFailsWith<RuntimeException> {
+                openProductDmnService.getDecision(testProduct(), actie)
+            }
+        }
+
+    @Test
+    fun `getProductDecision skips an actie whose decision fails, the rest of the list survives`() =
+        runTest {
+            val product = testProduct()
+            val okActie =
+                OpenProductActie(
+                    uuid = UUID.randomUUID(),
+                    naam = "ok-actie",
+                    url = "http://localhost/dmn/ok",
+                    mapping =
+                        mapOf(
+                            OpenProductDmnService.ACTIE_MAPPING_KEY_STATIC to
+                                listOf(
+                                    OpenProductActieMappingVariable(
+                                        name = "staticVar",
+                                        classType = OpenProductDmnVariableType.STRING,
+                                        regex = null,
+                                        value = "staticValue",
+                                    ),
+                                ),
+                        ),
+                )
+            val brokenActie =
+                OpenProductActie(
+                    uuid = UUID.randomUUID(),
+                    naam = "broken-actie",
+                    url = "http://localhost/dmn/broken",
+                    mapping =
+                        mapOf(
+                            OpenProductDmnService.ACTIE_MAPPING_KEY_STATIC to
+                                listOf(
+                                    OpenProductActieMappingVariable(
+                                        name = "staticVar",
+                                        classType = OpenProductDmnVariableType.STRING,
+                                        regex = null,
+                                        value = "staticValue",
+                                    ),
+                                ),
+                        ),
+                )
+            val expectedDecision = listOf(mapOf("result" to OpenProductDmnResponse("outcome", "String")))
+
+            whenever(openProductService.getProductActies(product.producttype.uuid))
+                .thenReturn(listOf(brokenActie, okActie))
+            whenever(openProductDmnClient.getDecision(url = eq(brokenActie.url), dmnRequest = any()))
+                .thenThrow(RuntimeException("Camunda is down for this actie"))
+            whenever(openProductDmnClient.getDecision(url = eq(okActie.url), dmnRequest = any()))
+                .thenReturn(expectedDecision)
+
+            val decisions = openProductDmnService.getProductDecision(product)
+
+            assertEquals(expectedDecision, decisions)
         }
 
     private fun testProduct(): OpenProductProduct {
