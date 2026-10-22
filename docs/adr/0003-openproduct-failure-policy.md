@@ -2,9 +2,11 @@
 
 ## Status
 
-In uitvoering. Vastgelegd vóór de eerste implementatiestap (zie de bijbehorende spec,
-[`0003-openproduct-failure-policy-spec.md`](0003-openproduct-failure-policy-spec.md)), zodat het
-besluit vaststaat voordat er code verandert — niet achteraf gereconstrueerd.
+Geaccepteerd. Beide PR's zijn gemerged: de foutbeleid-refactor
+([PR #26](https://github.com/jypma-prlg/nl-portal/pull/26)) en de verwijdering van de
+gedeprecieerde `backend/product`-module ([PR #27](https://github.com/jypma-prlg/nl-portal/pull/27),
+Beslissing punt 8). Zie de bijbehorende spec,
+[`0003-openproduct-failure-policy-spec.md`](0003-openproduct-failure-policy-spec.md).
 
 ## Context
 
@@ -95,6 +97,5 @@ onschuldige stijlkwestie is:
   voortaan een structured GraphQL-fout waar ze vandaag stilzwijgend `null`/lege data kregen. Dit is
   bedoeld — de huidige stilte verborg al minstens één live bug — maar is een caller-zichtbare
   wijziging, vandaar deze ADR vóór implementatie.
-- **Dit besluit is nog niet uitgevoerd** — zie de spec voor de concrete stappen. Status wordt
-  bijgewerkt naar "Geaccepteerd" zodra de foutbeleid-refactor en de verwijdering van
-  `backend/product` beide zijn gemerged.
+- **Uitgevoerd**: zowel de foutbeleid-refactor (PR #26) als de verwijdering van
+  `backend/product` (PR #27) zijn gemerged in `main`.
