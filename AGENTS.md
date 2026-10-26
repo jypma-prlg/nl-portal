@@ -10,6 +10,23 @@ Issue tracker: GitHub Issues on this repo (`gh issue ...`), using native sub-iss
 relationships. Any skill that needs to find, file, or link a ticket — `wayfinder`'s map and tickets
 included — looks here.
 
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub Issues on this repo (`gh issue ...`). See
+[docs/agents/issue-tracker.md](docs/agents/issue-tracker.md).
+
+### Triage labels
+
+Default canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`,
+`wontfix`). See [docs/agents/triage-labels.md](docs/agents/triage-labels.md).
+
+### Domain docs
+
+Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See
+[docs/agents/domain.md](docs/agents/domain.md).
+
 ## Workflow: use the matching skill
 
 Don't freelance a task a skill already covers. Before acting, match the situation below and call that
