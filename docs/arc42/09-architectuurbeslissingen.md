@@ -21,6 +21,13 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   `mise run release:cut-rc`, bij het cutten van een `rc/*`-branch. Zie de bijbehorende
   [spec](../adr/0004-changelog-release-proces-spec.md).
 
+- [`0005-build-test-gates.md`](../adr/0005-build-test-gates.md) — **geaccepteerd**. AGENTS.md,
+  CONTRIBUTING.md en CI beschrijven elk een andere build/test-commando-set; dit legt vast dat het
+  vier bewust verschillende tiers zijn (agent-fast-loop, lokale pre-push-gate, CI PR-gate, CI
+  post-merge stage-gate) die voortaan vanuit één gedeeld document (`docs/workflows/
+  build-and-test-gates.md`, nog te schrijven) geciteerd worden in plaats van elk hun eigen kopie te
+  onderhouden.
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:
