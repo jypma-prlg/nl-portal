@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Document as PortalDocument } from "@nl-portal/nl-portal-api";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import { useIntl } from "react-intl";
 import styles from "./DocumentsList.module.scss";
 import Document from "./Document";

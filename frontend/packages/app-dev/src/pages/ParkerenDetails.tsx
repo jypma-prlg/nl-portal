@@ -22,7 +22,7 @@ import {
 import { useDateFormatter } from "@nl-portal/nl-portal-localization";
 import { OpenProductProduct } from "@nl-portal/nl-portal-api";
 import { Link } from "@gemeente-denhaag/link";
-import StatusBadge from "@gemeente-denhaag/status-badge";
+import { StatusBadge } from "@utrecht/component-library-react";
 import { useParams } from "react-router";
 import { paths } from "../constants/paths";
 import { capitalizeFirstLetter, currencyFormat } from "../util/product-format";

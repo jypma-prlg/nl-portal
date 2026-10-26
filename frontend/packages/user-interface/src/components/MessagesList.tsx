@@ -15,7 +15,7 @@
  */
 import { FormattedMessage, useIntl } from "react-intl";
 import styles from "./MessagesList.module.scss";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import Skeleton from "./Skeleton";
 import { Pagination } from "@gemeente-denhaag/pagination";
 import Message from "./Message";

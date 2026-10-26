@@ -20,7 +20,7 @@ import {
 } from "@nl-portal/nl-portal-user-interface";
 import { useDateFormatter } from "@nl-portal/nl-portal-localization";
 import { OpenProductProduct } from "@nl-portal/nl-portal-api";
-import StatusBadge from "@gemeente-denhaag/status-badge";
+import { StatusBadge } from "@utrecht/component-library-react";
 import { useState } from "react";
 
 const ParkerenHistory = () => {

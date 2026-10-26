@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import PageGrid from "../components/PageGrid";
 import PageHeader from "../components/PageHeader";
 import { Link } from "@gemeente-denhaag/link";

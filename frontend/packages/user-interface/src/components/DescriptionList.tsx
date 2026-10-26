@@ -17,7 +17,7 @@ import { DescriptionList as DescriptionListComponent } from "@gemeente-denhaag/d
 import SectionHeader from "./SectionHeader";
 import { useIntl } from "react-intl";
 import Skeleton from "./Skeleton";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import styles from "./DescriptionList.module.scss";
 import { listViewHeight } from "../constants/skeleton";
 

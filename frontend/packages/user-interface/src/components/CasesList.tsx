@@ -18,7 +18,7 @@ import Skeleton from "react-loading-skeleton";
 import { useOutletContext } from "react-router";
 import { RouterOutletContext } from "../interfaces/router-outlet-context";
 import { Zaak } from "@nl-portal/nl-portal-api";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import styles from "./CasesList.module.scss";
 import SectionHeader from "./SectionHeader";
 import Case from "./Case";

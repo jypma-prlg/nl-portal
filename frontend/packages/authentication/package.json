@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@gemeente-denhaag/modal": "^3.1.2",
-    "@gemeente-denhaag/typography": "3.0.1",
+    "@utrecht/component-library-react": "15.0.0",
     "jwt-decode": "^4.0.0",
     "oidc-client-ts": "3.5.0",
     "react-oidc-context": "^3.3.1"

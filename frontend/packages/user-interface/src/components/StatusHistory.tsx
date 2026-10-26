@@ -19,7 +19,7 @@ import {
   ZaakStatus,
   ZaakSubStatus,
 } from "@nl-portal/nl-portal-api";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import { Status } from "@gemeente-denhaag/process-steps";
 import Skeleton from "react-loading-skeleton";
 import { useIntl } from "react-intl";

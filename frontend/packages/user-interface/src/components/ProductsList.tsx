@@ -15,7 +15,7 @@
  */
 import { useIntl } from "react-intl";
 import styles from "./ProductsList.module.scss";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import Skeleton from "./Skeleton";
 import { OpenProductProduct } from "@nl-portal/nl-portal-api";
 import { Pagination } from "@gemeente-denhaag/pagination";

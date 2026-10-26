@@ -28,7 +28,7 @@ import {
   LocaleContext,
   useDateFormatter,
 } from "@nl-portal/nl-portal-localization";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useParams } from "react-router";
 import "@utrecht/component-library-css";

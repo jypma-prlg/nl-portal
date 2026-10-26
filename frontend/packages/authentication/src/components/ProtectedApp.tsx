@@ -16,7 +16,7 @@
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import IdleTimer from "./IdleTimer";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import { FormattedMessage, useIntl } from "react-intl";
 import OidcContext from "../context/OidcContext";
 import { Modal } from "@gemeente-denhaag/modal";
