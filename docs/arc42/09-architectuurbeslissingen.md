@@ -28,6 +28,13 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   build-and-test-gates.md`, nog te schrijven) geciteerd worden in plaats van elk hun eigen kopie te
   onderhouden.
 
+- [`0006-unified-docs-site.md`](../adr/0006-unified-docs-site.md) — **geaccepteerd**. `docs/` en
+  `documentation/` (de oude GitBook-export) worden één VitePress-site volgens het
+  [Diataxis](https://diataxis.fr/)-framework, met secties Architectuur (arc42-leidend),
+  Gebruik & inrichting, Hosting & configuratie, Development (incl. productmanagement-proces en het
+  release-notes-archief) en een footer-only Compliance-sectie. Root-conventiebestanden
+  (AGENTS.md, CONTRIBUTING.md, ...) verhuizen niet mee.
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:
