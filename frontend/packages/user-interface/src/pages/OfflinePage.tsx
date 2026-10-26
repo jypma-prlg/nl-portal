@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { FormattedMessage, useIntl } from "react-intl";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 
 const OfflinePage = () => {
   const intl = useIntl();

@@ -28,7 +28,7 @@ import {
 import { useQuery } from "@apollo/client/react";
 import TasksList from "../components/TasksList";
 import PageGrid from "../components/PageGrid";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import { ReactNode, useContext } from "react";
 import UserContext from "../contexts/UserContext";
 import { RouterOutletContext } from "../interfaces/router-outlet-context";

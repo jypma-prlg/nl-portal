@@ -35,7 +35,7 @@ import {
 } from "@nl-portal/nl-portal-api";
 import { capitalizeFirstLetter } from "../utils/person-data";
 import ValidationForm from "../components/ValidationForm";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import PageGrid from "../components/PageGrid";
 
 const typeParams = ["email", "telefoonnummer"] as const;

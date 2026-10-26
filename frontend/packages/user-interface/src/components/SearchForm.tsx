@@ -23,7 +23,7 @@ import useInput, { Validation } from "../hooks/useInput";
 import { FormEvent } from "react";
 import styles from "./SearchForm.module.scss";
 import { FormattedMessage } from "react-intl";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import { FormFieldErrorMessage } from "@gemeente-denhaag/form-field-error-message";
 
 interface SearchFormProps {

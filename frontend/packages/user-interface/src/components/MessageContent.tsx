@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import styles from "./MessageContent.module.scss";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import Skeleton from "./Skeleton";
 import { FormattedMessage } from "react-intl";
 import { parseLinks } from "../utils/parse-links";

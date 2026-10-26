@@ -19,7 +19,7 @@ import { Alert, AlertProps } from "@gemeente-denhaag/alert";
 import { FormattedMessage } from "react-intl";
 import { Button } from "@gemeente-denhaag/button";
 import classNames from "classnames";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 
 type Props = FormHTMLAttributes<HTMLFormElement> &
   RefAttributes<HTMLFormElement> & {

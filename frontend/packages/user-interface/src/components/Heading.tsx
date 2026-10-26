@@ -24,7 +24,7 @@ import {
   Heading4Props,
   Heading5,
   Heading5Props,
-} from "@gemeente-denhaag/typography";
+} from "@utrecht/component-library-react";
 import classNames from "classnames";
 
 type Headers = "h1" | "h2" | "h3" | "h4" | "h5";

@@ -28,7 +28,7 @@ import { DescriptionList } from "@gemeente-denhaag/descriptionlist";
 import { Link } from "@gemeente-denhaag/link";
 import { EditIcon } from "@gemeente-denhaag/icons";
 import { PageIndex } from "@gemeente-denhaag/page-index";
-import { LeadParagraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import "@gemeente-denhaag/button-group";
 import DescriptionListDetail from "../components/DescriptionListDetail";
 import { useOutletContext } from "react-router";
@@ -235,9 +235,9 @@ const AccountPage = () => {
             />
           )}
         </PageHeader>
-        <LeadParagraph>
+        <Paragraph appearance="lead">
           <FormattedMessage id="account.leadParagraph" />
-        </LeadParagraph>
+        </Paragraph>
         {indexItems.length > 0 && (
           <PageIndex
             heading={intl.formatMessage({ id: "account.pageIndex.title" })}

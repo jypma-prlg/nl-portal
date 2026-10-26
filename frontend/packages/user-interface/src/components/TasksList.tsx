@@ -15,7 +15,7 @@
  */
 import { useIntl } from "react-intl";
 import styles from "./TasksList.module.scss";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import Skeleton from "./Skeleton";
 import { TaakV2 } from "@nl-portal/nl-portal-api";
 import Task from "./Task";

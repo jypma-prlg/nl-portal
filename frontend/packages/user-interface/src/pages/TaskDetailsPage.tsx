@@ -33,7 +33,7 @@ import { useIntl } from "react-intl";
 import styles from "./TaskDetailsPage.module.scss";
 import { useParams } from "react-router";
 import { BackLink } from "../components/BackLink";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import PageHeader from "../components/PageHeader";
 import PageGrid from "../components/PageGrid";
 import Skeleton from "../components/Skeleton";

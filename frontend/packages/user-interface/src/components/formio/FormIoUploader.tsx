@@ -23,7 +23,7 @@ import { LocalizationProvider } from "@nl-portal/nl-portal-localization";
 import { FileUpload } from "@gemeente-denhaag/file-upload";
 import { File } from "@gemeente-denhaag/file";
 import { Alert } from "@gemeente-denhaag/alert";
-import { Paragraph } from "@gemeente-denhaag/typography";
+import { Paragraph } from "@utrecht/component-library-react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 export interface UploadedFile {
