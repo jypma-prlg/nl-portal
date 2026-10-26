@@ -1,7 +1,7 @@
 # Repositories
 
-Deze repository is oorspronkelijk geforkt van Ritense's [nl-portal/nl-portal](https://github.com/nl-portal/nl-portal)
-en wordt sindsdien onafhankelijk door pinkroccade doorontwikkeld.
+Deze repository wordt onderhouden door pinkroccade (oorspronkelijk gebouwd door Ritense, zie
+CONTRIBUTING.md voor de volledige geschiedenis).
 
 | Repository                                                                        | Beschrijving                                                                                                                                          |
 |-----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|

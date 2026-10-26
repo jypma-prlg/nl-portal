@@ -1,6 +1,7 @@
 # Deelnemers
 
-NL Portal werd oorspronkelijk ontwikkeld door
+NL Portal wordt onderhouden door pinkroccade (oorspronkelijk gebouwd door Ritense, zie
+CONTRIBUTING.md voor de volledige geschiedenis), met dank aan de oorspronkelijke deelnemers:
 
 [Gemeente Den Haag](https://www.denhaag.nl/)<br>
 <img src="img/denhaag.png" height="150">
@@ -10,5 +11,3 @@ NL Portal werd oorspronkelijk ontwikkeld door
 
 [Ritense](https://ritense.com/)<br>
 <img src="img/ritense.png" height="100">
-
-Sinds deze repository als zelfstandig project verderging, wordt het onderhouden door pinkroccade.
