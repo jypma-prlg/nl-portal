@@ -65,6 +65,9 @@ Full product documentation - architecture, configuration, and feature/theme guid
 [`documentation/`](./documentation). It is not currently published anywhere outside this
 repository; see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
 
+`docs/` and `documentation/` are being consolidated into a single documentation site - see
+[ADR 0007](docs/adr/0007-documentatie-architectuur-synthese.md) for where everything will live.
+
 ## License
 
 Licensed under the EUPL 1.2 - see [LICENSE.MD](./LICENSE.MD).

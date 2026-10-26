@@ -133,3 +133,10 @@ By participating you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.m
 
 Please report security issues privately - see the [Security Policy](./SECURITY.md). Do not open a
 public issue for vulnerabilities.
+
+## Where documentation lives
+
+`docs/` (architecture, ADRs, workflows) and `documentation/` (product docs) are being consolidated
+into a single documentation site - see
+[ADR 0007](docs/adr/0007-documentatie-architectuur-synthese.md) for the "where do I find what"
+mapping.

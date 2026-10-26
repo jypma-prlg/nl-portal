@@ -92,3 +92,6 @@ full workflow, `bootRun` configuration (`.env.properties`), GraphQL codegen and 
 - Frontend workspace, scripts: [frontend/README.md](./frontend/README.md)
 - Compose profiles, ports, fixtures: [docker-compose/README.md](./docker-compose/README.md)
 - Contributing, branch model, commits: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- Hosting and configuration (deployment, Keycloak, module dependencies): see
+  [docs/adr/0007-documentatie-architectuur-synthese.md](docs/adr/0007-documentatie-architectuur-synthese.md)
+  for where that content lives
