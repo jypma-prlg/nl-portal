@@ -62,6 +62,9 @@ For a security- or dependency-relevant change, also run the applicable `mise run
 - [docs/adr](docs/adr) — architecture decision records. Only write one when the decision is hard to
   reverse, surprising without context, and the result of a real trade-off (see
   [docs/adr/README.md](docs/adr/README.md)); use `domain-modeling` to drive it.
+- `docs/` and `documentation/` are being consolidated into a single documentation site — see
+  [ADR 0007](docs/adr/0007-documentatie-architectuur-synthese.md) for the "where do I find what"
+  mapping once something isn't in this file.
 
 ## Dependencies & security
 

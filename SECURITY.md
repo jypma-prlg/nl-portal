@@ -37,3 +37,9 @@ We ask you to provide your name, email address and telephone number in order to 
 
 This project does not currently run a bug-bounty/reward program. Whether to start one is tracked
 in [issue #15](https://github.com/jypma-prlg/nl-portal/issues/15).
+
+## Compliance facts (SBOM, scans, lifecycle)
+
+For how security is approached day to day - the controls, their schedule and where their output
+lives - see [docs/workflows/security.md](docs/workflows/security.md); it will move to this site's
+Compliance section per [ADR 0007](docs/adr/0007-documentatie-architectuur-synthese.md).

@@ -61,3 +61,9 @@ If someone makes you or anyone else feel unsafe or unwelcome, report it as soon 
 
 This Code of Conduct is adapted from the Contributor Covenant, version 1.4, available at https://contributor-covenant.org/version/1/4. 
 
+## More about this project
+
+For the community/support process and how this project's governance works, see
+[docs/adr/0007-documentatie-architectuur-synthese.md](docs/adr/0007-documentatie-architectuur-synthese.md)
+for where that content lives.
+
