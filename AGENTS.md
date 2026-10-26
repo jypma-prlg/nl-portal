@@ -2,8 +2,12 @@
 
 Guidance for AI coding agents working in this repository. This assumes Claude Code with the
 [aihero.dev](https://www.aihero.dev/) skill set (`grilling`, `domain-modeling`, `tdd`, `codebase-design`,
-`diagnosing-bugs`, `code-review`, `simplify`, `pr`, `research`, `prototype`) installed. Start with
-[README.md](./README.md) for what NL Portal is and how the monorepo is laid out.
+`diagnosing-bugs`, `code-review`, `simplify`, `pr`, `research`, `prototype`, `wayfinder`) installed. Start
+with [README.md](./README.md) for what NL Portal is and how the monorepo is laid out.
+
+Issue tracker: GitHub Issues on this repo (`gh issue ...`), using native sub-issues and blocking
+relationships. Any skill that needs to find, file, or link a ticket — `wayfinder`'s map and tickets
+included — looks here.
 
 ## Workflow: use the matching skill
 
