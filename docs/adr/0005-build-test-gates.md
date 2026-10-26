@@ -51,6 +51,13 @@ losstaande "waarheid" te claimen.
    bewijst, wat het doel "de meeste PR's automatisch afhandelen" ondermijnt. Dit wordt genoteerd als
    verplicht vervolgwerk (een CI-wijziging), niet als onderdeel van dit besluit.
 
+   **Addendum (2026-10-26, via wayfinder-ticket [#68](https://github.com/jypma-prlg/nl-portal/issues/68)
+   op map [#66](https://github.com/jypma-prlg/nl-portal/issues/66))**: het gat bleek groter dan hier
+   beschreven. `lint:css` en `typecheck` draaiden nergens in CI, zelfs niet post-merge in
+   `_stage-fe.yml` — alleen `lint` (ESLint) draaide daar. Het besluit hierboven (vier tiers, de
+   integratietest-uitzondering, het CI-gat signaleren) blijft ongewijzigd correct; alleen de omvang
+   van het gesignaleerde gat is hiermee gecorrigeerd.
+
 ## Consequenties
 
 - Vervolgwerk, buiten deze wayfinder-map: (a) `docs/workflows/build-and-test-gates.md` daadwerkelijk
