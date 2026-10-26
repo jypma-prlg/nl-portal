@@ -2,8 +2,9 @@
 
 Guidance for AI coding agents working in this repository. This assumes Claude Code with the
 [aihero.dev](https://www.aihero.dev/) skill set (`grilling`, `domain-modeling`, `tdd`, `codebase-design`,
-`diagnosing-bugs`, `code-review`, `simplify`, `pr`, `research`, `prototype`, `wayfinder`) installed. Start
-with [README.md](./README.md) for what NL Portal is and how the monorepo is laid out.
+`diagnosing-bugs`, `code-review`, `simplify`, `pr`, `research`, `prototype`, `wayfinder`,
+`improve-codebase-architecture`) installed. Start with [README.md](./README.md) for what NL Portal is and
+how the monorepo is laid out.
 
 Issue tracker: GitHub Issues on this repo (`gh issue ...`), using native sub-issues and blocking
 relationships. Any skill that needs to find, file, or link a ticket — `wayfinder`'s map and tickets
@@ -19,6 +20,7 @@ skill first:
 | Stress-testing a design or architecture decision before building it | `grilling` |
 | Sharpening domain language in `GLOSSARY.md`, or writing an ADR | `domain-modeling` |
 | Designing or deepening a module's interface | `codebase-design` |
+| Scanning the codebase for deepening/architecture-improvement candidates | `improve-codebase-architecture` |
 | Building a feature or fixing a bug | `tdd` |
 | Investigating a hard bug or a performance regression | `diagnosing-bugs` |
 | Reviewing changes before opening a PR | `code-review` (`security-review` for security-sensitive changes) |
