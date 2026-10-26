@@ -39,5 +39,5 @@ productverantwoordelijke(n):**
 | Burger / ondernemer (eindgebruiker) | Begrijpelijk, snel en betrouwbaar inzicht in eigen zaken en gegevens |
 | Ketenpartner-medewerker | Zicht op voor hen relevante zaakinformatie en taken |
 | Gemeente / overheidsorganisatie (afnemer) | Platform dat aansluit op hun eigen ZGW-landschap zonder vendor lock-in |
-| Ritense (eigenaar/maintainer) | Kwaliteit en coherentie van het open source product bewaken |
+| pinkroccade (eigenaar/maintainer) | Kwaliteit en coherentie van het open source product bewaken |
 | Bijdragende ontwikkelaars (community) | Begrijpelijke, goed gedocumenteerde codebase om in bij te dragen |
