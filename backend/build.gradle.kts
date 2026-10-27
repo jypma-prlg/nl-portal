@@ -136,6 +136,11 @@ subprojects {
         configure<DependencyManagementExtension> {
             imports {
                 mavenBom("io.netty:netty-bom:${Versions.netty}")
+                // Whole-BOM, not per-artifact: jackson-annotations keeps its own 2.x
+                // line, so forcing only core/databind leaves annotations on Boot's
+                // older pin and databind hits NoClassDefFoundError on classes added
+                // in the newer annotations jar.
+                mavenBom("tools.jackson:jackson-bom:${Versions.jackson}")
             }
             dependencies {
                 // Security overrides on top of the Spring Boot 4.1.0 BOM.
@@ -145,8 +150,6 @@ subprojects {
                 dependency("org.apache.logging.log4j:log4j-api:${Versions.log4j2}")
                 dependency("org.apache.logging.log4j:log4j-to-slf4j:${Versions.log4j2}")
                 dependency("org.bouncycastle:bcprov-jdk18on:${Versions.bouncyCastle}")
-                dependency("tools.jackson.core:jackson-databind:${Versions.jackson}")
-                dependency("tools.jackson.core:jackson-core:${Versions.jackson}")
             }
         }
     }

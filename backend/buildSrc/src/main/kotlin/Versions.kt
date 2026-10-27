@@ -28,14 +28,14 @@ object Versions {
     const val springCloud = "5.0.4" // was 5.0.2, CVE-2026-59284 fix (fixed from 5.0.3)
     const val httpCore5 = "5.4.4" // override Boot 4.1.0 BOM (5.4.2), CVE-2026-54399/-54428 fix
     const val log4j2 = "2.26.1" // override Boot 4.1.0 BOM (2.25.4), CVE-2026-49844 fix
-    const val netty = "4.2.18.Final" // override Boot 4.1.0 BOM (4.2.15.Final), CVE-2026-44891/-55831/-55833 fix
-    const val bouncyCastle = "1.85" // override Spring Cloud 5.0.2's bcprov-jdk18on (1.81.1), CVE-2026-8763 fix
-    const val jackson = "3.1.8" // override Boot 4.1.1's jackson-bom (3.1.5), GHSA-q4xh-88c3-wmh7/-p6pp-m3f8-5c89/-gx83-3vf8-gh7j/-7hhh-6rmp-j9qf/-cxp5-3px4-pw24/-wv8q-qhhj-9h54/-wjgm-6hv5-3cvf fix
+    const val netty = "4.2.19.Final" // override Boot 4.1.0 BOM (4.2.15.Final), CVE-2026-44891/-55831/-55833 fix
+    const val bouncyCastle = "1.86" // override Spring Cloud 5.0.2's bcprov-jdk18on (1.81.1), CVE-2026-8763 fix
+    const val jackson = "3.2.4" // override Boot 4.1.1's jackson-bom (3.1.5), GHSA-q4xh-88c3-wmh7/-p6pp-m3f8-5c89/-gx83-3vf8-gh7j/-7hhh-6rmp-j9qf/-cxp5-3px4-pw24/-wv8q-qhhj-9h54/-wjgm-6hv5-3cvf fix
 
     // Test versions
     const val hamcrest = "3.0"
     const val mockitoKotlin = "6.1.0"
     const val okHttp3 = "5.2.0"
-    const val postgresql = "42.7.13"
+    const val postgresql = "42.7.14"
     const val h2 = "2.4.240"
 }

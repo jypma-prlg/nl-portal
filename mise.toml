@@ -1,6 +1,6 @@
 [tools]
 # Keep in sync with frontend/package.json's "packageManager" field.
-pnpm = "11.28.4"
+pnpm = "11.28.8"
 # Keep in sync with the jvmTarget in backend/build.gradle.kts.
 java = "temurin-21"
 syft = "1.55.0"

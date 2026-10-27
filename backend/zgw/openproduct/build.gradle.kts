@@ -27,7 +27,7 @@ dependencies {
     api(project(":zgw:documenten-api"))
 
     implementation(Dependencies.jsonPath)
-    api("com.github.wnameless.json:json-flattener:0.18.5")
+    api("com.github.wnameless.json:json-flattener:0.18.6")
     implementation(Dependencies.kotlinCoroutines)
     implementation(Dependencies.kotlinCoroutinesReactor)
     implementation("org.springframework.data:spring-data-commons")
