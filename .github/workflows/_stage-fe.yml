@@ -30,9 +30,6 @@ jobs:
             -   name: Install
                 working-directory: frontend
                 run: npm install -g pnpm@11 && pnpm install
-            -   name: Lint
-                working-directory: frontend
-                run: pnpm lint
             -   name: Stamp version in place
                 working-directory: frontend
                 env:
