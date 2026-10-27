@@ -1,4 +1,3 @@
-# Edit this file by hand. Using `pnpm config` reformats the file and removes all comments.
 packages:
   - "./packages/**"
 
@@ -30,7 +29,7 @@ strictPeerDependencies: false
 
 overrides:
   # Rolldown 1.2.12 triggers library watch rebuilds on its own dist output.
-  rolldown: 1.2.8
+  rolldown: 1.2.15
   uuid@9: 11.1.1
   lodash-es: 4.18.1
   # Critical CVE (GHSA-pqg4-j6r4-53mv), pulled in transitively via
@@ -39,20 +38,20 @@ overrides:
   # The following pin to each advisory's minimum fixed version (not "latest"), consistent
   # with minimumReleaseAge above: prefer an established fix over an unvetted brand-new release.
   # All transitive via @graphql-codegen/cli, eslint, stylelint, vitest or wait-on (devDependencies only).
-  "@fastify/busboy": 3.2.2 # GHSA-xjh9-v7x6-24jw, GHSA-x8mw-p69m-v3mx, GHSA-gxm5-99cw-xjw9
-  follow-redirects: 1.16.1 # GHSA-8r9p-f939-6h3c, GHSA-q3jh-wrc6-jgq8
+  "@fastify/busboy": 3.2.4 # GHSA-xjh9-v7x6-24jw, GHSA-x8mw-p69m-v3mx, GHSA-gxm5-99cw-xjw9
+  follow-redirects: 1.16.2 # GHSA-8r9p-f939-6h3c, GHSA-q3jh-wrc6-jgq8
   # GHSA-7mx3-vvmw-hjmv's 12.0.1 pin is itself vulnerable to GHSA-c4qx-w738-7hr3 (10.10.1-12.0.1);
   # no fixed 12.x release exists, only 13.0.0+, so this pin now crosses a major line.
-  "@graphql-tools/utils": 13.0.0 # GHSA-c4qx-w738-7hr3
+  "@graphql-tools/utils": 13.2.0 # GHSA-c4qx-w738-7hr3
   source-map-js: 1.2.2 # GHSA-68fv-2mgg-jv7q
   brace-expansion@1: 1.1.21 # GHSA-6j4f-fj2g-mc7p, GHSA-qhr7-859c-m2p7, GHSA-q2hr-2g5m-vwhr
   brace-expansion@5: 5.0.12 # idem, 5.x line (both lines resolve independently in the tree)
-  postcss-selector-parser: 7.1.6 # GHSA-rj75-hqrm-r3gf
-  "@graphql-tools/executor-legacy-ws": 1.1.35 # GHSA-6fw5-9hq8-w87g
+  postcss-selector-parser: 7.1.7 # GHSA-rj75-hqrm-r3gf
+  "@graphql-tools/executor-legacy-ws": 1.1.39 # GHSA-6fw5-9hq8-w87g
   moment: 2.31.0 # GHSA-4p3w-j4w9-5jqw - transitive via @formio/js, this one IS shipped
-  vite: 8.3.3 # GHSA-587h-7wmj-h5pm, GHSA-698v-4r3x-3vcv, GHSA-r825-w8mm-5pxw
+  vite: 8.3.5 # GHSA-587h-7wmj-h5pm, GHSA-698v-4r3x-3vcv, GHSA-r825-w8mm-5pxw
   dompurify: 3.4.17 # GHSA-mrv2-3pqr-j5jr, GHSA-cg2g-xh64-v4q7
-  undici: 8.12.2 # GHSA-xjj6-f33q-929c
-  zod: 4.6.6 # GHSA-mrhx-c7xc-m3w5
+  undici: 8.12.3 # GHSA-xjj6-f33q-929c
+  zod: 4.6.7 # GHSA-mrhx-c7xc-m3w5
   # braces 3.0.3 (GHSA-vfj7-8cjw-p6xm) has no fixed version published yet - can't override,
   # see docs/workflows/security.md for the follow-up.

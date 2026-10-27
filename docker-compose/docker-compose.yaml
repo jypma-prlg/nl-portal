@@ -56,7 +56,7 @@ services:
             POSTGRES_PASSWORD: keycloak
 
     nl-portal-openzaak:
-        image: openzaak/open-zaak:1.30.0
+        image: openzaak/open-zaak:1.31.0
         container_name: nl-portal-openzaak
         platform: linux/amd64
         profiles:
@@ -90,7 +90,7 @@ services:
             - ./imports/openzaak/private-media:/app/private-media
 
     nl-portal-openzaak-import:
-        image: openzaak/open-zaak:1.30.0
+        image: openzaak/open-zaak:1.31.0
         container_name: nl-portal-openzaak-import
         platform: linux/amd64
         profiles:
@@ -121,7 +121,7 @@ services:
             - POSTGRES_DB=openzaak
 
     nl-portal-openklant-2:
-        image: maykinmedia/open-klant:2.19.0
+        image: maykinmedia/open-klant:2.19.1
         container_name: nl-portal-openklant-2
         profiles:
             - zgw
@@ -151,7 +151,7 @@ services:
             - ./imports/openklant-2/fixtures:/app/src/openklant/fixtures
 
     nl-portal-openklant-2-import:
-        image: maykinmedia/open-klant:2.19.0
+        image: maykinmedia/open-klant:2.19.1
         container_name: nl-portal-openklant-2-import
         profiles:
             - zgw
@@ -179,7 +179,7 @@ services:
             - POSTGRES_DB=openklant
 
     nl-portal-open-object:
-        image: maykinmedia/open-object:4.2.1
+        image: maykinmedia/open-object:4.3.0
         container_name: nl-portal-open-object
         platform: linux/amd64
         network_mode: "service:localhost"
@@ -214,7 +214,7 @@ services:
             - nl-portal-redis
 
     nl-portal-open-object-celery:
-        image: maykinmedia/open-object:4.2.1
+        image: maykinmedia/open-object:4.3.0
         container_name: nl-portal-open-object-celery
         platform: linux/amd64
         network_mode: "service:localhost"
@@ -241,7 +241,7 @@ services:
             - POSTGRES_DB=objects
 
     nl-portal-open-object-import:
-        image: maykinmedia/open-object:4.2.1
+        image: maykinmedia/open-object:4.3.0
         container_name: nl-portal-open-object-import
         platform: linux/amd64
         profiles:
@@ -344,7 +344,7 @@ services:
             -   objecten
 
     nl-portal-openproduct:
-        image: maykinmedia/open-product:1.9.0
+        image: maykinmedia/open-product:1.10.0
         container_name: nl-portal-openproduct
         profiles:
             - zgw
@@ -375,7 +375,7 @@ services:
             - OPENPRODUCT_SUPERUSER_PASSWORD=admin
 
     nl-portal-openproduct-import:
-        image: maykinmedia/open-product:1.9.0
+        image: maykinmedia/open-product:1.10.0
         container_name: nl-portal-openproduct-import
         platform: linux/amd64
         profiles:
@@ -393,7 +393,7 @@ services:
             - nl-portal-redis
 
     nl-portal-openproduct-celery:
-        image: maykinmedia/open-product:1.9.0
+        image: maykinmedia/open-product:1.10.0
         container_name: nl-portal-openproduct-celery
         platform: linux/amd64
         network_mode: "service:localhost"
