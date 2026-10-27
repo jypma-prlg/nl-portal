@@ -82,7 +82,7 @@ jobs:
 
     fast-track-label:
         needs: [changes, ci-required]
-        if: ${{ needs.ci-required.result == 'success' }}
+        if: always()
         runs-on: ubuntu-latest
         permissions:
             contents: read
@@ -94,15 +94,20 @@ jobs:
                     REPO: ${{ github.repository }}
                     PR_NUMBER: ${{ github.event.pull_request.number }}
                     PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+                    CI_RESULT: ${{ needs.ci-required.result }}
                     DOCS_ONLY: ${{ needs.changes.outputs.docsOnly }}
                     TOUCHES_WORKFLOWS: ${{ needs.changes.outputs.workflows }}
                 run: |
+                    # Renovate's weekly non-major dependency-group PRs are the only ones this
+                    # author check needs to catch: major updates are disabled repo-wide in
+                    # renovate.json (matchUpdateTypes: major -> enabled: false), so any
+                    # renovate[bot] PR is non-major by construction - no separate per-PR check.
                     RENOVATE_NON_MAJOR=false
                     if [ "${PR_AUTHOR}" = "renovate[bot]" ] && [ "${TOUCHES_WORKFLOWS}" = "false" ]; then
                       RENOVATE_NON_MAJOR=true
                     fi
 
-                    if [ "${DOCS_ONLY}" = "true" ] || [ "${RENOVATE_NON_MAJOR}" = "true" ]; then
+                    if [ "${CI_RESULT}" = "success" ] && { [ "${DOCS_ONLY}" = "true" ] || [ "${RENOVATE_NON_MAJOR}" = "true" ]; }; then
                       gh pr edit "${PR_NUMBER}" --repo "${REPO}" --add-label fast-track-ready
                     else
                       gh pr edit "${PR_NUMBER}" --repo "${REPO}" --remove-label fast-track-ready
