@@ -20,6 +20,8 @@ jobs:
             backend: ${{ steps.filter.outputs.backend }}
             frontend: ${{ steps.filter.outputs.frontend }}
             scripts: ${{ steps.filter.outputs.scripts }}
+            workflows: ${{ steps.filter.outputs.workflows }}
+            docsOnly: ${{ steps.filter.outputs.backend == 'false' && steps.filter.outputs.frontend == 'false' && steps.filter.outputs.scripts == 'false' && steps.filter.outputs.workflows == 'false' && steps.filter.outputs.docs == 'true' }}
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
             -   uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
@@ -32,6 +34,12 @@ jobs:
                             - 'frontend/**'
                         scripts:
                             - 'scripts/**'
+                        workflows:
+                            - '.github/workflows/**'
+                        docs:
+                            - 'docs/**'
+                            - '*.md'
+                            - 'GLOSSARY.md'
 
     validate:
         needs: changes
@@ -70,4 +78,32 @@ jobs:
                     fi
                     if [ "${SCRIPTS_RESULT}" = "failure" ] || [ "${SCRIPTS_RESULT}" = "cancelled" ]; then
                       exit 1
+                    fi
+
+    fast-track-label:
+        needs: [changes, ci-required]
+        if: ${{ needs.ci-required.result == 'success' }}
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
+        steps:
+            -   name: Apply or remove fast-track-ready label
+                env:
+                    GH_TOKEN: ${{ github.token }}
+                    REPO: ${{ github.repository }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                    PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+                    DOCS_ONLY: ${{ needs.changes.outputs.docsOnly }}
+                    TOUCHES_WORKFLOWS: ${{ needs.changes.outputs.workflows }}
+                run: |
+                    RENOVATE_NON_MAJOR=false
+                    if [ "${PR_AUTHOR}" = "renovate[bot]" ] && [ "${TOUCHES_WORKFLOWS}" = "false" ]; then
+                      RENOVATE_NON_MAJOR=true
+                    fi
+
+                    if [ "${DOCS_ONLY}" = "true" ] || [ "${RENOVATE_NON_MAJOR}" = "true" ]; then
+                      gh pr edit "${PR_NUMBER}" --repo "${REPO}" --add-label fast-track-ready
+                    else
+                      gh pr edit "${PR_NUMBER}" --repo "${REPO}" --remove-label fast-track-ready
                     fi
