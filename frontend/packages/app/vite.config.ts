@@ -55,6 +55,7 @@ export default defineConfig({
     css: true,
     environment: "jsdom",
     globals: true,
+    setupFiles: "./src/setupTests.ts",
   },
   ssr: { noExternal: true },
 });

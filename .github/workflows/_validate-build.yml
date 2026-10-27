@@ -50,6 +50,9 @@ jobs:
             -   name: Install
                 working-directory: frontend
                 run: npm install -g pnpm@11 && pnpm install
+            -   name: Build
+                working-directory: frontend
+                run: pnpm -r build
             -   name: Lint
                 working-directory: frontend
                 run: pnpm lint
@@ -59,12 +62,9 @@ jobs:
             -   name: Typecheck
                 working-directory: frontend
                 run: pnpm typecheck
-            -   name: Prettier
-                working-directory: frontend
-                run: pnpm prettier
-            -   name: Build
-                working-directory: frontend
-                run: pnpm -r build
             -   name: Test
                 working-directory: frontend
                 run: pnpm test
+            -   name: Prettier
+                working-directory: frontend
+                run: pnpm prettier

@@ -131,6 +131,25 @@ const ensureStorage = (name: "localStorage" | "sessionStorage") => {
 ensureStorage("localStorage");
 ensureStorage("sessionStorage");
 
+// jsdom ships no matchMedia. inputmask (transitive via @formio/js) calls it at
+// module load, so importing a tree that reaches it throws before any test runs.
+if (typeof window.matchMedia === "undefined") {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+
 if (typeof window.ResizeObserver === "undefined") {
   class ResizeObserverMock {
     observe() {}
