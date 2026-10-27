@@ -9,6 +9,9 @@
     "automerge": false,
     "dependencyDashboard": true,
     "minimumReleaseAge": "1 day",
+    "gradle-wrapper": {
+        "enabled": false
+    },
     "lockFileMaintenance": {
         "enabled": true,
         "schedule": ["* 18-23 * * 0"]
