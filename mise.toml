@@ -34,6 +34,21 @@ run = "pnpm outdated -r"
 description = "List available backend + frontend dependency updates"
 depends = ["deps:check-backend", "deps:check-frontend"]
 
+[tasks."deps:update-backend"]
+description = "List available backend dependency updates (backend has no dependency locking - versions are pinned in Dependencies.kt/Versions.kt, so bumping them is a manual edit or left to Renovate; this is an alias for deps:check-backend)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew dependencyUpdates -Drevision=release"
+
+[tasks."deps:update-frontend"]
+description = "Update frontend dependencies within their existing semver range and refresh pnpm-lock.yaml (does not bump past declared ranges; for that, edit package.json or wait for Renovate)"
+dir = "frontend"
+run = "pnpm update -r"
+
+[tasks."deps:update"]
+description = "Update frontend dependencies in-range; list backend updates for manual review (see deps:update-backend, deps:update-frontend)"
+depends = ["deps:update-backend", "deps:update-frontend"]
+
 [tasks."sbom:backend"]
 description = "Generate a CycloneDX SBOM for the backend (builds first, dependencies must be resolved)"
 dir = "backend"
