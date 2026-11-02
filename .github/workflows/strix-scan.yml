@@ -6,14 +6,17 @@ on:
 
 permissions:
     contents: read
-    issues: write
 
 concurrency:
     group: strix-scan-${{ github.ref }}
     cancel-in-progress: true
 
 env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # Deliberate pins, bump both together on a reviewed Strix upgrade (see "Install Strix" below).
+    STRIX_VERSION: "1.7.0"
+    STRIX_ASSET_SHA256: "b8cd7e84d63cbeff6726301a9e08fddedf40fc6a4edcdb4edda8a853b3312de6"
+    STRIX_SANDBOX_IMAGE: "ghcr.io/usestrix/strix-sandbox:1.3.1"
+    STRIX_SANDBOX_DIGEST: "sha256:efd7f18980c126700ddf55f6d0c0c86436d8d20908f4e1252cb761212749ded5"
 
 jobs:
     strix-scan:
@@ -27,8 +30,30 @@ jobs:
                 uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
                 with:
                     fetch-depth: 0
-            -   name: Install Strix
-                run: curl -sSL https://strix.ai/install | bash
+            -   name: Install Strix (pinned release, checksum-verified)
+                # Deliberately not "curl | bash" against the upstream installer: that resolves and
+                # executes whatever strix.ai serves at request time, unpinned and unverified, in a
+                # job that carries our LLM credentials - the same risk this scan itself flagged
+                # (CVSS 9.9) against the first version of this workflow. Downloads the exact
+                # release asset and verifies it against the sha256 GitHub publishes for it, same
+                # standard as this repo's SHA-pinned Actions and Gradle's verification-metadata.xml.
+                run: |
+                    curl -fsSL -o strix.tar.gz \
+                        "https://github.com/usestrix/strix/releases/download/v${STRIX_VERSION}/strix-${STRIX_VERSION}-linux-x86_64.tar.gz"
+                    echo "${STRIX_ASSET_SHA256}  strix.tar.gz" | sha256sum --check -
+                    mkdir -p "$HOME/.strix/bin"
+                    tar -xzf strix.tar.gz -C "$HOME/.strix/bin"
+                    chmod +x "$HOME/.strix/bin/strix"
+                    echo "$HOME/.strix/bin" >> "$GITHUB_PATH"
+                    rm strix.tar.gz
+            -   name: Pin the sandbox image by digest
+                # Strix pulls its sandbox image by mutable tag with no digest check (the other half
+                # of the same finding). Pulling it ourselves by digest and tagging it locally with
+                # the tag Strix expects means its image_exists() check finds our verified image
+                # cached and never re-resolves the floating tag.
+                run: |
+                    docker pull --platform linux/amd64 "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}"
+                    docker tag "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}" "${STRIX_SANDBOX_IMAGE}"
             -   name: Run agentic security scan (PR diff scope)
                 env:
                     STRIX_LLM: ${{ secrets.STRIX_LLM }}
