@@ -1,0 +1,40 @@
+name: Strix security scan
+
+on:
+    pull_request:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    issues: write
+
+concurrency:
+    group: strix-scan-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+    strix-scan:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+                with:
+                    fetch-depth: 0
+            -   name: Install Strix
+                run: curl -sSL https://strix.ai/install | bash
+            -   name: Run agentic security scan (PR diff scope)
+                env:
+                    STRIX_LLM: ${{ secrets.STRIX_LLM }}
+                    LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+                    LLM_API_BASE: ${{ secrets.LLM_API_BASE }}
+                run: strix -n -t ./ --scan-mode quick --scope-mode diff --fail-on high
+            -   name: Upload scan report
+                if: always()
+                uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+                with:
+                    name: strix-scan-report
+                    path: strix_runs/
+                    retention-days: 7

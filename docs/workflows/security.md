@@ -35,6 +35,7 @@ betekent*. Voor NL Portal:
 | SBOM | Beide | ✅ backend (release-only, zie `docs/workflows/sbom.md`), **✅ nieuw**: frontend on-demand |
 | Dependency-updates | Beide | ✅ Renovate, zie `docs/workflows/dependency-updates.md` |
 | Dependency-integriteit (supply-chain) | **Alleen backend** | **✅ nieuw**: Gradle dependency-verificatie (`backend/gradle/verification-metadata.xml`, sha256 per artefact) - zie `docs/workflows/dependency-updates.md`, sectie 5 |
+| Agentic pentest / DAST op de PR-diff | Beide | **✅ nieuw**: `strix-scan.yml` — zelf-gehost via de [Strix](https://strix.ai) CLI tegen het team's eigen LLM-endpoint (T-Systems LLM Hub), scan-mode `quick`, scope `diff`, `--fail-on high`. Vervangt de gehoste `strix-security`-GitHub App-integratie (die alleen een "setting up"-comment postte); die app moet apart uitgeschakeld worden via GitHub Settings > Integrations, dat is geen CI-wijziging. |
 
 **Concrete bevinding tijdens het schrijven van dit document** (`mise run security:frontend-vuln-scan`,
 2026-10-20): de frontend-dependency-tree bevatte op dat moment een **Critical**-kwetsbaarheid
@@ -58,6 +59,7 @@ Lokaal draaien, zonder op CI te wachten:
 mise run security:secrets-scan          # werkt met .gitleaks.toml als allowlist
 mise run security:frontend-vuln-scan    # SBOM + grype, fail-on high
 mise run security:backend-vuln-scan     # idem voor backend (vult dependency-check.yml aan met CVE-data van ná de laatste Dependency-Check-database-sync)
+strix -t ./ --scan-mode quick --scope-mode diff --fail-on high   # zelfde agentic DAST-scan als strix-scan.yml; vereist STRIX_LLM/LLM_API_KEY/LLM_API_BASE in de omgeving
 ```
 
 ### Defend — hardening die niet in een scan-rapport staat
