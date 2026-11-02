@@ -17,7 +17,11 @@ env:
 
 jobs:
     strix-scan:
-        runs-on: ubuntu-latest
+        # Pinned (not ubuntu-latest): ubuntu-latest is mid-rollover to ubuntu-26.04, and Strix's
+        # Docker-based sandbox crashed on that image with a sqlite3 "unable to open database file"
+        # error mid-scan (likely a container/user-namespace behavior change, as seen with the
+        # 22.04 -> 24.04 move). Re-evaluate once Strix confirms 26.04 support.
+        runs-on: ubuntu-24.04
         steps:
             -   name: Checkout
                 uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
