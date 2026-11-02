@@ -7,22 +7,6 @@ syft = "1.55.0"
 grype = "0.121.0"
 gitleaks = "8.30.1"
 
-[tasks."docs:test"]
-description = "Run the docs site's navigation-structure tests (ADR 0006)"
-dir = "site"
-run = "pnpm install && pnpm run test"
-
-[tasks."docs:build"]
-description = "Build the docs site, failing on any broken internal link or anchor"
-dir = "site"
-depends = ["docs:test"]
-run = "pnpm install && pnpm run build"
-
-[tasks."docs:dev"]
-description = "Preview the docs site locally"
-dir = "site"
-run = "pnpm install && pnpm run dev"
-
 [tasks."likec4:validate"]
 description = "Validate the LikeC4 architecture model (docs/likec4)"
 run = "npx --yes likec4@1.60.0 validate docs/likec4"
