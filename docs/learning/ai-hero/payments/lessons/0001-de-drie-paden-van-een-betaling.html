@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les 1 — De drie paden van een betaling</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<p class="kicker">Payments in nl-portal · Les 1 van ?</p>
+<h1>De drie paden van een betaling</h1>
+
+<p>
+Een "Ogone-betaling" in nl-portal is een taak (<code>TaakSoort.Ogonebetaling</code>) die de gebruiker naar
+Worldline (voorheen Ogone) stuurt om af te rekenen — bijvoorbeeld leges voor een aanvraag. Voor code review is
+het belangrijkste inzicht: <strong>er zijn drie afzonderlijke componenten die elk hun eigen deel van de betaling
+bewaken, en ze lopen niet gelijktijdig</strong>.
+</p>
+
+<svg class="diagram" viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="currentColor" style="color:var(--ink-soft)"/>
+    </marker>
+  </defs>
+
+  <rect class="box" x="20" y="20" width="160" height="60" rx="6"/>
+  <text class="label" x="100" y="45" text-anchor="middle">Frontend</text>
+  <text x="100" y="63" text-anchor="middle" font-size="13">Task.tsx /</text>
+  <text x="100" y="78" text-anchor="middle" font-size="13">usePayment</text>
+
+  <rect class="box" x="240" y="20" width="160" height="60" rx="6"/>
+  <text class="label" x="320" y="45" text-anchor="middle">Backend</text>
+  <text x="320" y="63" text-anchor="middle" font-size="13">DirectPaymentService</text>
+  <text x="320" y="78" text-anchor="middle" font-size="13">(checkout aanmaken)</text>
+
+  <rect class="box" x="460" y="20" width="160" height="60" rx="6"/>
+  <text class="label" x="540" y="45" text-anchor="middle">Worldline</text>
+  <text x="540" y="63" text-anchor="middle" font-size="13">hosted checkout</text>
+  <text x="540" y="78" text-anchor="middle" font-size="13">(betaalpagina)</text>
+
+  <path class="arrow" d="M180,50 L240,50"/>
+  <path class="arrow" d="M400,50 L460,50"/>
+
+  <rect class="box" x="20" y="160" width="160" height="60" rx="6" />
+  <text class="label" x="100" y="185" text-anchor="middle">Frontend</text>
+  <text x="100" y="203" text-anchor="middle" font-size="13">usePaymentRegistration</text>
+  <text x="100" y="218" text-anchor="middle" font-size="13">(pad A: gebruiker keert terug)</text>
+
+  <rect class="box" x="240" y="160" width="160" height="60" rx="6" />
+  <text class="label" x="320" y="185" text-anchor="middle">Backend</text>
+  <text x="320" y="203" text-anchor="middle" font-size="13">getDirectPaymentStatus</text>
+  <text x="320" y="218" text-anchor="middle" font-size="13">(status opvragen)</text>
+
+  <rect class="box" x="460" y="160" width="160" height="60" rx="6"/>
+  <text class="label" x="540" y="185" text-anchor="middle">Backend</text>
+  <text x="540" y="203" text-anchor="middle" font-size="13">DirectPaymentController</text>
+  <text x="540" y="218" text-anchor="middle" font-size="13">(pad B: webhook postsale)</text>
+
+  <path class="arrow" d="M100,160 L100,90" />
+  <path class="arrow" d="M180,190 L240,190" />
+  <path class="arrow" d="M540,160 L540,90" />
+
+  <text x="320" y="260" text-anchor="middle" font-size="12" class="label">
+    Pad A en pad B lopen onafhankelijk van elkaar — ze zijn beide nodig
+  </text>
+</svg>
+
+<h2>Waarom twee paden naar dezelfde conclusie?</h2>
+
+<p>
+Pad A is wat de <em>gebruiker ziet</em>: na betalen stuurt Worldline de browser terug naar nl-portal met
+<code>?type=ogone&amp;hostedCheckoutId=...</code>. De frontend-hook <code>usePaymentRegistration</code> vraagt
+dan via <code>getDirectPaymentStatus</code> de status op bij Worldline.
+</p>
+
+<p>
+Pad B is een <em>server-naar-server</em> webhook: Worldline doet zelf een <code>POST</code> naar
+<code>/api/public/payment/direct/postsale</code>, ongeacht of de gebruiker ooit terugkeert. Dat eindpunt
+(<code>DirectPaymentController</code>) delegeert naar <code>DirectPaymentWebhookService</code>, die de
+taakstatus in de <strong>Objecten API</strong> bijwerkt.
+</p>
+
+<div class="callout">
+  <div class="callout-title">Waarom dit ertoe doet bij een review</div>
+  <p>
+  Pad A is niet betrouwbaar genoeg om de taakstatus op te baseren: de gebruiker kan het tabblad sluiten,
+  de betaalpagina crashen, of terugkomen met een gemanipuleerde URL. Pad B (de webhook, met handtekening-
+  validatie) is de <em>bron van waarheid</em> voor "is er betaald". Pad A is alleen voor de gebruikerservaring
+  (wat laten we zien terwijl we wachten). Zie je een PR die de taakstatus laat afhangen van het redirect-pad
+  in plaats van de webhook — dat is een rode vlag.
+  </p>
+</div>
+
+<h2>Check je begrip</h2>
+
+<div class="quiz" data-correct="2">
+  <p class="quiz-q">Welk component is de bron van waarheid voor "is deze taak betaald"?</p>
+  <div class="quiz-options">
+    <button class="quiz-option">usePayment in de frontend</button>
+    <button class="quiz-option">usePaymentRegistration, via de redirect-URL</button>
+    <button class="quiz-option">DirectPaymentWebhookService, via de postsale-webhook</button>
+  </div>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" data-correct="0">
+  <p class="quiz-q">Een PR verwijdert de signatuurvalidatie uit de webhook "om tijdelijk te debuggen". Wat is het risico?</p>
+  <div class="quiz-options">
+    <button class="quiz-option">Iedereen kan taken als "betaald" laten markeren zonder te betalen</button>
+    <button class="quiz-option">De frontend-knop wordt twee seconden trager zichtbaar</button>
+    <button class="quiz-option">De checkout-pagina toont de verkeerde valuta aan de gebruiker</button>
+  </div>
+  <div class="quiz-feedback"></div>
+</div>
+
+<h2>Primaire bron</h2>
+<p>
+Lees voor de volgende les de sectie over <a href="https://docs.direct.worldline-solutions.com/en/integration/basic-integration-methods/hostedcheckout/" target="_blank" rel="noopener">Hosted Checkout</a>
+in de Worldline Direct-documentatie — het legt uit waarom het hosted-checkout-model (in plaats van kaartgegevens
+zelf verwerken) PCI-scope van nl-portal afhoudt. Dat verklaart meteen waarom <code>DirectPaymentClient</code>
+nooit kaartnummers ziet.
+</p>
+
+<p class="sidenote">
+Zie ook: <a href="../reference/0001-payment-glossary.html">Glossary — Payment-termen in nl-portal</a>.
+</p>
+
+<p class="ask-agent">Onduidelijk, of wil je dieper op één van deze onderdelen in? Vraag het gewoon aan je agent.</p>
+
+<div class="nav">
+  <span>Les 1 van ?</span>
+  <span>Volgende les: webhook-validatie &amp; faalscenario's (nog te maken)</span>
+</div>
+
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
