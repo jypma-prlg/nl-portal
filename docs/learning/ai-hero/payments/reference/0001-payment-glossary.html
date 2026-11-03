@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary — Payment-termen in nl-portal</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<p class="kicker">Payments in nl-portal · Referentie</p>
+<h1>Glossary — Payment-termen</h1>
+
+<p class="sidenote">Compressed reference. Zie <a href="../lessons/0001-de-drie-paden-van-een-betaling.html">Les 1</a> voor de uitleg in context.</p>
+
+<h2>Kerncomponenten</h2>
+<p><strong>DirectPaymentService</strong> — backend-service die een hosted checkout aanmaakt bij Worldline en de status ervan kan opvragen. Kent geen HTTP-laag.</p>
+<p><strong>DirectPaymentController</strong> — publiek REST-endpoint (<code>/api/public/payment/direct/postsale</code>) dat de webhook van Worldline ontvangt.</p>
+<p><strong>DirectPaymentWebhookService</strong> — valideert de webhook-handtekening en werkt de taakstatus bij in de Objecten API.</p>
+<p><strong>DirectPaymentClient</strong> — HTTP-client naar de Worldline/Ogone API. Enige plek die de betaalprovider daadwerkelijk aanroept.</p>
+<p><strong>usePayment</strong> (frontend) — start de betaling via de <code>doDirectPayment</code> GraphQL-mutation; redirect de browser naar de hosted checkout-URL.</p>
+<p><strong>usePaymentRegistration</strong> (frontend) — na terugkomst van de checkout: pollt de status via <code>getDirectPaymentStatus</code> voor de UI.</p>
+
+<h2>Statusbegrippen</h2>
+<p><strong>DirectPaymentState</strong> — status-codes zoals door Worldline teruggegeven in de webhook (<code>SUCCESS</code>, <code>PENDING</code>, ...).</p>
+<p><strong>DirectPaymentStatusCategory</strong> — afgeleide categorie gebruikt in de GraphQL-status-query (bijv. <code>Successful</code>).</p>
+
+<h2>Configuratie</h2>
+<p><strong>DirectPaymentModuleConfiguration</strong> — Spring <code>@ConfigurationProperties</code> onder <code>nl-portal.config.payment.direct</code>. Bevat per-gemeente/organisatie <strong>DirectPaymentProfile</strong>s (pspId, taal, valuta, API-sleutels).</p>
+<p><strong>Feature flags</strong> — <code>payment.direct.enabled</code> schakelt de hele module; <code>objectenapi.enabled</code> is apart nodig voor de webhook/controller (die naar de Objecten API schrijft).</p>
+
+<h2>De twee onafhankelijke paden</h2>
+<p><strong>Pad A (redirect)</strong> — gebruiker keert terug met <code>?type=ogone&amp;hostedCheckoutId=...</code>; alleen voor UI-feedback, niet autoritatief.</p>
+<p><strong>Pad B (webhook / postsale)</strong> — server-naar-server call van Worldline; bron van waarheid voor de taakstatus, beveiligd met handtekeningvalidatie.</p>
+
+<div class="ask-agent">Term mist of onduidelijk? Vraag het je agent — dan wordt deze glossary bijgewerkt.</div>
+
+</body>
+</html>

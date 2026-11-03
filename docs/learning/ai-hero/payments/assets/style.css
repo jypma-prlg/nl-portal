@@ -1,0 +1,160 @@
+/* Shared stylesheet for the nl-portal teaching workspace. Tufte-ish: calm, readable, print-friendly. */
+
+:root {
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --paper: #fdfdfb;
+  --rule: #d8d4c8;
+  --accent: #8a3b2b;
+  --accent-soft: #fbeee9;
+  --code-bg: #f4f2ec;
+  --success: #2f6b3a;
+  --pending: #a67c00;
+  --fail: #a4342a;
+  --max-width: 680px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8e6df;
+    --ink-soft: #b5b2a8;
+    --paper: #1c1b18;
+    --rule: #3a3833;
+    --accent: #e08f6d;
+    --accent-soft: #332420;
+    --code-bg: #26241f;
+    --success: #7fbf8a;
+    --pending: #d9ad45;
+    --fail: #e0776c;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  line-height: 1.55;
+  max-width: var(--max-width);
+  margin: 3rem auto 6rem;
+  padding: 0 1.5rem;
+  font-size: 1.08rem;
+}
+
+h1, h2, h3 {
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+h1 { font-size: 1.9rem; margin-bottom: 0.2rem; }
+.kicker {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin: 0 0 0.6rem;
+}
+
+h2 { font-size: 1.3rem; margin-top: 2.2rem; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+
+p { margin: 0.9rem 0; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; }
+
+code, pre {
+  font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+  background: var(--code-bg);
+  border-radius: 4px;
+}
+code { padding: 0.1em 0.35em; font-size: 0.92em; }
+pre { padding: 0.9rem 1rem; overflow-x: auto; font-size: 0.88rem; }
+
+blockquote {
+  margin: 1.2rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--rule);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.sidenote {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--rule);
+  padding-left: 0.8rem;
+  margin: 1rem 0;
+}
+
+.callout {
+  background: var(--accent-soft);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.4rem 0;
+}
+
+.callout-title {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+
+svg.diagram { width: 100%; height: auto; margin: 1.4rem 0; }
+svg.diagram text { font-family: "Helvetica Neue", Arial, sans-serif; fill: var(--ink); }
+svg.diagram .box { fill: var(--code-bg); stroke: var(--rule); }
+svg.diagram .arrow { stroke: var(--ink-soft); stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+svg.diagram .label { font-size: 12px; fill: var(--ink-soft); }
+
+/* Quiz widget */
+.quiz {
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1.2rem 1.3rem;
+  margin: 1.4rem 0;
+}
+.quiz-q { font-weight: 600; margin-bottom: 0.7rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-option {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  text-align: left;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.quiz-option:hover { border-color: var(--accent); }
+.quiz-option.correct { background: var(--success); border-color: var(--success); color: #fff; }
+.quiz-option.incorrect { background: var(--fail); border-color: var(--fail); color: #fff; }
+.quiz-feedback { margin-top: 0.7rem; font-size: 0.92rem; min-height: 1.2em; }
+
+.nav {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.ask-agent {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-top: 2.5rem;
+}
