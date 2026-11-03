@@ -83,3 +83,10 @@ Thumbs.db
 # mise's personal-override config (e.g. a local SONAR_TOKEN) - never commit the real one.
 mise.local.toml
 !mise.local.toml.example
+
+# --- Local AI tooling (per-machine, not shared project config) ---------------
+# .claude/CLAUDE.md and .claude/settings.json are intentionally committed
+# (shared project instructions/config) - only ignore generated/local state.
+.codegraph/
+.mcp.json
+strix_runs/
