@@ -114,6 +114,11 @@ dir = "backend"
 shell = "bash -c"
 run = "./gradlew generateLicenseReport"
 
+[tasks."security:strix-scan"]
+description = "Run the Strix agentic security scan locally (same pins as CI; docker's local image cache makes repeat runs fast after the first pull)"
+shell = "bash -c"
+run = "bash scripts/strix-scan-local.sh"
+
 [tasks."security:check-license"]
 description = "Check backend dependency licenses against the allowlist (backend/gradle/license-report/allowed-licenses.json) - known broken on main, see docs/workflows/periodic-checks.md"
 dir = "backend"
