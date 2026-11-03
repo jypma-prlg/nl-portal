@@ -36,7 +36,14 @@ jobs:
                 uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
                 with:
                     fetch-depth: 0
+            -   name: Cache Strix binary
+                id: strix-bin-cache
+                uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+                with:
+                    path: ~/.strix/bin
+                    key: strix-bin-${{ env.STRIX_VERSION }}-${{ env.STRIX_ASSET_SHA256 }}
             -   name: Install Strix (pinned release, checksum-verified)
+                if: steps.strix-bin-cache.outputs.cache-hit != 'true'
                 # Deliberately not "curl | bash" against the upstream installer: that resolves and
                 # executes whatever strix.ai serves at request time, unpinned and unverified, in a
                 # job that carries our LLM credentials - the same risk this scan itself flagged
@@ -51,15 +58,27 @@ jobs:
                     tar -xzf strix.tar.gz -C "$HOME/.strix/bin"
                     mv "$HOME/.strix/bin/strix-${STRIX_VERSION}-linux-x86_64" "$HOME/.strix/bin/strix"
                     chmod +x "$HOME/.strix/bin/strix"
-                    echo "$HOME/.strix/bin" >> "$GITHUB_PATH"
                     rm strix.tar.gz
+            -   name: Add Strix to PATH
+                run: echo "$HOME/.strix/bin" >> "$GITHUB_PATH"
+            -   name: Cache sandbox image
+                id: sandbox-image-cache
+                uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+                with:
+                    path: ~/strix-sandbox-image.tar
+                    key: strix-sandbox-${{ env.STRIX_SANDBOX_DIGEST }}
             -   name: Pin the sandbox image by digest
                 # Strix pulls its sandbox image by mutable tag with no digest check (the other half
                 # of the same finding). Pulling it ourselves by digest and tagging it locally with
                 # the tag Strix expects means its image_exists() check finds our verified image
                 # cached and never re-resolves the floating tag.
                 run: |
-                    docker pull --platform linux/amd64 "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}"
+                    if [ "${{ steps.sandbox-image-cache.outputs.cache-hit }}" = "true" ]; then
+                        docker load -i ~/strix-sandbox-image.tar
+                    else
+                        docker pull --platform linux/amd64 "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}"
+                        docker save -o ~/strix-sandbox-image.tar "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}"
+                    fi
                     docker tag "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}" "${STRIX_SANDBOX_IMAGE}"
             -   name: Run agentic security scan (PR diff scope)
                 env:

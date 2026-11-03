@@ -1,0 +1,7 @@
+{
+  "env": {
+    "STRIX_LLM": "GLM-5.3-Flash",
+    "LLM_API_KEY": "gen-Cik7mVSNC54t5jxKRxFFrgGy3248rfrutJssR0wGeiwnON5J",
+    "LLM_API_BASE": "https://llm-server.llmhub.t-systems.net/v2"
+  }
+}
