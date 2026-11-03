@@ -43,6 +43,7 @@ jobs:
                     echo "${STRIX_ASSET_SHA256}  strix.tar.gz" | sha256sum --check -
                     mkdir -p "$HOME/.strix/bin"
                     tar -xzf strix.tar.gz -C "$HOME/.strix/bin"
+                    mv "$HOME/.strix/bin/strix-${STRIX_VERSION}-linux-x86_64" "$HOME/.strix/bin/strix"
                     chmod +x "$HOME/.strix/bin/strix"
                     echo "$HOME/.strix/bin" >> "$GITHUB_PATH"
                     rm strix.tar.gz
