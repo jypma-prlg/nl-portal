@@ -115,9 +115,14 @@ shell = "bash -c"
 run = "./gradlew generateLicenseReport"
 
 [tasks."security:strix-scan"]
-description = "Run the Strix agentic security scan locally (same pins as CI; docker's local image cache makes repeat runs fast after the first pull)"
+description = "Run the Strix agentic security scan locally (quick mode, scoped to the diff against main); requires the strix CLI (see https://docs.strix.ai/quickstart), Docker running, and STRIX_LLM/LLM_API_KEY set"
 shell = "bash -c"
-run = "bash scripts/strix-scan-local.sh"
+run = """
+command -v strix >/dev/null || { echo "strix CLI not found - install it first: https://docs.strix.ai/quickstart (e.g. 'pipx install strix-agent')" >&2; exit 1; }
+: "${STRIX_LLM:?Set STRIX_LLM}"
+: "${LLM_API_KEY:?Set LLM_API_KEY}"
+strix --target ./ --scan-mode quick --scope-mode diff --fail-on high
+"""
 
 [tasks."security:check-license"]
 description = "Check backend dependency licenses against the allowlist (backend/gradle/license-report/allowed-licenses.json) - known broken on main, see docs/workflows/periodic-checks.md"
