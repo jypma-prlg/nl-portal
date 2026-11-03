@@ -25,7 +25,6 @@ import kotlin.Pair
 import nl.nlportal.commonground.authentication.BedrijfAuthentication
 import nl.nlportal.commonground.authentication.BurgerAuthentication
 import nl.nlportal.commonground.authentication.CommonGroundAuthentication
-import nl.nlportal.core.util.CoreUtils
 import nl.nlportal.core.util.Mapper
 import nl.nlportal.openproduct.autoconfigure.OpenProductModuleConfiguration.OpenProductConfigurationProperties.OpenProductPrefillConfigurationProperties
 import nl.nlportal.openproduct.client.domain.OpenProductActiesFilters
@@ -95,8 +94,8 @@ class OpenProductPrefillService(
         formulierUrl: String,
         authentication: CommonGroundAuthentication,
     ): OpenProductPrefillResponse {
-        val nonce = CoreUtils.generateNonce()
-        val hash = CoreUtils.createHash(nonce + json, openProductPrefillConfigurationProperties.prefillShaVersion)
+        val nonce = PrefillSecurity.generateNonce()
+        val hash = PrefillSecurity.createHash(nonce + json)
 
         val prefill =
             OpenProductPrefillObject(
