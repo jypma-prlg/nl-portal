@@ -2,6 +2,12 @@ name: Strix security scan
 
 on:
     pull_request:
+        paths-ignore:
+            - "docs/**"
+            - "documentation/**"
+            - "site/**"
+            - "*.md"
+            - "GLOSSARY.md"
     workflow_dispatch:
 
 permissions:
