@@ -22,8 +22,8 @@ import nl.nlportal.commonground.authentication.AuthenticationMachtigingsDienstSe
 import nl.nlportal.commonground.authentication.BedrijfAuthentication
 import nl.nlportal.commonground.authentication.BurgerAuthentication
 import nl.nlportal.commonground.authentication.CommonGroundAuthentication
-import nl.nlportal.core.util.CoreUtils
-import nl.nlportal.core.util.CoreUtils.extractId
+import nl.nlportal.core.util.ZgwUrls
+import nl.nlportal.core.util.ZgwUrls.extractId
 import nl.nlportal.documentenapi.domain.Document
 import nl.nlportal.documentenapi.service.DocumentenApiService
 import nl.nlportal.openproduct.client.OpenProductClient
@@ -838,7 +838,7 @@ class OpenProductService(
                     id = it.uuid,
                     language = language,
                 )?.zaaktypen?.forEach { zaakType ->
-                    zaakTypes.add(CoreUtils.extractId(zaakType.url!!))
+                    zaakTypes.add(ZgwUrls.extractId(zaakType.url!!))
                 }
             }
         }

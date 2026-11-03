@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2024 Den Haag, Ritense, the Netherlands.
+ * Copyright 2015-2026 Den Haag, Ritense, the Netherlands.
  *
  * Licensed under EUPL, Version 1.2 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.nlportal.core.util
+package nl.nlportal.openproduct.service
 
 import java.security.SecureRandom
 import java.util.Base64
-import java.util.UUID
 import org.apache.commons.codec.digest.DigestUtils
 
-object CoreUtils {
+object PrefillSecurity {
     @JvmStatic
-    fun extractId(url: String): UUID = UUID.fromString(url.substringAfterLast("/"))
-
-    // shaVersion is kept for source/binary compatibility with existing callers and published
-    // consumers; every version now resolves to SHA-512, so the value itself no longer matters.
-    @JvmStatic
-    fun createHash(
-        input: String,
-        shaVersion: String,
-    ): String = DigestUtils.sha512Hex(input)
+    fun createHash(input: String): String = DigestUtils.sha512Hex(input)
 
     @JvmStatic
     fun generateNonce(byteLength: Int = 16): String {

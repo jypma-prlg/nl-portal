@@ -21,7 +21,7 @@ import nl.nlportal.catalogiapi.domain.ResultaatType
 import nl.nlportal.catalogiapi.domain.StatusType
 import nl.nlportal.catalogiapi.domain.ZaakStatusType
 import nl.nlportal.catalogiapi.domain.ZaakType
-import nl.nlportal.core.util.CoreUtils.extractId
+import nl.nlportal.core.util.ZgwUrls.extractId
 import java.util.UUID
 
 class CatalogiApiService(

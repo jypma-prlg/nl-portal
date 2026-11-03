@@ -18,7 +18,6 @@ package nl.nlportal.openproduct.autoconfigure
 import nl.nlportal.core.ssl.Ssl
 import org.springframework.boot.context.properties.ConfigurationProperties
 import java.net.URI
-import nl.nlportal.core.util.ShaVersion
 
 @ConfigurationProperties(prefix = "nl-portal.config.openproduct")
 class OpenProductModuleConfiguration {
@@ -56,7 +55,6 @@ class OpenProductModuleConfiguration {
 
         class OpenProductPrefillConfigurationProperties {
             var typeUrl: String = ""
-            var prefillShaVersion: String = ShaVersion.DEFAULT.version
         }
     }
 }

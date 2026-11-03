@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2023 Den Haag, Ritense, the Netherlands.
+ * Copyright 2015-2026 Den Haag, Ritense, the Netherlands.
  *
  * Licensed under EUPL, Version 1.2 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package nl.nlportal.core.util
 
-enum class ShaVersion(
-    val version: String,
-) {
-    SHA1("SHA1"),
-    SHA256("SHA256"),
-    SHA512("SHA512"),
-    ;
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-    companion object {
-        val DEFAULT = SHA512
+class ZgwUrlsTest {
+    @Test
+    fun `extractId parses the UUID off the end of a ZGW self-URL`() {
+        val result = ZgwUrls.extractId("https://zaken-api.example.com/api/v1/zaken/3a1b2c3d-4e5f-6789-abcd-ef0123456789")
+
+        assertEquals("3a1b2c3d-4e5f-6789-abcd-ef0123456789", result.toString())
     }
 }

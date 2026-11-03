@@ -21,7 +21,7 @@ import nl.nlportal.berichten.autoconfigure.BerichtenConfiguration.BerichtenConfi
 import nl.nlportal.berichten.domain.Bericht
 import nl.nlportal.berichten.graphql.BerichtenPage
 import nl.nlportal.commonground.authentication.CommonGroundAuthentication
-import nl.nlportal.core.util.CoreUtils.extractId
+import nl.nlportal.core.util.ZgwUrls.extractId
 import nl.nlportal.zgw.objectenapi.domain.Comparator
 import nl.nlportal.zgw.objectenapi.domain.Comparator.EQUAL_TO
 import nl.nlportal.zgw.objectenapi.domain.Comparator.LOWER_THAN_OR_EQUAL_TO
