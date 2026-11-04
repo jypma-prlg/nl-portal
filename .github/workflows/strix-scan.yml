@@ -66,20 +66,31 @@ jobs:
                 uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
                 with:
                     path: ~/strix-sandbox-image.tar
-                    key: strix-sandbox-${{ env.STRIX_SANDBOX_DIGEST }}
+                    # v2: earlier tars were saved from the bare digest reference, which doesn't
+                    # reliably round-trip through save/load (see "Pin the sandbox image by digest"
+                    # below) - bump this suffix whenever the tar's save format changes, independent
+                    # of the pinned digest itself.
+                    key: strix-sandbox-v2-${{ env.STRIX_SANDBOX_DIGEST }}
             -   name: Pin the sandbox image by digest
                 # Strix pulls its sandbox image by mutable tag with no digest check (the other half
                 # of the same finding). Pulling it ourselves by digest and tagging it locally with
                 # the tag Strix expects means its image_exists() check finds our verified image
                 # cached and never re-resolves the floating tag.
+                #
+                # The tar is saved from a stable local alias (strix-sandbox-cache:pinned), not the
+                # bare digest reference: a digest-only pull has no RepoTag, and `docker save`/`load`
+                # does not reliably round-trip a digest-only RepoDigest through the cache - on a
+                # cache hit, `docker tag name@digest ...` can then fail with "No such image" even
+                # though the load itself succeeded.
                 run: |
                     if [ "${{ steps.sandbox-image-cache.outputs.cache-hit }}" = "true" ]; then
                         docker load -i ~/strix-sandbox-image.tar
                     else
                         docker pull --platform linux/amd64 "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}"
-                        docker save -o ~/strix-sandbox-image.tar "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}"
+                        docker tag "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}" strix-sandbox-cache:pinned
+                        docker save -o ~/strix-sandbox-image.tar strix-sandbox-cache:pinned
                     fi
-                    docker tag "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}" "${STRIX_SANDBOX_IMAGE}"
+                    docker tag strix-sandbox-cache:pinned "${STRIX_SANDBOX_IMAGE}"
             -   name: Run agentic security scan (PR diff scope)
                 env:
                     STRIX_LLM: ${{ secrets.STRIX_LLM }}
