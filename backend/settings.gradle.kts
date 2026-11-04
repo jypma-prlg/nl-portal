@@ -54,7 +54,6 @@ pluginManagement {
 include(
     "app",
     "app-dev",
-    "architecture-test",
     "core",
     "gradle:license-report",
     "graphql",
@@ -79,4 +78,5 @@ include(
     "zgw:openproduct",
     "zgw:verificatie",
     "zgw:zaken",
+    "architecture-test",
 )

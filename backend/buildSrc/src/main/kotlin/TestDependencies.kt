@@ -30,4 +30,5 @@ object TestDependencies {
     val assertJCore by lazy { "org.assertj:assertj-core" }
     val kotlinTest by lazy { "org.jetbrains.kotlin:kotlin-test" }
     val junitJupiterTest by lazy { "org.junit.jupiter:junit-jupiter" }
+    val archUnitJunit5 by lazy { "com.tngtech.archunit:archunit-junit5:${Versions.archUnit}" }
 }

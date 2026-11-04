@@ -27,6 +27,7 @@ dependencies {
         .forEach { testImplementation(project(it.path)) }
 
     testImplementation(TestDependencies.springBootTest)
+    testImplementation(TestDependencies.archUnitJunit5)
     testImplementation(TestDependencies.junitJupiterTest)
     testImplementation(TestDependencies.assertJCore)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

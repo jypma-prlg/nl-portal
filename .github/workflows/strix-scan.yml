@@ -1,22 +1,15 @@
 name: Strix security scan
 
 on:
-    pull_request:
-        paths-ignore:
-            - "docs/**"
-            - "documentation/**"
-            - "site/**"
-            - "*.md"
-            - "GLOSSARY.md"
-    push:
-        branches: [main]
-        paths-ignore:
-            - "docs/**"
-            - "documentation/**"
-            - "site/**"
-            - "*.md"
-            - "GLOSSARY.md"
     workflow_dispatch:
+        inputs:
+            scan_mode:
+                description: "Strix scan depth"
+                type: choice
+                options:
+                    - quick
+                    - deep
+                default: quick
 
 permissions:
     contents: read
@@ -74,26 +67,37 @@ jobs:
                 uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
                 with:
                     path: ~/strix-sandbox-image.tar
-                    key: strix-sandbox-${{ env.STRIX_SANDBOX_DIGEST }}
+                    # v2: earlier tars were saved from the bare digest reference, which doesn't
+                    # reliably round-trip through save/load (see "Pin the sandbox image by digest"
+                    # below) - bump this suffix whenever the tar's save format changes, independent
+                    # of the pinned digest itself.
+                    key: strix-sandbox-v2-${{ env.STRIX_SANDBOX_DIGEST }}
             -   name: Pin the sandbox image by digest
                 # Strix pulls its sandbox image by mutable tag with no digest check (the other half
                 # of the same finding). Pulling it ourselves by digest and tagging it locally with
                 # the tag Strix expects means its image_exists() check finds our verified image
                 # cached and never re-resolves the floating tag.
+                #
+                # The tar is saved from a stable local alias (strix-sandbox-cache:pinned), not the
+                # bare digest reference: a digest-only pull has no RepoTag, and `docker save`/`load`
+                # does not reliably round-trip a digest-only RepoDigest through the cache - on a
+                # cache hit, `docker tag name@digest ...` can then fail with "No such image" even
+                # though the load itself succeeded.
                 run: |
                     if [ "${{ steps.sandbox-image-cache.outputs.cache-hit }}" = "true" ]; then
                         docker load -i ~/strix-sandbox-image.tar
                     else
                         docker pull --platform linux/amd64 "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}"
-                        docker save -o ~/strix-sandbox-image.tar "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}"
+                        docker tag "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}" strix-sandbox-cache:pinned
+                        docker save -o ~/strix-sandbox-image.tar strix-sandbox-cache:pinned
                     fi
-                    docker tag "${STRIX_SANDBOX_IMAGE%:*}@${STRIX_SANDBOX_DIGEST}" "${STRIX_SANDBOX_IMAGE}"
-            -   name: Run agentic security scan (PR diff scope)
+                    docker tag strix-sandbox-cache:pinned "${STRIX_SANDBOX_IMAGE}"
+            -   name: Run agentic security scan (full repo scope)
                 env:
                     STRIX_LLM: ${{ secrets.STRIX_LLM }}
                     LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
                     LLM_API_BASE: ${{ secrets.LLM_API_BASE }}
-                run: strix -n -t ./ --scan-mode quick --scope-mode diff --fail-on high
+                run: strix -n -t ./ --scan-mode "${{ inputs.scan_mode }}" --fail-on high
             -   name: Upload scan report
                 if: always()
                 uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -101,39 +105,3 @@ jobs:
                     name: strix-scan-report
                     path: strix_runs/
                     retention-days: 7
-
-    # See ADR 0008: publishes only aggregate severity counts (never finding titles, CVEs or
-    # locations) to the public docs site, generated automatically so no manual curation of
-    # scan results is ever required.
-    publish-security-status:
-        needs: strix-scan
-        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        runs-on: ubuntu-24.04
-        permissions:
-            contents: write
-            pull-requests: write
-        steps:
-            -   name: Checkout
-                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-            -   name: Download scan report
-                uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-                with:
-                    name: strix-scan-report
-                    path: strix_runs
-            -   name: Aggregate severity counts
-                run: |
-                    python3 scripts/aggregate-strix-status.py \
-                        --runs-dir strix_runs \
-                        --out site/compliance/security-status.md
-            -   name: Open PR with updated security status
-                uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
-                with:
-                    commit-message: "docs(compliance): update security scan status"
-                    title: "docs(compliance): update security scan status"
-                    body: >
-                        Automated update of the aggregated Strix severity counts in
-                        `site/compliance/security-status.md`, generated from the latest scan of
-                        `main`. No finding details are included — see ADR 0008.
-                    branch: automated/security-status
-                    delete-branch: true
-                    add-paths: site/compliance/security-status.md
