@@ -21,6 +21,7 @@ jobs:
             frontend: ${{ steps.filter.outputs.frontend }}
             scripts: ${{ steps.filter.outputs.scripts }}
             workflows: ${{ steps.filter.outputs.workflows }}
+            docs: ${{ steps.filter.outputs.docs }}
             docsOnly: ${{ steps.filter.outputs.backend == 'false' && steps.filter.outputs.frontend == 'false' && steps.filter.outputs.scripts == 'false' && steps.filter.outputs.workflows == 'false' && steps.filter.outputs.docs == 'true' }}
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -61,8 +62,21 @@ jobs:
             -   name: Run scripts tests
                 run: node --test "scripts/**/*.test.mjs"
 
+    capabilities-docs-fresh:
+        needs: changes
+        if: ${{ needs.changes.outputs.docs == 'true' || needs.changes.outputs.scripts == 'true' }}
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            -   name: Set up mise
+                uses: jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
+            -   name: Regenerate capability docs and fail on diff
+                run: mise run docs:capabilities-check
+            -   name: Validate LikeC4 model incl. generated capabilities
+                run: mise run likec4:validate
+
     ci-required:
-        needs: [changes, validate, test-scripts]
+        needs: [changes, validate, test-scripts, capabilities-docs-fresh]
         if: always()
         runs-on: ubuntu-latest
         steps:
@@ -70,13 +84,18 @@ jobs:
                 env:
                     VALIDATE_RESULT: ${{ needs.validate.result }}
                     SCRIPTS_RESULT: ${{ needs.test-scripts.result }}
+                    CAPABILITIES_RESULT: ${{ needs.capabilities-docs-fresh.result }}
                 run: |
                     echo "::notice::validate result = ${VALIDATE_RESULT}"
                     echo "::notice::test-scripts result = ${SCRIPTS_RESULT}"
+                    echo "::notice::capabilities-docs-fresh result = ${CAPABILITIES_RESULT}"
                     if [ "${VALIDATE_RESULT}" = "failure" ] || [ "${VALIDATE_RESULT}" = "cancelled" ]; then
                       exit 1
                     fi
                     if [ "${SCRIPTS_RESULT}" = "failure" ] || [ "${SCRIPTS_RESULT}" = "cancelled" ]; then
+                      exit 1
+                    fi
+                    if [ "${CAPABILITIES_RESULT}" = "failure" ] || [ "${CAPABILITIES_RESULT}" = "cancelled" ]; then
                       exit 1
                     fi
 

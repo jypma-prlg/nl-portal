@@ -13,7 +13,8 @@ losse afbeeldingen.
 | `specification.c4`  | Toegestane elementsoorten (`actor`, `system`, `container`, `component`). |
 | `model.c4`          | C1/C2: actoren, het NL Portal-systeem met zijn containers (frontend, backend, database), en de externe ZGW/Common Ground-systemen waarmee het samenwerkt. |
 | `components.c4`     | C3: de interne compositie van de backend- en frontend-container, als `extend`-blokken op `model.c4`. `zgwIntegrations` en `haalCentraalIntegrations` zijn zelf weer uitgesplitst naar hun daadwerkelijke Gradle-modules, inclusief hun onderlinge afhankelijkheden. |
-| `views.c4`          | De zes views: `index` (C1), `containers` (C2), `backendComponents` en `frontendComponents` (C3), en `zgwIntegrationComponents`/`haalCentraalIntegrationComponents` (verdieping van de twee C3-componenten die meerdere modules bundelen). |
+| `views.c4`          | De zeven views: `index` (C1), `containers` (C2), `backendComponents` en `frontendComponents` (C3), en `zgwIntegrationComponents`/`haalCentraalIntegrationComponents` (verdieping van de twee C3-componenten die meerdere modules bundelen) en `capabilities` (zie hieronder). |
+| `capabilities.generated.c4` | **Gegenereerd** uit `docs/capabilities.yaml` (`mise run docs:capabilities`): `capability`-elementen met de status als tag, gerelateerd aan de componenten uit `components.c4`, plus view `capabilities`. Niet handmatig bewerken. |
 
 LikeC4 leest alle `.c4`-bestanden in deze map en voegt ze samen tot één model; de indeling in
 bestanden is alleen leesbaarheid, geen technische grens.

@@ -12,6 +12,10 @@ die niet:
   bouwblokken, runtime-gedrag, verdeling, dwarsdoorsnede-concepten, risico's en beslissingen.
 - [`docs/likec4`](../likec4) bevat het navigeerbare C4-diagrammodel waarnaar dit document verwijst
   in plaats van losse afbeeldingen te dupliceren.
+- [`docs/capabilities.yaml`](../capabilities.yaml) is de **bron** voor de capability-inventaris. Hoofdstuk 5.5
+  en 11.4 en `docs/likec4/capabilities.generated.c4` worden daaruit gegenereerd met
+  `mise run docs:capabilities`; wijzig de YAML, niet de gegenereerde blokken. CI faalt als ze niet
+  actueel zijn.
 - [`docs/adr`](../adr) bevat de individuele architectuurbeslissingen (arc42-hoofdstuk 9 verwijst
   hiernaar).
 - [`GLOSSARY.md`](../../GLOSSARY.md) is het canonieke domeinwoordenlijst waarnaar hoofdstuk 12
