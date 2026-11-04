@@ -158,7 +158,7 @@ open class TaakService(
         if (objectsApiTask == null) {
             throw ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
-                String.format("Taak kan niet gevonden worden", taskId),
+                String.format("Taak [%s] kan niet gevonden worden", taskId),
             )
         }
         return objectsApiTask

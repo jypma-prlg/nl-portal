@@ -39,6 +39,15 @@ tasks.named<Test>("test") {
     val inventory = rootProject.projectDir.parentFile.resolve("docs/capabilities.yaml")
     inputs.file(inventory)
     systemProperty("capabilities.file", inventory.absolutePath)
+    // Every Gradle module with production code must be mapped to a layer (see ModuleLayers).
+    val productionModules =
+        rootProject.subprojects
+            .filter { it.path != project.path && it.path != ":zgw:common-ground-authentication-test" }
+            .filter { it.projectDir.resolve("src/main").exists() }
+            .map { it.path }
+            .sorted()
+    inputs.property("productionModules", productionModules)
+    systemProperty("architecture.modules", productionModules.joinToString(","))
     // Make fitness-test warnings visible in the Gradle output.
     testLogging.showStandardStreams = true
 }

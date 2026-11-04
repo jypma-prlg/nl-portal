@@ -184,6 +184,7 @@ class TaakServiceTest {
                 }
 
             assertEquals(HttpStatus.BAD_REQUEST, exception.statusCode)
+            assertEquals("Taak [$TAAK_ID] kan niet gevonden worden", exception.reason)
         }
 
     @Test
@@ -228,6 +229,7 @@ class TaakServiceTest {
                 }
 
             assertEquals(HttpStatus.BAD_REQUEST, exception.statusCode)
+            assertEquals("Status is niet open, taak [$TAAK_ID] kan niet afgerond worden", exception.reason)
             // nothing was written
             assertEquals(1, mockServer.requestCount)
         }
