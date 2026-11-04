@@ -108,7 +108,12 @@ export default [
     // packages only export "." (see each package.json's "exports" field), so any
     // subpath import is necessarily internal.
     files: ["packages/**/*.{ts,tsx,js,jsx}"],
-    ignores: ["**/node_modules/**", "**/dist/**", "**/build/**", "**/generated/**"],
+    ignores: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/generated/**",
+    ],
     plugins: { import: importPlugin },
     rules: {
       "import/no-internal-modules": [
