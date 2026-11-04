@@ -20,36 +20,27 @@ plugins {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
-    // Depends on every other module so ArchUnit can scan the full module classpath
-    // for layering violations. This module ships no production code of its own.
-    testImplementation(project(":core"))
-    testImplementation(project(":data"))
-    testImplementation(project(":graphql"))
-    testImplementation(project(":portal-authentication"))
-    testImplementation(project(":case"))
-    testImplementation(project(":form"))
-    testImplementation(project(":haalcentraal-hr"))
-    testImplementation(project(":haalcentraal2"))
-    testImplementation(project(":payment-direct"))
-    testImplementation(project(":zgw:idtoken-authentication"))
-    testImplementation(project(":zgw:common-ground-authentication"))
-    testImplementation(project(":zgw:objectenapi"))
-    testImplementation(project(":zgw:catalogi-api"))
-    testImplementation(project(":zgw:openklant"))
-    testImplementation(project(":zgw:taak"))
-    testImplementation(project(":zgw:documenten-api"))
-    testImplementation(project(":zgw:berichten"))
-    testImplementation(project(":zgw:besluiten"))
-    testImplementation(project(":zgw:zaken-api"))
-    testImplementation(project(":zgw:zaken"))
-    testImplementation(project(":zgw:openproduct"))
-    testImplementation(project(":zgw:verificatie"))
-    testImplementation(project(":app"))
-    testImplementation(project(":app-dev"))
+    // Depends on every module that can contribute entry points so the fitness test can
+    // scan the full backend classpath. This module ships no production code of its own.
+    rootProject.subprojects
+        .filter { it.path != project.path && !it.path.startsWith(":gradle") && it.path != ":zgw:common-ground-authentication-test" }
+        .forEach { testImplementation(project(it.path)) }
 
+    testImplementation(TestDependencies.springBootTest)
     testImplementation(TestDependencies.archUnitJunit5)
     testImplementation(TestDependencies.junitJupiterTest)
+    testImplementation(TestDependencies.assertJCore)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.named<Test>("test") {
+    // The capability inventory lives outside the Gradle project; pass it in explicitly
+    // so changes to it invalidate the test task's up-to-date check.
+    val inventory = rootProject.projectDir.parentFile.resolve("docs/capabilities.yaml")
+    inputs.file(inventory)
+    systemProperty("capabilities.file", inventory.absolutePath)
+    // Make fitness-test warnings visible in the Gradle output.
+    testLogging.showStandardStreams = true
 }
 
 val jar: Jar by tasks
