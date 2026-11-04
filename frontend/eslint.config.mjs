@@ -103,6 +103,25 @@ export default [
     },
   },
   {
+    // Package boundaries: a package in packages/* may only import another package's
+    // public export (the bare package name), never an internal file path. Existing
+    // packages only export "." (see each package.json's "exports" field), so any
+    // subpath import is necessarily internal.
+    files: ["packages/**/*.{ts,tsx,js,jsx}"],
+    ignores: ["**/node_modules/**", "**/dist/**", "**/build/**", "**/generated/**"],
+    plugins: { import: importPlugin },
+    rules: {
+      "import/no-internal-modules": [
+        "error",
+        {
+          forbid: ["@nl-portal/*/**"],
+        },
+      ],
+      // Also catches reaching into a sibling package via a relative path (../../api/src/...).
+      "import/no-relative-packages": "error",
+    },
+  },
+  {
     files: ["packages/**/*.{ts,tsx,js,jsx}"],
     ignores: [
       "**/node_modules/**",

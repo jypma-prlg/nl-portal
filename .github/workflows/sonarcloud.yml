@@ -60,6 +60,11 @@ jobs:
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 run: ./gradlew test jacocoTestReport sonar --no-daemon
+            -   name: Wait for SonarCloud quality gate
+                uses: sonarsource/sonarqube-quality-gate-action@dc2f7b0dd95544cd550de3028f89193ac8fecbbc # v1.2.0
+                timeout-minutes: 10
+                with:
+                    scanMetadataReportFile: backend/build/sonar/report-task.txt
 
     frontend:
         name: Frontend analysis
@@ -89,6 +94,11 @@ jobs:
                 uses: SonarSource/sonarqube-scan-action@c7ee0f9df90b7aa20e8dcf9695dcfe2e7da5b4f2 # v7
                 with:
                     projectBaseDir: frontend
+            -   name: Wait for SonarCloud quality gate
+                uses: sonarsource/sonarqube-quality-gate-action@dc2f7b0dd95544cd550de3028f89193ac8fecbbc # v1.2.0
+                timeout-minutes: 10
+                with:
+                    scanMetadataReportFile: frontend/.scannerwork/report-task.txt
 
     escalate:
         name: Escalate Blocker/Critical vulnerabilities

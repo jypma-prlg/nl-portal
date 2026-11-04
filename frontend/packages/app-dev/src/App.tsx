@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import "@gemeente-denhaag/design-tokens";
+// eslint-disable-next-line import/no-internal-modules -- declared public subpath export, see user-interface's package.json "exports"
 import "@nl-portal/nl-portal-user-interface/index.css";
 import "./styles/nl-portal-design-tokens.css";
 import { OidcProvider } from "@nl-portal/nl-portal-authentication";
