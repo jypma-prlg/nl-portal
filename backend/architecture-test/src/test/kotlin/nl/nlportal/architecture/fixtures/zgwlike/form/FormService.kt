@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.nlportal.architecture.fixtures.sharedpkg.alpha
+package nl.nlportal.architecture.fixtures.zgwlike.form
 
-import nl.nlportal.architecture.fixtures.sharedpkg.beta.Beta
+import nl.nlportal.architecture.fixtures.zgwlike.objectenapi.Objecten
 
-class Alpha(
-    val dep: Beta,
+class FormService(
+    val dep: Objecten,
 )

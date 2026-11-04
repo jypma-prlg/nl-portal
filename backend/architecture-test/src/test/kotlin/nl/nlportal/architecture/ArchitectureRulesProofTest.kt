@@ -37,6 +37,8 @@ class ArchitectureRulesProofTest {
             )
         assertThatThrownBy { rules.coreDoesNotDependOnFeature().check(classesOf("corevio")) }
             .isInstanceOf(AssertionError::class.java)
+            .hasMessageContaining("Core")
+            .hasMessageContaining("Feature")
     }
 
     @Test
@@ -48,6 +50,8 @@ class ArchitectureRulesProofTest {
             )
         assertThatThrownBy { rules.sharedInfraDoesNotDependOnFeature().check(classesOf("infravio")) }
             .isInstanceOf(AssertionError::class.java)
+            .hasMessageContaining("Infra")
+            .hasMessageContaining("Feature")
     }
 
     @Test
@@ -59,6 +63,8 @@ class ArchitectureRulesProofTest {
             )
         assertThatThrownBy { rules.nothingDependsOnApp().check(classesOf("appvio")) }
             .isInstanceOf(AssertionError::class.java)
+            .hasMessageContaining("Feature")
+            .hasMessageContaining("App")
     }
 
     @Test
@@ -70,30 +76,32 @@ class ArchitectureRulesProofTest {
             )
         assertThatThrownBy { rules.cycleFree().check(classesOf("cyclevio")) }
             .isInstanceOf(AssertionError::class.java)
+            .hasMessageContaining("Cycle detected")
     }
 
     @Test
-    fun `cycle rule includes form`() {
+    fun `cycle rule catches a cycle between form and zgw taak`() {
         val rules =
             rules(
-                ModuleMapping(":form", "$base.cyclevio.alpha", Layer.FEATURE),
-                ModuleMapping(":zgw:beta", "$base.cyclevio.beta", Layer.FEATURE),
+                ModuleMapping(":form", "$base.formcycle.form", Layer.FEATURE),
+                ModuleMapping(":zgw:taak", "$base.formcycle.taak", Layer.FEATURE),
             )
-        assertThatThrownBy { rules.cycleFree().check(classesOf("cyclevio")) }
+        assertThatThrownBy { rules.cycleFree().check(classesOf("formcycle")) }
             .isInstanceOf(AssertionError::class.java)
+            .hasMessageContaining("Cycle detected")
     }
 
     @Test
-    fun `cycle rule reports no phantom cycle for modules sharing a parent package`() {
-        // Both modules live below the same parent package; a one-way dependency between
-        // them must not look like a cycle.
+    fun `cycle rule reports no phantom cycle for the real objectenapi - form - taak chain`() {
+        // Mirrors the Gradle graph: form -> zgw:objectenapi and zgw:taak -> form, with
+        // objectenapi and taak below one shared parent package. That is a chain, not a cycle.
         val rules =
             rules(
-                ModuleMapping(":zgw:alpha", "$base.sharedpkg.alpha", Layer.FEATURE),
-                ModuleMapping(":zgw:beta", "$base.sharedpkg.beta", Layer.FEATURE),
-                ModuleMapping(":zgw:parent", "$base.sharedpkg", Layer.FEATURE),
+                ModuleMapping(":zgw:objectenapi", "$base.zgwlike.objectenapi", Layer.FEATURE),
+                ModuleMapping(":zgw:taak", "$base.zgwlike.taak", Layer.FEATURE),
+                ModuleMapping(":form", "$base.zgwlike.form", Layer.FEATURE),
             )
-        rules.cycleFree().check(classesOf("sharedpkg"))
+        rules.cycleFree().check(classesOf("zgwlike"))
     }
 
     @Test

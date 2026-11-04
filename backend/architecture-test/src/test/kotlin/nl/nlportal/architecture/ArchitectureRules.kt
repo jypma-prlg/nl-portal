@@ -37,17 +37,18 @@ class ArchitectureRules(
 
     private fun notInLayer(layer: Layer) = DescribedPredicate.describe<JavaClass>("reside outside layer $layer") { c -> mappingOf(c)?.layer != layer }
 
-    fun coreDoesNotDependOnFeature(): ArchRule =
-        noClasses()
-            .that(inLayer(Layer.CORE))
-            .should()
-            .dependOnClassesThat(inLayer(Layer.FEATURE))
+    fun coreDoesNotDependOnFeature(): ArchRule = layerDoesNotDependOn(Layer.CORE, Layer.FEATURE)
 
-    fun sharedInfraDoesNotDependOnFeature(): ArchRule =
+    fun sharedInfraDoesNotDependOnFeature(): ArchRule = layerDoesNotDependOn(Layer.SHARED_INFRA, Layer.FEATURE)
+
+    private fun layerDoesNotDependOn(
+        from: Layer,
+        to: Layer,
+    ): ArchRule =
         noClasses()
-            .that(inLayer(Layer.SHARED_INFRA))
+            .that(inLayer(from))
             .should()
-            .dependOnClassesThat(inLayer(Layer.FEATURE))
+            .dependOnClassesThat(inLayer(to))
 
     fun nothingDependsOnApp(): ArchRule =
         noClasses()

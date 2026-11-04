@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.nlportal.architecture.fixtures.sharedpkg.beta
+package nl.nlportal.architecture.fixtures.zgwlike.taak
 
-class Beta
+import nl.nlportal.architecture.fixtures.zgwlike.form.FormService
+
+class TaakService(
+    val dep: FormService,
+)

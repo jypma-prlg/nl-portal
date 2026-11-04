@@ -42,7 +42,9 @@ tasks.named<Test>("test") {
     // Every Gradle module with production code must be mapped to a layer (see ModuleLayers).
     val productionModules =
         rootProject.subprojects
+            // The test-support module shares a package with common-ground-authentication.
             .filter { it.path != project.path && it.path != ":zgw:common-ground-authentication-test" }
+            // Aggregator projects without production code are not layered.
             .filter { it.projectDir.resolve("src/main").exists() }
             .map { it.path }
             .sorted()
