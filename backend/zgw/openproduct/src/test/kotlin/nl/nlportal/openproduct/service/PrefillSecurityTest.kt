@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.nlportal.core.util
+package nl.nlportal.openproduct.service
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CoreUtilsTest {
+class PrefillSecurityTest {
     @Test
-    fun `createHash upgrades the configured SHA1 version to a SHA-512 digest`() {
-        val result = CoreUtils.createHash("abc", ShaVersion.SHA1.version)
+    fun `createHash produces a SHA-512 digest`() {
+        val result = PrefillSecurity.createHash("abc")
 
         assertEquals(
             "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f",
@@ -32,12 +31,10 @@ class CoreUtilsTest {
     }
 
     @Test
-    fun `createHash upgrades any unrecognized version to a SHA-512 digest`() {
-        val result = CoreUtils.createHash("hello-world", "bogus-algorithm")
+    fun `generateNonce returns distinct values on each call`() {
+        val first = PrefillSecurity.generateNonce()
+        val second = PrefillSecurity.generateNonce()
 
-        assertEquals(
-            "6aeefc29122a3962c90ef834f6caad0033bffcd62941b7a6205a695cc39e2767db7778a7ad76d173a083b9e14b210dc0212923f481b285c784ab1fe340d7ff4d",
-            result,
-        )
+        assertNotEquals(first, second)
     }
 }

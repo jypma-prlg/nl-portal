@@ -22,7 +22,7 @@ import nl.nlportal.besluiten.service.BesluitenService
 import nl.nlportal.catalogiapi.domain.BesluitType
 import nl.nlportal.catalogiapi.service.CatalogiApiService
 import nl.nlportal.commonground.authentication.CommonGroundAuthentication
-import nl.nlportal.core.util.CoreUtils
+import nl.nlportal.core.util.ZgwUrls
 import nl.nlportal.documentenapi.domain.Document
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
@@ -36,7 +36,7 @@ class BesluitenQuery(
     suspend fun auditTrails(
         authentication: CommonGroundAuthentication,
         besluit: Besluit,
-    ): List<BesluitAuditTrail> = besluitenService.getBesluitAuditTrails(CoreUtils.extractId(besluit.url))
+    ): List<BesluitAuditTrail> = besluitenService.getBesluitAuditTrails(ZgwUrls.extractId(besluit.url))
 
     @SchemaMapping(typeName = "Besluit", field = "documenten")
     suspend fun documenten(
