@@ -5,6 +5,11 @@
 # Statussen: in-ontwikkeling | actief | twijfel | kandidaat-verwijderen | deprecated (met ADR) | verwijderd.
 # deprecated/verwijderd zet alleen de maintainer. Status op ingang-niveau overschrijft die van de capability voor die ingang.
 # Statusreview maintainer: 2026-11-04.
+# Fitness-test: backend/architecture-test (CapabilityInventoryFitnessTest, draait mee in `check`).
+#   - ingang in code maar niet hier  -> waarschuwing (warn-modus) / falen (hard-modus)
+#   - ingang hier maar niet in code  -> altijd falen
+#   - hard-modus: zet HARD_MODE = true in backend/architecture-test/src/test/kotlin/nl/nlportal/architecture/InventoryComparison.kt
+#   - naam-conventie: graphql = operatienaam, rest = "METHOD /volledig/pad" (tussen quotes), event-listener = klassenaam.
 version: 1
 generated: 2026-11-04
 capabilities:
@@ -16,8 +21,8 @@ capabilities:
     modules: [backend/core]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-11-04, commits_12m: 22, deprecated_markers: false}
     ingangen:
-      - {type: rest, naam: GET /api/public/frontend, frontend_gebruikt: true}
-      - {type: rest, naam: GET /api/public/ping, frontend_gebruikt: false}
+      - {type: rest, naam: "GET /api/public/frontend", frontend_gebruikt: true}
+      - {type: rest, naam: "GET /api/public/ping", frontend_gebruikt: false}
 
   - id: database-migratie
     naam: Database-initialisatie (Liquibase)
@@ -27,7 +32,7 @@ capabilities:
     modules: [backend/data]
     signalen: {in_assembly: true, tests: false, laatste_commit: 2026-08-27, commits_12m: 2, deprecated_markers: false}
     ingangen:
-      - {type: event-listener, naam: LiquibaseInitializationEventListener (ApplicationStartedEvent), frontend_gebruikt: false}
+      - {type: event-listener, naam: LiquibaseInitializationEventListener, frontend_gebruikt: false}
 
   - id: zaken-inzien
     naam: Zaken inzien
@@ -39,7 +44,7 @@ capabilities:
     ingangen:
       - {type: graphql-query, naam: getZaken, frontend_gebruikt: true}
       - {type: graphql-query, naam: getZaak, frontend_gebruikt: true}
-      - {type: rest, naam: GET /api/zakenapi/zaakdocument/{zaakDocumentId}/content, frontend_gebruikt: true}
+      - {type: rest, naam: "GET /api/zakenapi/zaakdocument/{zaakDocumentId}/content", frontend_gebruikt: true}
 
   - id: besluiten-inzien
     naam: Besluiten inzien
@@ -49,7 +54,7 @@ capabilities:
     modules: [backend/zgw/besluiten]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-11-04, commits_12m: 17, deprecated_markers: false}
     ingangen:
-      - {type: rest, naam: GET /api/besluiten/{besluitId}/document/{documentId}/content, frontend_gebruikt: false, status: kandidaat-verwijderen, voorwaarde: eerst bevestigen dat besluitdocumenten nergens getoond worden}
+      - {type: rest, naam: "GET /api/besluiten/{besluitId}/document/{documentId}/content", frontend_gebruikt: false, status: kandidaat-verwijderen, voorwaarde: eerst bevestigen dat besluitdocumenten nergens getoond worden}
 
   - id: berichten-ontvangen
     naam: Berichten ontvangen
@@ -62,7 +67,7 @@ capabilities:
       - {type: graphql-query, naam: getBerichten, frontend_gebruikt: true}
       - {type: graphql-query, naam: getBericht, frontend_gebruikt: true}
       - {type: graphql-query, naam: getUnopenedBerichtenCount, frontend_gebruikt: true}
-      - {type: rest, naam: GET /api/berichten/{berichtId}/document/{documentId}/content, frontend_gebruikt: true}
+      - {type: rest, naam: "GET /api/berichten/{berichtId}/document/{documentId}/content", frontend_gebruikt: true}
 
   - id: taken-afhandelen
     naam: Taken afhandelen
@@ -76,7 +81,7 @@ capabilities:
       - {type: graphql-query, naam: getTaakByIdV2, frontend_gebruikt: true}
       - {type: graphql-query, naam: getFormDefinitionByTaskId, frontend_gebruikt: true}
       - {type: graphql-mutation, naam: submitTaakV2, frontend_gebruikt: true}
-      - {type: rest, naam: POST /api/taak/{taakId}/document/content, frontend_gebruikt: true}
+      - {type: rest, naam: "POST /api/taak/{taakId}/document/content", frontend_gebruikt: true}
 
   - id: formulierdefinities
     naam: Formulierdefinities beheren
@@ -88,7 +93,7 @@ capabilities:
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-08-27, commits_12m: 3, deprecated_markers: false}
     ingangen:
       - {type: graphql-query, naam: getFormDefinitionByName, frontend_gebruikt: false}
-      - {type: event-listener, naam: FormApplicationReadyEventListener (ApplicationReadyEvent), frontend_gebruikt: false}
+      - {type: event-listener, naam: FormApplicationReadyEventListener, frontend_gebruikt: false}
 
   - id: eigen-zaken-case
     naam: Eigen zaken (case-definities)
@@ -103,7 +108,7 @@ capabilities:
       - {type: graphql-query, naam: allCaseInstances, frontend_gebruikt: false}
       - {type: graphql-query, naam: getCaseInstance, frontend_gebruikt: false}
       - {type: graphql-mutation, naam: processSubmission, frontend_gebruikt: false}
-      - {type: event-listener, naam: CaseDefinitionApplicationReadyEventListener (ApplicationReadyEvent), frontend_gebruikt: false}
+      - {type: event-listener, naam: CaseDefinitionApplicationReadyEventListener, frontend_gebruikt: false}
 
   - id: betalen-ogone-direct
     naam: Betalen (Ogone direct)
@@ -115,7 +120,7 @@ capabilities:
     ingangen:
       - {type: graphql-mutation, naam: doDirectPayment, frontend_gebruikt: true}
       - {type: graphql-query, naam: getDirectPaymentStatus, frontend_gebruikt: true}
-      - {type: rest, naam: POST /api/public/payment/direct/postsale, frontend_gebruikt: false}
+      - {type: rest, naam: "POST /api/public/payment/direct/postsale", frontend_gebruikt: false}
 
   - id: persoonsgegevens-brp
     naam: Persoonsgegevens (BRP)
@@ -210,7 +215,7 @@ capabilities:
       - {type: graphql-query, naam: getOpenProductenByThema, frontend_gebruikt: false}
       - {type: graphql-query, naam: getOpenProductTypes, frontend_gebruikt: false}
       - {type: graphql-query, naam: getOpenProductType, frontend_gebruikt: false}
-      - {type: rest, naam: GET /api/product/{productId}/document/{documentId}/content, frontend_gebruikt: false, status: kandidaat-verwijderen}
+      - {type: rest, naam: "GET /api/product/{productId}/document/{documentId}/content", frontend_gebruikt: false, status: kandidaat-verwijderen}
 
   - id: product-themas
     naam: Productthema's

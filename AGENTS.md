@@ -71,6 +71,12 @@ pnpm -r build && pnpm lint && pnpm lint:css && pnpm typecheck && pnpm test && pn
 For a security- or dependency-relevant change, also run the applicable `mise run security:*` task
 (see below) before considering it done.
 
+## Repo-indeling
+
+Geen root-`package.json`/`node_modules`. Node-tooling (Husky, lint-staged, commitlint,
+pnpm-workspace) leeft onder `frontend/`. Backend-tooling (Gradle, Spotless/ktlint) leeft onder
+`backend/`. Zoek dus per ecosysteem, niet op repo-root.
+
 ## Architecture & domain
 
 - [site/architectuur/arc42](site/architectuur/arc42) — arc42 architecture (Dutch); [site/likec4](site/likec4) — the C1/C2/C3
