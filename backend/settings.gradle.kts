@@ -78,4 +78,5 @@ include(
     "zgw:openproduct",
     "zgw:verificatie",
     "zgw:zaken",
+    "architecture-test",
 )
