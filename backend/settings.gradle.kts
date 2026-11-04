@@ -54,6 +54,7 @@ pluginManagement {
 include(
     "app",
     "app-dev",
+    "architecture-test",
     "core",
     "gradle:license-report",
     "graphql",
