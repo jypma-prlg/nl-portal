@@ -2,7 +2,7 @@
 // Renders docs/capabilities.yaml (single source of truth) into:
 //   - arc42 chapter 5  (generated region "capabilities")
 //   - arc42 chapter 11 (generated region "technische-schuld")
-//   - docs/likec4/capabilities.generated.c4
+//   - site/likec4/capabilities.generated.c4
 // Run via `mise run docs:capabilities`. CI re-runs it and fails on any resulting diff.
 // Usage: node scripts/generate-capabilities-docs.mjs [--root <repo-root>]
 
@@ -14,7 +14,7 @@ import { parseCapabilitiesYaml } from "./lib/capabilities-yaml.mjs";
 const STATUSES = ["in-ontwikkeling", "actief", "twijfel", "kandidaat-verwijderen", "deprecated", "verwijderd"];
 const AT_RISK = ["twijfel", "kandidaat-verwijderen", "deprecated"];
 
-// Gradle module -> element in docs/likec4/components.c4. Modules not listed relate to the backend container.
+// Gradle module -> element in site/likec4/components.c4. Modules not listed relate to the backend container.
 const BACKEND = "nlPortal.backend";
 const ZGW = `${BACKEND}.zgwIntegrations`;
 const MODULE_ELEMENTS = {
@@ -44,7 +44,7 @@ const MODULE_ELEMENTS = {
 };
 
 const GENERATED_NOTE =
-  "_Gegenereerd uit [`docs/capabilities.yaml`](../capabilities.yaml) via `mise run docs:capabilities`. " +
+  "_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. " +
   "Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._";
 
 const cell = (s) => String(s ?? "").replace(/\|/g, "\\|").replace(/\r?\n/g, " ");
@@ -186,9 +186,9 @@ function replaceRegion(file, name, body) {
 export function generate(root) {
   const inv = parseCapabilitiesYaml(readFileSync(join(root, "docs/capabilities.yaml"), "utf8"));
   validate(inv);
-  replaceRegion(join(root, "docs/arc42/05-bouwblokkenzicht.md"), "capabilities", renderBuildingBlocks(inv));
-  replaceRegion(join(root, "docs/arc42/11-risicos-en-technische-schulden.md"), "technische-schuld", renderDebt(inv));
-  writeFileSync(join(root, "docs/likec4/capabilities.generated.c4"), renderLikeC4(inv));
+  replaceRegion(join(root, "site/architectuur/arc42/05-bouwblokkenzicht.md"), "capabilities", renderBuildingBlocks(inv));
+  replaceRegion(join(root, "site/architectuur/arc42/11-risicos-en-technische-schulden.md"), "technische-schuld", renderDebt(inv));
+  writeFileSync(join(root, "site/likec4/capabilities.generated.c4"), renderLikeC4(inv));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

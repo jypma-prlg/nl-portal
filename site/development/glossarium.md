@@ -1,0 +1,3 @@
+# Glossarium
+
+<!--@include: ../../GLOSSARY.md-->

@@ -59,7 +59,7 @@ class AuthenticationConfiguration {
                 logger.warn {
                     "Keycloak legacy (v1) token exchange is deprecated. The default changes to v2 in 5.0 " +
                         "and v1 is removed in a later release. " +
-                        "See documentation/configuratie/keycloak-token-exchange-v2.md"
+                        "See site/hosting-en-configuratie/keycloak-token-exchange-v2.md"
                 }
             }
 

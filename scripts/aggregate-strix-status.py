@@ -35,7 +35,7 @@ def render(counts: Counter, generated_at: str) -> str:
         "# Security scan status",
         "",
         f"Laatst bijgewerkt: {generated_at} (automatisch gegenereerd uit de nieuwste Strix-scan"
-        " op `main`, zie [ADR 0008](https://github.com/pinkroccade/nl-portal/blob/main/docs/adr/0008-security-transparantie-en-registry-strategie.md)).",
+        " op `main`, zie [ADR 0008](https://github.com/pinkroccade/nl-portal/blob/main/site/development/adr/0008-security-transparantie-en-registry-strategie.md)).",
         "",
         "Dit overzicht toont alleen aantallen per ernst-niveau, nooit titels, CVE's of locaties"
         " van individuele bevindingen.",

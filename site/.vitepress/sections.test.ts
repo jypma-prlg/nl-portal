@@ -17,6 +17,8 @@
 import { describe, expect, it } from "vitest";
 import { MAIN_NAV_SECTIONS, COMPLIANCE_SECTION, nav, footerComplianceLink } from "./sections";
 
+const SECTION_PATHS = nav.map((n) => n.link);
+
 describe("site navigation structure (ADR 0006)", () => {
   it("has exactly the five ADR 0006 sections, Compliance last", () => {
     expect([...MAIN_NAV_SECTIONS, COMPLIANCE_SECTION]).toEqual([
@@ -41,5 +43,18 @@ describe("site navigation structure (ADR 0006)", () => {
   it("exposes Compliance only as a footer link", () => {
     expect(footerComplianceLink.text).toBe(COMPLIANCE_SECTION);
     expect(footerComplianceLink.link).toMatch(/^\/compliance\//);
+  });
+});
+
+describe("site config wiring (ADR 0006)", () => {
+  it("has no Compliance sidebar and a sidebar for each main section", async () => {
+    const { sidebar } = await import("./sidebar");
+    expect(Object.keys(sidebar).sort()).toEqual([...SECTION_PATHS].sort());
+    expect(Object.keys(sidebar)).not.toContain(footerComplianceLink.link);
+  });
+
+  it("wires the Compliance footer link in config.ts", async () => {
+    const config = (await import("./config")).default;
+    expect(config.themeConfig?.footer?.message).toContain(footerComplianceLink.link);
   });
 });

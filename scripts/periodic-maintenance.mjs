@@ -2,7 +2,7 @@
 // Monthly maintenance ritual: the judgement-heavy checks that `mise.toml`'s report-only tasks
 // surface but that have no automatic cadence of their own (unlike the weekly scans). Posts a
 // comment on one persistent "Periodieke onderhoudscontrole" issue. See
-// docs/workflows/periodic-checks.md.
+// site/development/workflows/periodic-checks.md.
 
 import { execFileSync } from "node:child_process";
 
@@ -20,7 +20,7 @@ export function buildMaintenanceComment({
 }) {
   const checkLicenseLine = checkLicenseOk
     ? "- [x] `checkLicense` - OK"
-    : "- [ ] `checkLicense` - FAIL (bekend openstaand item, zie docs/workflows/dependency-updates.md §3)";
+    : "- [ ] `checkLicense` - FAIL (bekend openstaand item, zie site/development/workflows/dependency-updates.md §3)";
   const bracesLine = bracesStillUnpatched
     ? "- [ ] `braces` GHSA-vfj7-8cjw-p6xm - nog geen fix upstream"
     : "- [x] `braces` GHSA-vfj7-8cjw-p6xm - fix beschikbaar, uitzondering in frontend/pnpm-workspace.yaml kan eruit";
@@ -82,7 +82,7 @@ function createDashboardIssue() {
       "--title", DASHBOARD_ISSUE_TITLE,
       "--body",
       "Doorlopend issue voor de maandelijkse onderhoudscontrole - zie " +
-        "[docs/workflows/periodic-checks.md](../blob/main/docs/workflows/periodic-checks.md). " +
+        "[site/development/workflows/periodic-checks.md](../blob/main/site/development/workflows/periodic-checks.md). " +
         "Elke maand komt er een nieuwe reactie bij met de actuele status; deze issue blijft open.",
       "--label", "maintenance",
     ],

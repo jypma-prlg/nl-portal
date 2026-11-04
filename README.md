@@ -32,7 +32,7 @@ live together and release at a single, shared version.
 | `backend/`        | Kotlin/Spring Boot backend libraries + the shippable backend application. One Gradle build. See [backend/README.md](./backend/README.md). |
 | `frontend/`       | pnpm workspace of `@nl-portal/*` React libraries + the shippable frontend application. See [frontend/README.md](./frontend/README.md). |
 | `docker-compose/` | Local development stack (Keycloak, databases, ZGW services) + fixtures. See [docker-compose/README.md](./docker-compose/README.md). |
-| `documentation/`  | Product documentation. Not yet published anywhere outside this repository; see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18). |
+| `site/`           | Documentation site (VitePress): architecture, usage, hosting, development. See [site/index.md](./site/index.md). |
 
 Helm charts previously lived in Ritense's separate `nl-portal/helm-charts` repository; pinkroccade's
 own equivalent is tracked in [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
@@ -45,7 +45,7 @@ Three ways, by purpose - see [GETTING_STARTED.md](./GETTING_STARTED.md) for the 
 - **Local** - build and run your changes as they'd ship.
 - **From sources** - run the backend/frontend from your IDE for fast development.
 
-For deployment, see [`documentation/`](./documentation) (see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18) for the helm-charts follow-up).
+For deployment, see [Hosting & configuratie](./site/hosting-en-configuratie/index.md) (see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18) for the helm-charts follow-up).
 
 ## Developing
 
@@ -61,12 +61,11 @@ also read the [Code of Conduct](./CODE_OF_CONDUCT.md). Report vulnerabilities pr
 
 ## Documentation
 
-Full product documentation - architecture, configuration, and feature/theme guides - lives in
-[`documentation/`](./documentation). It is not currently published anywhere outside this
-repository; see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
-
-`docs/` and `documentation/` are being consolidated into a single documentation site - see
-[ADR 0007](docs/adr/0007-documentatie-architectuur-synthese.md) for where everything will live.
+All documentation - architecture, configuration, feature/theme guides, ADRs and workflows - lives in
+one VitePress site under [`site/`](./site) (`mise run docs:dev` to preview it). It is not currently
+published anywhere outside this repository; see [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
+Sections: [Architectuur](./site/architectuur/index.md), [Gebruik & inrichting](./site/gebruik-en-inrichting/index.md),
+[Hosting & configuratie](./site/hosting-en-configuratie/index.md), [Development](./site/development/index.md).
 
 ## License
 

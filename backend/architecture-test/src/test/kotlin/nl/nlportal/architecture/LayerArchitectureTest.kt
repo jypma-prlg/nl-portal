@@ -25,7 +25,7 @@ import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import org.junit.jupiter.api.Test
 
 /**
- * Enforces the layering described in docs/arc42: core -> shared infra (data, graphql,
+ * Enforces the layering described in site/architectuur/arc42: core -> shared infra (data, graphql,
  * portal-authentication) -> feature modules (zgw:*, case, form, payment-direct, haalcentraal*)
  * -> app/app-dev. A violation here fails the build instead of surfacing only at code review.
  *

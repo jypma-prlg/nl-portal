@@ -1,7 +1,7 @@
 # =============================================================================
 # NL Portal monorepo - root .gitignore
 #
-# Covers the whole tree (backend/, frontend/, docker-compose/, documentation/).
+# Covers the whole tree (backend/, frontend/, docker-compose/, site/).
 # Stack-specific ignores also live in backend/.gitignore, frontend/.gitignore
 # and each frontend package - this root file is additive and keeps build
 # output, tooling caches and local/editor files out of the commit window.

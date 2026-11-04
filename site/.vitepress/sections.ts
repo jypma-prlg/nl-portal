@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Navigation structure decided in ADR 0006 (docs/adr/0006-unified-docs-site.md):
+// Navigation structure decided in ADR 0006 (site/development/adr/0006-unified-docs-site.md):
 // four sections in the main nav, Compliance reachable only via the footer.
 
 export const MAIN_NAV_SECTIONS = [

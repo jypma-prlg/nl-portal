@@ -6,7 +6,7 @@ How the engineering skills should consume this repo's domain documentation when 
 
 - **`GLOSSARY.md`** at the repo root, or
 - **`GLOSSARY-MAP.md`** at the repo root if it exists: it points at one `GLOSSARY.md` per context. Read each one relevant to the topic.
-- **`docs/adr/`**: read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
+- **`site/development/adr/`**: read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/site/development/adr/` for context-scoped decisions.
 
 If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The `/domain-modeling` skill (reached via `/grill-with-docs` and `/improve-codebase-architecture`) creates them lazily when terms or decisions actually get resolved.
 
@@ -17,7 +17,7 @@ Single-context repo (this repo):
 ```
 /
 ├── GLOSSARY.md
-├── docs/adr/
+├── site/development/adr/
 │   ├── 0001-record-architecture-decisions.md
 │   └── ...
 └── backend/, frontend/, docker-compose/
@@ -25,7 +25,7 @@ Single-context repo (this repo):
 
 NL Portal's backend/frontend split is a build-unit boundary, not a domain-context boundary: both sides
 share the same domain vocabulary (Zaak, Verzoek, Ketenpartner, ...), so there is one `GLOSSARY.md` and
-one `docs/adr/` at the repo root — not a `GLOSSARY-MAP.md`.
+one `site/development/adr/` at the repo root — not a `GLOSSARY-MAP.md`.
 
 ## Use the glossary's vocabulary
 

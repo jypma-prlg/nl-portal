@@ -106,7 +106,7 @@ jobs:
         # Alleen op main - een PR-analyse hoort nog niet bij "productie", en escaleren voor
         # code die nog niet gemerged is levert ruis op. SonarCloud's eigen analyse-verwerking
         # loopt soms een paar minuten achter op deze job; een gemiste bevinding komt dan op de
-        # eerstvolgende push naar main alsnog naar boven (zie docs/workflows/periodic-checks.md).
+        # eerstvolgende push naar main alsnog naar boven (zie site/development/workflows/periodic-checks.md).
         if: always() && github.event_name == 'push'
         runs-on: ubuntu-latest
         steps:
