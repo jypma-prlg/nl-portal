@@ -118,7 +118,7 @@ Voert bij opstart de databasemigraties uit.
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
 |---|---|---|---|---|
-| event-listener | `LiquibaseInitializationEventListener (ApplicationStartedEvent)` | nee | `actief` |  |
+| event-listener | `LiquibaseInitializationEventListener` | nee | `actief` |  |
 
 <a id="capability-zaken-inzien"></a>
 ### Zaken inzien (`zaken-inzien`)
@@ -194,7 +194,7 @@ Laadt Form.io-definities bij opstart en levert een formulier op naam.
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
 |---|---|---|---|---|
 | graphql-query | `getFormDefinitionByName` | nee | `twijfel` |  |
-| event-listener | `FormApplicationReadyEventListener (ApplicationReadyEvent)` | nee | `twijfel` |  |
+| event-listener | `FormApplicationReadyEventListener` | nee | `twijfel` |  |
 
 <a id="capability-eigen-zaken-case"></a>
 ### Eigen zaken (case-definities) (`eigen-zaken-case`)
@@ -212,7 +212,7 @@ Portaal-interne zaakafhandeling - case-definities, case-instanties en indienen v
 | graphql-query | `allCaseInstances` | nee | `deprecated` |  |
 | graphql-query | `getCaseInstance` | nee | `deprecated` |  |
 | graphql-mutation | `processSubmission` | nee | `deprecated` |  |
-| event-listener | `CaseDefinitionApplicationReadyEventListener (ApplicationReadyEvent)` | nee | `deprecated` |  |
+| event-listener | `CaseDefinitionApplicationReadyEventListener` | nee | `deprecated` |  |
 
 <a id="capability-betalen-ogone-direct"></a>
 ### Betalen (Ogone direct) (`betalen-ogone-direct`)
