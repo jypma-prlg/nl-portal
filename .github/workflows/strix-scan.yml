@@ -8,6 +8,14 @@ on:
             - "site/**"
             - "*.md"
             - "GLOSSARY.md"
+    push:
+        branches: [main]
+        paths-ignore:
+            - "docs/**"
+            - "documentation/**"
+            - "site/**"
+            - "*.md"
+            - "GLOSSARY.md"
     workflow_dispatch:
 
 permissions:
@@ -93,3 +101,39 @@ jobs:
                     name: strix-scan-report
                     path: strix_runs/
                     retention-days: 7
+
+    # See ADR 0008: publishes only aggregate severity counts (never finding titles, CVEs or
+    # locations) to the public docs site, generated automatically so no manual curation of
+    # scan results is ever required.
+    publish-security-status:
+        needs: strix-scan
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        runs-on: ubuntu-24.04
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            -   name: Download scan report
+                uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+                with:
+                    name: strix-scan-report
+                    path: strix_runs
+            -   name: Aggregate severity counts
+                run: |
+                    python3 scripts/aggregate-strix-status.py \
+                        --runs-dir strix_runs \
+                        --out site/compliance/security-status.md
+            -   name: Open PR with updated security status
+                uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+                with:
+                    commit-message: "docs(compliance): update security scan status"
+                    title: "docs(compliance): update security scan status"
+                    body: >
+                        Automated update of the aggregated Strix severity counts in
+                        `site/compliance/security-status.md`, generated from the latest scan of
+                        `main`. No finding details are included — see ADR 0008.
+                    branch: automated/security-status
+                    delete-branch: true
+                    add-paths: site/compliance/security-status.md
