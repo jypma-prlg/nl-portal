@@ -25,6 +25,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 
 /** Discovers backend entry points by classpath scanning; no Spring context is started. */
 object EntryPointScanner {
@@ -41,11 +42,33 @@ object EntryPointScanner {
         return provider
             .findCandidateComponents(BASE_PACKAGE)
             .mapNotNull { it.beanClassName }
-            .map { Class.forName(it, false, javaClass.classLoader) }
+            .mapNotNull { loadOrNull(it) }
+            // Abstract types are covered through their concrete subclasses, which inherit the mappings.
+            .filterNot { it.isInterface || Modifier.isAbstract(it.modifiers) || it.isAnonymousClass }
     }
 
+    // Classes with optional dependencies missing from the classpath cannot contain active entry points.
+    private fun loadOrNull(name: String): Class<*>? =
+        try {
+            Class.forName(name, false, javaClass.classLoader).also { it.declaredMethods }
+        } catch (_: LinkageError) {
+            null
+        }
+
+    private fun methodsOf(clazz: Class<*>): List<Method> =
+        generateSequence(clazz) { it.superclass }
+            .takeWhile { it != Any::class.java }
+            .flatMap { it.declaredMethods.asSequence() }
+            .filterNot { it.isSynthetic || it.isBridge }
+            .toList()
+
     private fun entryPointsOf(clazz: Class<*>): List<EntryPoint> {
-        val methods = clazz.declaredMethods.filterNot { it.isSynthetic || it.isBridge }
+        val methods =
+            try {
+                methodsOf(clazz)
+            } catch (_: LinkageError) {
+                return emptyList()
+            }
         val isListener =
             ApplicationListener::class.java.isAssignableFrom(clazz) ||
                 methods.any { AnnotatedElementUtils.hasAnnotation(it, EventListener::class.java) }
