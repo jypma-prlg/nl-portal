@@ -1,4 +1,4 @@
-// Pure logic backing `mise run release:cut-rc` (see docs/adr/0004-changelog-release-proces.md).
+// Pure logic backing `mise run release:cut-rc` (see site/development/adr/0004-changelog-release-proces.md).
 // No git, filesystem or network I/O here - see release-cut-rc.mjs for that.
 
 const CONVENTIONAL_COMMIT = /^(\w+)(?:\(([^)]+)\))?(!)?:\s*(.+)$/;
@@ -81,7 +81,7 @@ All notable changes to NL Portal are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/). Sections are generated from Conventional
-Commits by \`mise run release:cut-rc\` (see [ADR 0004](docs/adr/0004-changelog-release-proces.md))
+Commits by \`mise run release:cut-rc\` (see [ADR 0004](site/development/adr/0004-changelog-release-proces.md))
 at the moment a release is cut - not maintained incrementally between releases.`;
 
 export function insertSection(existingContent, section) {

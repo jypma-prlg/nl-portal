@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Normalizes findings from dependency-check, grype, SonarCloud and gitleaks into one shape,
 // and decides which ones still need a GitHub issue opened for them (deduped against already-open
-// issues). See docs/workflows/periodic-checks.md for the process this backs.
+// issues). See site/development/workflows/periodic-checks.md for the process this backs.
 
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -85,7 +85,7 @@ export function buildIssueBody(finding) {
     finding.summary,
     "",
     "Automatisch aangemaakt door de security-escalatiestap, zie " +
-      "[docs/workflows/periodic-checks.md](../blob/main/docs/workflows/periodic-checks.md).",
+      "[site/development/workflows/periodic-checks.md](../blob/main/site/development/workflows/periodic-checks.md).",
   ].join("\n");
 }
 

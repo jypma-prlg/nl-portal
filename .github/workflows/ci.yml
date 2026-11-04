@@ -39,6 +39,7 @@ jobs:
                             - '.github/workflows/**'
                         docs:
                             - 'docs/**'
+                            - 'site/**'
                             - '*.md'
                             - 'GLOSSARY.md'
 
@@ -75,8 +76,19 @@ jobs:
             -   name: Validate LikeC4 model incl. generated capabilities
                 run: mise run likec4:validate
 
+    docs-site:
+        needs: changes
+        if: ${{ needs.changes.outputs.docs == 'true' }}
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            -   name: Set up mise
+                uses: jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
+            -   name: Build docs site (navigation tests, dead-link and anchor check)
+                run: mise run docs:build
+
     ci-required:
-        needs: [changes, validate, test-scripts, capabilities-docs-fresh]
+        needs: [changes, validate, test-scripts, capabilities-docs-fresh, docs-site]
         if: always()
         runs-on: ubuntu-latest
         steps:
@@ -85,10 +97,12 @@ jobs:
                     VALIDATE_RESULT: ${{ needs.validate.result }}
                     SCRIPTS_RESULT: ${{ needs.test-scripts.result }}
                     CAPABILITIES_RESULT: ${{ needs.capabilities-docs-fresh.result }}
+                    DOCS_SITE_RESULT: ${{ needs.docs-site.result }}
                 run: |
                     echo "::notice::validate result = ${VALIDATE_RESULT}"
                     echo "::notice::test-scripts result = ${SCRIPTS_RESULT}"
                     echo "::notice::capabilities-docs-fresh result = ${CAPABILITIES_RESULT}"
+                    echo "::notice::docs-site result = ${DOCS_SITE_RESULT}"
                     if [ "${VALIDATE_RESULT}" = "failure" ] || [ "${VALIDATE_RESULT}" = "cancelled" ]; then
                       exit 1
                     fi
@@ -96,6 +110,9 @@ jobs:
                       exit 1
                     fi
                     if [ "${CAPABILITIES_RESULT}" = "failure" ] || [ "${CAPABILITIES_RESULT}" = "cancelled" ]; then
+                      exit 1
+                    fi
+                    if [ "${DOCS_SITE_RESULT}" = "failure" ] || [ "${DOCS_SITE_RESULT}" = "cancelled" ]; then
                       exit 1
                     fi
 

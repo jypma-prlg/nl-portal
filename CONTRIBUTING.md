@@ -19,8 +19,8 @@ independently.
    exempt.
 
    For a bigger feature, follow the project's spec-driven workflow:
-   [`docs/workflows/spec-driven-development.md`](docs/workflows/spec-driven-development.md). Write
-   the issue with [`docs/workflows/feature-spec-template.md`](docs/workflows/feature-spec-template.md)
+   [`site/development/workflows/spec-driven-development.md`](site/development/workflows/spec-driven-development.md). Write
+   the issue with [`site/development/workflows/feature-spec-template.md`](site/development/workflows/feature-spec-template.md)
    and get the spec reviewed *before* you start building - that is the cheapest point to redirect a
    wrong approach, not during PR review.
 2. **Fork, or branch.** External contributors work on a branch in their own fork; contributors
@@ -46,7 +46,7 @@ NL Portal follows a Spring-style branch model:
   Commits merged since the previous release tag, updates `version.txt` and `CHANGELOG.md`, and
   commits both locally - review the result, then push and dispatch
   `build-and-publish-release-candidate.yml` yourself (see
-  [ADR 0004](docs/adr/0004-changelog-release-proces.md)). `CHANGELOG.md` is generated this way at
+  [ADR 0004](site/development/adr/0004-changelog-release-proces.md)). `CHANGELOG.md` is generated this way at
   release time; it isn't hand-edited between releases.
 
 Contributor branches are cut from `main`:
@@ -136,7 +136,8 @@ public issue for vulnerabilities.
 
 ## Where documentation lives
 
-`docs/` (architecture, ADRs, workflows) and `documentation/` (product docs) are being consolidated
-into a single documentation site - see
-[ADR 0007](docs/adr/0007-documentatie-architectuur-synthese.md) for the "where do I find what"
-mapping.
+All documentation (architecture, ADRs, workflows, product docs) lives in one VitePress site under
+[`site/`](site/). Preview it with `mise run docs:dev`; `mise run docs:build` runs the same
+navigation, dead-link and anchor checks as CI. Start at the section that fits:
+[Architectuur](site/architectuur/index.md), [Gebruik & inrichting](site/gebruik-en-inrichting/index.md),
+[Hosting & configuratie](site/hosting-en-configuratie/index.md), [Development](site/development/index.md).

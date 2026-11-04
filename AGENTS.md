@@ -24,7 +24,7 @@ Default canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `read
 
 ### Domain docs
 
-Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See
+Single-context: `GLOSSARY.md` + `site/development/adr/` at the repo root. See
 [docs/agents/domain.md](docs/agents/domain.md).
 
 ## Workflow: use the matching skill
@@ -53,7 +53,7 @@ either: run `research` or `grilling` first to pin down the approach, then build 
 
 ## Adding new functionality
 
-Start from [docs/workflows/spec-driven-development.md](docs/workflows/spec-driven-development.md)
+Start from [site/development/workflows/spec-driven-development.md](site/development/workflows/spec-driven-development.md)
 (Dutch) rather than jumping straight to code — it ties the spec, threat-model, build and
 architecture-doc-update steps together. Within that workflow: the build step is a `tdd` seam, and any
 step that touches `GLOSSARY.md` or an ADR is a `domain-modeling` seam.
@@ -79,22 +79,23 @@ pnpm-workspace) leeft onder `frontend/`. Backend-tooling (Gradle, Spotless/ktlin
 
 ## Architecture & domain
 
-- [docs/arc42](docs/arc42) — arc42 architecture (Dutch); [docs/likec4](docs/likec4) — the C1/C2/C3
+- [site/architectuur/arc42](site/architectuur/arc42) — arc42 architecture (Dutch); [site/likec4](site/likec4) — the C1/C2/C3
   model (`mise run likec4:start` to preview it).
 - [GLOSSARY.md](GLOSSARY.md) — canonical domain terminology (Dutch), kept free of implementation
   details. Use `domain-modeling` to sharpen a term when its usage drifts from this, or to add one
   when a module gets named after it.
-- [docs/adr](docs/adr) — architecture decision records. Only write one when the decision is hard to
+- [site/development/adr](site/development/adr) — architecture decision records. Only write one when the decision is hard to
   reverse, surprising without context, and the result of a real trade-off (see
-  [docs/adr/README.md](docs/adr/README.md)); use `domain-modeling` to drive it.
-- `docs/` and `documentation/` are being consolidated into a single documentation site — see
-  [ADR 0007](docs/adr/0007-documentatie-architectuur-synthese.md) for the "where do I find what"
-  mapping once something isn't in this file.
+  [site/development/adr/index.md](site/development/adr/index.md)); use `domain-modeling` to drive it.
+- All other documentation lives in one VitePress site under [site/](site/) (`mise run docs:dev` to
+  preview it): [Architectuur](site/architectuur/index.md), [Gebruik & inrichting](site/gebruik-en-inrichting/index.md),
+  [Hosting & configuratie](site/hosting-en-configuratie/index.md), [Development](site/development/index.md)
+  and, footer-only, [Compliance](site/compliance/index.md). Look there once something isn't in this file.
 
 ## Dependencies & security
 
-- [docs/workflows/dependency-updates.md](docs/workflows/dependency-updates.md) and
-  [docs/workflows/security.md](docs/workflows/security.md) (Dutch) are the source of truth; see also
+- [site/development/workflows/dependency-updates.md](site/development/workflows/dependency-updates.md) and
+  [site/development/workflows/security.md](site/development/workflows/security.md) (Dutch) are the source of truth; see also
   [SECURITY.md](SECURITY.md) for vulnerability disclosure.
 - Use the `mise run security:*`, `sbom:*` and `deps:check*` tasks (`mise.toml`) for these jobs
   instead of hand-rolling `gradle`/`syft`/`grype`/`pnpm` invocations — they're what CI runs too.

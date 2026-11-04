@@ -28,7 +28,7 @@ capabilities:
     beschrijving: Portaal-interne zaakafhandeling.
     status: deprecated
     bewijs: Niet gebruikt.
-    besluit: docs/adr/0010-verwijderen-case-module.md
+    besluit: site/development/adr/0010-verwijderen-case-module.md
     modules: [backend/case]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-10-20, commits_12m: 5, deprecated_markers: false}
     ingangen:
@@ -61,11 +61,12 @@ const ARC42_11 = `# 11. Risico's
 function withRoot(yaml, run) {
   const root = mkdtempSync(join(tmpdir(), "capabilities-docs-"));
   try {
-    mkdirSync(join(root, "docs/arc42"), { recursive: true });
-    mkdirSync(join(root, "docs/likec4"), { recursive: true });
+    mkdirSync(join(root, "docs"), { recursive: true });
+    mkdirSync(join(root, "site/architectuur/arc42"), { recursive: true });
+    mkdirSync(join(root, "site/likec4"), { recursive: true });
     writeFileSync(join(root, "docs/capabilities.yaml"), yaml);
-    writeFileSync(join(root, "docs/arc42/05-bouwblokkenzicht.md"), ARC42_5);
-    writeFileSync(join(root, "docs/arc42/11-risicos-en-technische-schulden.md"), ARC42_11);
+    writeFileSync(join(root, "site/architectuur/arc42/05-bouwblokkenzicht.md"), ARC42_5);
+    writeFileSync(join(root, "site/architectuur/arc42/11-risicos-en-technische-schulden.md"), ARC42_11);
     run(root);
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -79,9 +80,9 @@ test("running the generator twice yields identical output", () => {
   withRoot(YAML, (root) => {
     generate(root);
     const files = [
-      "docs/arc42/05-bouwblokkenzicht.md",
-      "docs/arc42/11-risicos-en-technische-schulden.md",
-      "docs/likec4/capabilities.generated.c4",
+      "site/architectuur/arc42/05-bouwblokkenzicht.md",
+      "site/architectuur/arc42/11-risicos-en-technische-schulden.md",
+      "site/likec4/capabilities.generated.c4",
     ];
     const first = files.map((f) => read(root, f));
     generate(root);
@@ -92,7 +93,7 @@ test("running the generator twice yields identical output", () => {
 test("chapter 5 lists each capability with status, modules and entry points, keeping hand-written text", () => {
   withRoot(YAML, (root) => {
     generate(root);
-    const md = read(root, "docs/arc42/05-bouwblokkenzicht.md");
+    const md = read(root, "site/architectuur/arc42/05-bouwblokkenzicht.md");
     assert.match(md, /handgeschreven voor/);
     assert.match(md, /handgeschreven na/);
     assert.doesNotMatch(md, /\noud\n/);
@@ -108,10 +109,10 @@ test("chapter 5 lists each capability with status, modules and entry points, kee
 test("chapter 11 lists technical debt and at-risk capabilities and entry points, not healthy ones", () => {
   withRoot(YAML, (root) => {
     generate(root);
-    const md = read(root, "docs/arc42/11-risicos-en-technische-schulden.md");
+    const md = read(root, "site/architectuur/arc42/11-risicos-en-technische-schulden.md");
     assert.match(md, /clamav-virusscan-api/);
     assert.match(md, /eigen-zaken-case/);
-    assert.match(md, /docs\/adr\/0010-verwijderen-case-module\.md/);
+    assert.match(md, /site\/development\/adr\/0010-verwijderen-case-module\.md/);
     assert.match(md, /CaseListener/, "entry-point level kandidaat-verwijderen is listed");
     assert.match(md, /eerst checken/);
     assert.doesNotMatch(md, /zaken-inzien/);
@@ -121,7 +122,7 @@ test("chapter 11 lists technical debt and at-risk capabilities and entry points,
 test("LikeC4 file has capability elements tagged by status and related to components", () => {
   withRoot(YAML, (root) => {
     generate(root);
-    const c4 = read(root, "docs/likec4/capabilities.generated.c4");
+    const c4 = read(root, "site/likec4/capabilities.generated.c4");
     assert.match(c4, /capability zakenInzien 'Zaken inzien'/);
     assert.match(c4, /#actief/);
     assert.match(c4, /#deprecated/);
@@ -134,12 +135,12 @@ test("LikeC4 file has capability elements tagged by status and related to compon
 test("changing a status in the YAML changes the generated output", () => {
   withRoot(YAML, (root) => {
     generate(root);
-    const before = read(root, "docs/likec4/capabilities.generated.c4");
+    const before = read(root, "site/likec4/capabilities.generated.c4");
     writeFileSync(join(root, "docs/capabilities.yaml"), YAML.replace("status: actief", "status: twijfel"));
     generate(root);
-    const after = read(root, "docs/likec4/capabilities.generated.c4");
+    const after = read(root, "site/likec4/capabilities.generated.c4");
     assert.notEqual(after, before);
-    assert.match(read(root, "docs/arc42/11-risicos-en-technische-schulden.md"), /zaken-inzien/);
+    assert.match(read(root, "site/architectuur/arc42/11-risicos-en-technische-schulden.md"), /zaken-inzien/);
   });
 });
 
@@ -153,7 +154,7 @@ test("an unknown status is rejected", () => {
 
 test("a missing generated-region marker is an error, not silent", () => {
   withRoot(YAML, (root) => {
-    writeFileSync(join(root, "docs/arc42/05-bouwblokkenzicht.md"), "# geen markers\n");
+    writeFileSync(join(root, "site/architectuur/arc42/05-bouwblokkenzicht.md"), "# geen markers\n");
     const r = spawnSync("node", [SCRIPT, "--root", root], { encoding: "utf8" });
     assert.notEqual(r.status, 0);
     assert.match(r.stderr, /BEGIN GENERATED: capabilities/);

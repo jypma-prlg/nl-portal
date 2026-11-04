@@ -10,7 +10,8 @@ zaken, en (in ontwikkeling) domein-specifieke gegevens.
 
 NL Portal doet zelf geen zaakafhandeling, is geen formulierencomponent en geen CMS — het haalt data
 op bij bronsystemen (primair via VNG's "ZGW API's voor Zaakgericht Werken") en toont die aan de
-klant. Zie de [architectuur-homepage](../) voor de volledige productscope.
+klant. Zie [`site/architectuur/applicatiearchitectuur.md`](../applicatiearchitectuur.md)
+voor de volledige productscope.
 
 Motto van het project: **"create once, use 340 times"** — iedere (Nederlandse) overheidsorganisatie
 kan het vrij gebruiken en verbeteren. Dat motto is architecturaal relevant: het drijft de nadruk op

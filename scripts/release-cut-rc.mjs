@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// `mise run release:cut-rc` - see docs/adr/0004-changelog-release-proces.md.
+// `mise run release:cut-rc` - see site/development/adr/0004-changelog-release-proces.md.
 //
 // Computes the next SemVer version from the Conventional Commits merged since the previous
 // release tag, updates version.txt and CHANGELOG.md, and commits both on a new rc/<version>

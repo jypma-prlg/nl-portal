@@ -16,6 +16,7 @@
 
 import { defineConfig } from "vitepress";
 import { nav, footerComplianceLink } from "./sections";
+import { sidebar } from "./sidebar";
 
 export default defineConfig({
   title: "NL Portal",
@@ -23,21 +24,11 @@ export default defineConfig({
   srcDir: ".",
   cleanUrls: true,
   // Fail the build on any broken internal link or anchor — load-bearing while
-  // ~80 files move from docs/ and documentation/ into this site.
+  // ~80 files moved from the old docs/ and documentation/ trees into this site.
   ignoreDeadLinks: false,
   themeConfig: {
     nav,
-    sidebar: {
-      "/architectuur/": [{ text: "Architectuur", items: [{ text: "Overzicht", link: "/architectuur/" }] }],
-      "/gebruik-en-inrichting/": [
-        { text: "Gebruik & inrichting", items: [{ text: "Overzicht", link: "/gebruik-en-inrichting/" }] },
-      ],
-      "/hosting-en-configuratie/": [
-        { text: "Hosting & configuratie", items: [{ text: "Overzicht", link: "/hosting-en-configuratie/" }] },
-      ],
-      "/development/": [{ text: "Development", items: [{ text: "Overzicht", link: "/development/" }] }],
-      "/compliance/": [{ text: "Compliance", items: [{ text: "Overzicht", link: "/compliance/" }] }],
-    },
+    sidebar,
     footer: {
       message: `<a href="${footerComplianceLink.link}">${footerComplianceLink.text}</a>`,
       copyright: "PinkRoccade",

@@ -198,7 +198,7 @@ const HEADER = [
   "",
   "The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project",
   "adheres to [Semantic Versioning](https://semver.org/). Sections are generated from Conventional",
-  "Commits by `mise run release:cut-rc` (see [ADR 0004](docs/adr/0004-changelog-release-proces.md))",
+  "Commits by `mise run release:cut-rc` (see [ADR 0004](site/development/adr/0004-changelog-release-proces.md))",
   "at the moment a release is cut - not maintained incrementally between releases.",
 ].join("\n");
 
