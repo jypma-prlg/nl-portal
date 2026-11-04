@@ -1,0 +1,221 @@
+// GEGENEREERD uit docs/capabilities.yaml via `mise run docs:capabilities`. Niet handmatig bewerken.
+specification {
+  element capability
+  tag in_ontwikkeling
+  tag actief
+  tag twijfel
+  tag kandidaat_verwijderen
+  tag deprecated
+  tag verwijderd
+}
+
+model {
+  capability portaalConfiguratie 'Portaalconfiguratie en health' {
+    #actief
+    description 'Levert feature-flags/configuratie aan de frontend en een optionele ping voor monitoring.'
+    metadata {
+      status 'actief'
+      modules 'backend/core'
+      ingangen '2'
+    }
+  }
+  capability databaseMigratie 'Database-initialisatie (Liquibase)' {
+    #actief
+    description 'Voert bij opstart de databasemigraties uit.'
+    metadata {
+      status 'actief'
+      modules 'backend/data'
+      ingangen '1'
+    }
+  }
+  capability zakenInzien 'Zaken inzien' {
+    #actief
+    description 'Burger/ondernemer ziet zijn lopende en afgeronde zaken met status, documenten en besluiten.'
+    metadata {
+      status 'actief'
+      modules 'backend/zgw/zaken, backend/zgw/zaken-api, backend/zgw/catalogi-api'
+      ingangen '3'
+    }
+  }
+  capability besluitenInzien 'Besluiten inzien' {
+    #twijfel
+    description 'Toont besluiten bij een zaak (via veld Zaak.besluiten) en biedt download van besluitdocumenten.'
+    metadata {
+      status 'twijfel'
+      modules 'backend/zgw/besluiten'
+      ingangen '1'
+    }
+  }
+  capability berichtenOntvangen 'Berichten ontvangen' {
+    #actief
+    description 'Berichtenbox met ongelezen-teller, berichtdetail en downloaden van bijlagen.'
+    metadata {
+      status 'actief'
+      modules 'backend/zgw/berichten, backend/zgw/documenten-api, backend/zgw/objectenapi'
+      ingangen '4'
+    }
+  }
+  capability takenAfhandelen 'Taken afhandelen' {
+    #actief
+    description 'Burger ziet openstaande taken, vult het bijbehorende formulier in (incl. uploads) en dient het in.'
+    metadata {
+      status 'actief'
+      modules 'backend/zgw/taak, backend/zgw/documenten-api, backend/zgw/objectenapi'
+      ingangen '5'
+    }
+  }
+  capability formulierdefinities 'Formulierdefinities beheren' {
+    #twijfel
+    description 'Laadt Form.io-definities bij opstart en levert een formulier op naam.'
+    metadata {
+      status 'twijfel'
+      modules 'backend/form'
+      ingangen '2'
+    }
+  }
+  capability eigenZakenCase 'Eigen zaken (case-definities)' {
+    #deprecated
+    description 'Portaal-interne zaakafhandeling - case-definities, case-instanties en indienen van formulieren als case.'
+    metadata {
+      status 'deprecated'
+      modules 'backend/case'
+      ingangen '5'
+    }
+  }
+  capability betalenOgoneDirect 'Betalen (Ogone direct)' {
+    #actief
+    description 'Burger betaalt direct via Ogone/Worldline; de PSP meldt de uitkomst via een postsale-webhook.'
+    metadata {
+      status 'actief'
+      modules 'backend/payment-direct'
+      ingangen '3'
+    }
+  }
+  capability persoonsgegevensBrp 'Persoonsgegevens (BRP)' {
+    #actief
+    description 'Toont de persoonsgegevens van de ingelogde burger uit Haal Centraal BRP.'
+    metadata {
+      status 'actief'
+      modules 'backend/haalcentraal2'
+      ingangen '2'
+    }
+  }
+  capability machtigingen 'Machtigingen (gemachtigde)' {
+    #actief
+    description 'Toont namens wie de gebruiker handelt (gemachtigde persoon of bedrijf).'
+    metadata {
+      status 'actief'
+      modules 'backend/haalcentraal2'
+      ingangen '1'
+    }
+  }
+  capability bedrijfsgegevensHr 'Bedrijfsgegevens (Handelsregister)' {
+    #actief
+    description 'Toont KvK-gegevens van de ingelogde ondernemer.'
+    metadata {
+      status 'actief'
+      modules 'backend/haalcentraal-hr'
+      ingangen '1'
+    }
+  }
+  capability contactgegevensBeheren 'Contactgegevens beheren' {
+    #actief
+    description 'Burger beheert e-mail/telefoon (digitale adressen) in OpenKlant 2, met verificatiecode.'
+    metadata {
+      status 'actief'
+      modules 'backend/zgw/openklant, backend/zgw/verificatie'
+      ingangen '4'
+    }
+  }
+  capability klantcontactenInzien 'Klantcontacten inzien' {
+    #actief
+    description 'Toont eerdere contactmomenten van de burger met de gemeente.'
+    metadata {
+      status 'actief'
+      modules 'backend/zgw/openklant'
+      ingangen '2'
+    }
+  }
+  capability partijBeheren 'Klantprofiel (partij) beheren' {
+    #kandidaat_verwijderen
+    description 'Opvragen en aanmaken/bijwerken van de partij (klantprofiel) van de burger in OpenKlant 2.'
+    metadata {
+      status 'kandidaat-verwijderen'
+      modules 'backend/zgw/openklant'
+      ingangen '4'
+    }
+  }
+  capability verificatie 'Verificatie contactgegevens (los)' {
+    #kandidaat_verwijderen
+    description 'Losse API om een verificatiecode aan te maken/controleren en de verificatieconfig op te vragen.'
+    metadata {
+      status 'kandidaat-verwijderen'
+      modules 'backend/zgw/verificatie'
+      ingangen '3'
+    }
+  }
+  capability productenInzien 'Producten inzien' {
+    #in_ontwikkeling
+    description 'Burger ziet zijn afgenomen producten (OpenProduct) met gekoppelde zaken, taken en documenten.'
+    metadata {
+      status 'in-ontwikkeling'
+      modules 'backend/zgw/openproduct'
+      ingangen '6'
+    }
+  }
+  capability productThemas 'Productthema\'s' {
+    #in_ontwikkeling
+    description 'Navigatie over producten per (hoofd)thema met gekoppelde zaken en taken.'
+    metadata {
+      status 'in-ontwikkeling'
+      modules 'backend/zgw/openproduct'
+      ingangen '8'
+    }
+  }
+  capability productacties 'Productacties en -beslissingen' {
+    #in_ontwikkeling
+    description 'Acties op een product (bijv. verlengen) met DMN-beslissing en prefill van formulieren.'
+    metadata {
+      status 'in-ontwikkeling'
+      modules 'backend/zgw/openproduct'
+      ingangen '5'
+    }
+  }
+  capability productReferentiedata 'Productreferentiegegevens' {
+    #twijfel
+    description 'Opvragen van bestanden, contacten, links, locaties, organisaties en prijzen uit OpenProduct.'
+    metadata {
+      status 'twijfel'
+      modules 'backend/zgw/openproduct'
+      ingangen '12'
+    }
+  }
+
+  portaalConfiguratie -> nlPortal.backend.core 'Geïmplementeerd in'
+  databaseMigratie -> nlPortal.backend.core 'Geïmplementeerd in'
+  zakenInzien -> nlPortal.backend.zgwIntegrations.zaken 'Geïmplementeerd in'
+  zakenInzien -> nlPortal.backend.zgwIntegrations.zakenApi 'Geïmplementeerd in'
+  zakenInzien -> nlPortal.backend.zgwIntegrations.catalogiApi 'Geïmplementeerd in'
+  besluitenInzien -> nlPortal.backend.zgwIntegrations.besluiten 'Geïmplementeerd in'
+  berichtenOntvangen -> nlPortal.backend.zgwIntegrations.berichten 'Geïmplementeerd in'
+  berichtenOntvangen -> nlPortal.backend.zgwIntegrations.documentenApi 'Geïmplementeerd in'
+  berichtenOntvangen -> nlPortal.backend.zgwIntegrations.objectenapi 'Geïmplementeerd in'
+  takenAfhandelen -> nlPortal.backend.zgwIntegrations.taak 'Geïmplementeerd in'
+  takenAfhandelen -> nlPortal.backend.zgwIntegrations.documentenApi 'Geïmplementeerd in'
+  takenAfhandelen -> nlPortal.backend.zgwIntegrations.objectenapi 'Geïmplementeerd in'
+  formulierdefinities -> nlPortal.backend.form 'Geïmplementeerd in'
+  eigenZakenCase -> nlPortal.backend.caseModule 'Geïmplementeerd in'
+  betalenOgoneDirect -> nlPortal.backend.payment 'Geïmplementeerd in'
+  persoonsgegevensBrp -> nlPortal.backend.haalCentraalIntegrations.haalcentraal2 'Geïmplementeerd in'
+  machtigingen -> nlPortal.backend.haalCentraalIntegrations.haalcentraal2 'Geïmplementeerd in'
+  bedrijfsgegevensHr -> nlPortal.backend.haalCentraalIntegrations.haalcentraalHr 'Geïmplementeerd in'
+  contactgegevensBeheren -> nlPortal.backend.zgwIntegrations.openklant 'Geïmplementeerd in'
+  contactgegevensBeheren -> nlPortal.backend.zgwIntegrations.verificatie 'Geïmplementeerd in'
+  klantcontactenInzien -> nlPortal.backend.zgwIntegrations.openklant 'Geïmplementeerd in'
+  partijBeheren -> nlPortal.backend.zgwIntegrations.openklant 'Geïmplementeerd in'
+  verificatie -> nlPortal.backend.zgwIntegrations.verificatie 'Geïmplementeerd in'
+  productenInzien -> nlPortal.backend.zgwIntegrations.openproduct 'Geïmplementeerd in'
+  productThemas -> nlPortal.backend.zgwIntegrations.openproduct 'Geïmplementeerd in'
+  productacties -> nlPortal.backend.zgwIntegrations.openproduct 'Geïmplementeerd in'
+  productReferentiedata -> nlPortal.backend.zgwIntegrations.openproduct 'Geïmplementeerd in'
+}
