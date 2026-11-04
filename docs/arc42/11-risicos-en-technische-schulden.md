@@ -37,3 +37,39 @@ waarom deze review is uitgevoerd):
 Risico's die specifiek zijn voor een individuele dependency-versie (bijv. "library X heeft CVE Y")
 horen in de Dependency-Check-/Renovate-dashboards, niet hier — dit hoofdstuk beschrijft structurele
 risico's, geen puntoplossingen die door bestaande tooling al worden gesignaleerd.
+
+<!-- BEGIN GENERATED: technische-schuld -->
+_Gegenereerd uit [`docs/capabilities.yaml`](../capabilities.yaml) via `mise run docs:capabilities`. Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._
+
+## 11.4 Technische schuld en capabilities onder twijfel (inventaris 2026-11-04)
+
+### Technische schuld
+
+| Id | Module | Omschrijving |
+|---|---|---|
+| `openklant-deprecated-domein` | `backend/zgw/openklant` | @Deprecated domeinklassen nog aanwezig |
+| `haalcentraal2-deprecated-domein` | `backend/haalcentraal2` | @Deprecated domeinklassen nog aanwezig |
+| `keycloak-legacy-token-exchange` | `backend/zgw/common-ground-authentication` | legacy Keycloak token-exchange gemarkeerd als deprecated |
+| `clamav-virusscan-api` | `backend/zgw/documenten-api` | deprecated ClamAV/VirusScan-API |
+| `form-transitieve-afhankelijkheid` | `backend/form` | uitgecommentarieerd in app maar via zgw:taak op classpath |
+
+### Capabilities met status twijfel, kandidaat-verwijderen of deprecated
+
+| Capability | Status | Toelichting | Besluit / actie |
+|---|---|---|---|
+| `besluiten-inzien` | `twijfel` | Alleen veldresolvers + REST-download; /api/besluiten/... nergens in frontend gevonden, wel actief onderhouden (17 commits). |  |
+| `formulierdefinities` | `twijfel` | In app/build.gradle.kts uitgecommentarieerd maar transitief via zgw:taak aanwezig; GetFormDefinitionByName-document bestaat maar hook wordt nergens gebruikt. | Nagaan of zgw:taak form inhoudelijk nodig heeft of alleen meesleept; zo niet → kandidaat-verwijderen. |
+| `eigen-zaken-case` | `deprecated` | Geen enkele operatie in frontend gebruikt; overlapt met ZGW-zaken; alleen onderhoudscommits (5). | docs/adr/0010-verwijderen-case-module.md (2026-11-04); verwijderen na check gateway-logs op externe clients. |
+| `partij-beheren` | `kandidaat-verwijderen` | Geen van de 4 operaties in frontend; publieke GraphQL-ingangen kunnen weg (na check externe clients). |  |
+| `verificatie` | `kandidaat-verwijderen` | Geen frontend-gebruik; alleen de publieke GraphQL-ingangen gaan weg. De service blijft als interne afhankelijkheid van contactgegevens-beheren (DigitaleAdresMutation). |  |
+| `product-referentiedata` | `twijfel` | 12 lijst/detail-operaties, geen enkele in frontend gebruikt; lijkt 1-op-1 API-doorgifte zonder consument. | Herbeoordelen zodra de OpenProduct-frontend (producten-inzien, product-themas, productacties) af is. |
+
+### Ingangen met een eigen risicostatus
+
+| Capability | Ingang | Status | Voorwaarde |
+|---|---|---|---|
+| `besluiten-inzien` | `GET /api/besluiten/{besluitId}/document/{documentId}/content` | `kandidaat-verwijderen` | eerst bevestigen dat besluitdocumenten nergens getoond worden |
+| `persoonsgegevens-brp` | `getBewonersAantalV2` | `kandidaat-verwijderen` | dubbel met veld bewonersAantal |
+| `klantcontacten-inzien` | `getUserKlantContact` | `kandidaat-verwijderen` |  |
+| `producten-inzien` | `GET /api/product/{productId}/document/{documentId}/content` | `kandidaat-verwijderen` |  |
+<!-- END GENERATED: technische-schuld -->

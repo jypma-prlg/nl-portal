@@ -129,3 +129,13 @@ description = "Check backend dependency licenses against the allowlist (backend/
 dir = "backend"
 shell = "bash -c"
 run = "./gradlew checkLicense"
+
+[tasks."docs:capabilities"]
+description = "Regenerate arc42 chapters 5/11 and docs/likec4/capabilities.generated.c4 from docs/capabilities.yaml"
+run = "node scripts/generate-capabilities-docs.mjs"
+
+[tasks."docs:capabilities-check"]
+description = "Regenerate capability docs and fail if that changes anything (CI freshness check)"
+depends = ["docs:capabilities"]
+shell = "bash -c"
+run = "git diff --ignore-cr-at-eol --exit-code -- docs && test -z \"$(git ls-files --others --exclude-standard -- docs)\" || { echo 'Capability-docs niet actueel: draai `mise run docs:capabilities` en commit het resultaat.'; exit 1; }"
