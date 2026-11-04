@@ -61,7 +61,7 @@ jobs:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 run: ./gradlew test jacocoTestReport sonar --no-daemon
             -   name: Wait for SonarCloud quality gate
-                uses: sonarsource/sonarqube-quality-gate-action@dc2f7b0dd95544cd550de3028f89193ac8fecbbc # v1.2.0
+                uses: sonarsource/sonarqube-quality-gate-action@cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
                 timeout-minutes: 10
                 with:
                     scanMetadataReportFile: backend/build/sonar/report-task.txt
@@ -95,7 +95,7 @@ jobs:
                 with:
                     projectBaseDir: frontend
             -   name: Wait for SonarCloud quality gate
-                uses: sonarsource/sonarqube-quality-gate-action@dc2f7b0dd95544cd550de3028f89193ac8fecbbc # v1.2.0
+                uses: sonarsource/sonarqube-quality-gate-action@cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
                 timeout-minutes: 10
                 with:
                     scanMetadataReportFile: frontend/.scannerwork/report-task.txt
