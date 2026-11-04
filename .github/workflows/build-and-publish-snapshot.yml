@@ -48,30 +48,26 @@ jobs:
 
     image-be:
         needs: [prepare, stage-be]
-        # Pushes to ghcr.io/nl-portal/*, which pinkroccade doesn't own; this will fail until
-        # pinkroccade's own registry is set up (tracked as a backlog issue).
         if: github.repository == 'pinkroccade/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: backend
             push: true
-            primaryTag: ghcr.io/nl-portal/nl-portal-backend:${{ needs.prepare.outputs.version }}
+            primaryTag: ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.version }}
             tags: |
-                ghcr.io/nl-portal/nl-portal-backend:${{ needs.prepare.outputs.version }}
+                ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.version }}
         secrets: inherit
 
     image-fe:
         needs: [prepare, stage-fe]
-        # Pushes to ghcr.io/nl-portal/*, which pinkroccade doesn't own; this will fail until
-        # pinkroccade's own registry is set up (tracked as a backlog issue).
         if: github.repository == 'pinkroccade/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: frontend
             push: true
-            primaryTag: ghcr.io/nl-portal/nl-portal-frontend:${{ needs.prepare.outputs.version }}
+            primaryTag: ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.version }}
             tags: |
-                ghcr.io/nl-portal/nl-portal-frontend:${{ needs.prepare.outputs.version }}
+                ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.version }}
         secrets: inherit
 
     publish-be-s3:

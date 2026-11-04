@@ -115,34 +115,30 @@ jobs:
 
     image-be:
         needs: [prepare, stage-be, gate]
-        # Pushes to ghcr.io/nl-portal/*, which pinkroccade doesn't own; this will fail until
-        # pinkroccade's own registry is set up (tracked as a backlog issue).
         if: github.repository == 'pinkroccade/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: backend
             push: true
-            primaryTag: ghcr.io/nl-portal/nl-portal-backend:${{ needs.prepare.outputs.version }}
+            primaryTag: ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.version }}
             tags: |
-                ghcr.io/nl-portal/nl-portal-backend:${{ needs.prepare.outputs.version }}
-                ghcr.io/nl-portal/nl-portal-backend:${{ needs.prepare.outputs.minor }}
-                ghcr.io/nl-portal/nl-portal-backend:${{ needs.prepare.outputs.major }}
+                ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.version }}
+                ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.minor }}
+                ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.major }}
         secrets: inherit
 
     image-fe:
         needs: [prepare, stage-fe, gate]
-        # Pushes to ghcr.io/nl-portal/*, which pinkroccade doesn't own; this will fail until
-        # pinkroccade's own registry is set up (tracked as a backlog issue).
         if: github.repository == 'pinkroccade/nl-portal'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: frontend
             push: true
-            primaryTag: ghcr.io/nl-portal/nl-portal-frontend:${{ needs.prepare.outputs.version }}
+            primaryTag: ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.version }}
             tags: |
-                ghcr.io/nl-portal/nl-portal-frontend:${{ needs.prepare.outputs.version }}
-                ghcr.io/nl-portal/nl-portal-frontend:${{ needs.prepare.outputs.minor }}
-                ghcr.io/nl-portal/nl-portal-frontend:${{ needs.prepare.outputs.major }}
+                ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.version }}
+                ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.minor }}
+                ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.major }}
         secrets: inherit
 
     create-release:
