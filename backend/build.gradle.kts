@@ -236,7 +236,7 @@ sonar {
     }
 }
 
-listOf(":app", ":app-dev", ":gradle:license-report").forEach { modulePath ->
+listOf(":app", ":app-dev", ":gradle:license-report", ":architecture-test").forEach { modulePath ->
     project(modulePath) {
         sonar {
             isSkipProject = true

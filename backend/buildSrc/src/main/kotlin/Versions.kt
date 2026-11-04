@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 object Versions {
+    const val archUnit = "1.4.1"
     const val everitJsonSchema = "1.14.6"
     const val jsonPath = "2.10.0"
     const val kotlinCoroutines = "1.10.2"

@@ -2,7 +2,8 @@
 
 ## Status
 
-Geaccepteerd.
+Geaccepteerd. Beslissing 1 (publicatie-trigger) deels vervangen door [ADR 0009](0009-strix-scan-handmatig-losgekoppelde-publicatie.md):
+de CI-stap draait niet meer op elke push naar `main`, maar na elke handmatige scan.
 
 ## Context
 
@@ -25,9 +26,11 @@ GitOps-repo verplaatsen, naar analogie van het ArgoCD "app-of-apps"-patroon.
    de bestaande VitePress-sectie `site/compliance/` (zie [ADR 0006](0006-unified-docs-site.md)).
    Methodologie/workflow-documentatie (hoe en waarmee gescand wordt) staat daar volledig open naast.
    Geen rauwe Strix-rapporten, geen handmatige curatie, geen aparte repo of github.io-pagina.
-2. **`strix-scan.yml` blijft in `nl-portal`.** Het is inherent gekoppeld aan PR-diffs van deze repo
-   (`--scope-mode diff`); verplaatsen zou alleen cross-repo checkout/permissies-overhead toevoegen
-   zonder de repo "schoner" te maken. `strix_runs/` blijft ongewijzigd gitignored.
+2. **`strix-scan.yml` blijft in `nl-portal`.** Verplaatsen zou alleen cross-repo
+   checkout/permissies-overhead toevoegen zonder de repo "schoner" te maken. `strix_runs/` blijft
+   ongewijzigd gitignored. (De oorspronkelijke motivatie hier noemde een koppeling aan PR-diffs
+   via `--scope-mode diff`; die trigger en scope-mode zijn inmiddels losgelaten, zie
+   [ADR 0009](0009-strix-scan-handmatig-losgekoppelde-publicatie.md) — de conclusie zelf staat.)
 3. **Geen GitOps/pipeline-repo-split voor backend/app-dev.** ArgoCD-manifesten worden al beheerd in de
    interne self-hosted GitLab, en Harbor-caching loopt al via een aparte interne pipeline — beide buiten
    de scope van deze repo. `nl-portal` hoeft dus niet naar Harbor te pushen.
