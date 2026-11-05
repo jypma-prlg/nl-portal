@@ -1925,8 +1925,6 @@ export type Query = {
   getBewonersAantalV2?: Maybe<Scalars['Int']['output']>;
   getDecision: Array<Scalars['JSON']['output']>;
   getDirectPaymentStatus: DirectPaymentStatus;
-  /**  find single form definition from repository */
-  getFormDefinitionByName?: Maybe<FormDefinition>;
   /**  Get the form definition for a task the authenticated user owns */
   getFormDefinitionByTaskId?: Maybe<FormDefinition>;
   /**  Gets the data of the gemachtigde */
@@ -2049,10 +2047,6 @@ export type QueryGetDirectPaymentStatusArgs = {
   identifier: Scalars['String']['input'];
 };
 
-
-export type QueryGetFormDefinitionByNameArgs = {
-  name: Scalars['String']['input'];
-};
 
 
 export type QueryGetFormDefinitionByTaskIdArgs = {

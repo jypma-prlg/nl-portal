@@ -80,10 +80,6 @@ class GraphQLEndpointAuthorizationIT {
         val ALLOWED_PUBLIC_OPERATIONS =
             setOf(
                 "verificatieConfig", // Returns public config (no user data, no authentication needed)
-                // Form definitions - loaded without authentication (e.g. before login)
-                "getFormDefinitionById",
-                "getFormDefinitionByName",
-                "getFormDefinitionByObjectenApiUrl",
             )
     }
 
