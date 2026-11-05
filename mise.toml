@@ -44,6 +44,12 @@ description = "Mutation testing op backend/core (ADR 0011); HTML-rapport in back
 dir = "backend"
 run = "./gradlew :core:pitest"
 
+[tasks."backend:module-layer-changes"]
+description = "Toon nieuwe backend-modules en laagwijzigingen in ModuleLayers t.o.v. origin/main (zoals de PR-opmerking uit CI, #177)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew :architecture-test:moduleLayerChanges -q"
+
 [tasks."backend:integration-test"]
 description = "Backend-integratietests over alle modules (vereist Docker voor de OpenKlant-container in zgw:openklant)"
 dir = "backend"

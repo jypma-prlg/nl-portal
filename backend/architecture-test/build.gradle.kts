@@ -48,6 +48,23 @@ tasks.named<Test>("test") {
     testLogging.showStandardStreams = true
 }
 
+// Compares ModuleLayers with the base branch and writes a plain-language summary of new modules
+// and layer changes for the PR (#177). The file stays empty when there is nothing to ask.
+// Base branch: -PmoduleLayersBaseRef=<ref>, default origin/main.
+tasks.register<JavaExec>("moduleLayerChanges") {
+    description = "Summarise new modules and layer changes in ModuleLayers compared with the base branch"
+    group = "verification"
+    val sourceSets = project.extensions.getByType<SourceSetContainer>()
+    classpath = sourceSets["test"].runtimeClasspath
+    mainClass.set("nl.nlportal.architecture.ModuleLayerChangesMainKt")
+    workingDir = projectDir
+    val summary = layout.buildDirectory.file("reports/module-layers/pr-summary.md")
+    args(providers.gradleProperty("moduleLayersBaseRef").getOrElse("origin/main"), summary.get().asFile.absolutePath)
+    outputs.file(summary)
+    // Depends on git state outside Gradle's view; always rerun.
+    outputs.upToDateWhen { false }
+}
+
 val jar: Jar by tasks
 val bootJar: org.springframework.boot.gradle.tasks.bundling.BootJar by tasks
 bootJar.enabled = false
