@@ -15,6 +15,7 @@
  */
 package nl.nlportal.zgw.objectenapi.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.netty.handler.logging.LogLevel.TRACE
 import java.util.UUID
 import nl.nlportal.core.util.Mapper
@@ -118,17 +119,17 @@ open class ObjectsApiClient(
 
     fun webClient(): WebClient =
         webclientBuilder
-            .baseUrl(objectsApiClientConfig.url.toString())
+            .baseUrl(objectsApiClientConfig.url.toString().requireConfigured("objectenapi", "url"))
             .defaultHeader("Accept-Crs", "EPSG:4326")
             .defaultHeader("Content-Crs", "EPSG:4326")
-            .defaultHeader("Authorization", "Token ${objectsApiClientConfig.token}")
+            .defaultHeader("Authorization", "Token ${objectsApiClientConfig.token.requireConfigured("objectenapi", "token")}")
             .build()
 
     fun webClientWithoutBaseUrl(): WebClient =
         webclientBuilder
             .defaultHeader("Accept-Crs", "EPSG:4326")
             .defaultHeader("Content-Crs", "EPSG:4326")
-            .defaultHeader("Authorization", "Token ${objectsApiClientConfig.token}")
+            .defaultHeader("Authorization", "Token ${objectsApiClientConfig.token.requireConfigured("objectenapi", "token")}")
             .build()
 
     private val webclientBuilder =

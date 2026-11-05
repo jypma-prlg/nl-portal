@@ -15,6 +15,7 @@
  */
 package nl.nlportal.documentenapi.client
 
+import nl.nlportal.core.util.ModuleNotConfiguredException
 import nl.nlportal.core.ssl.Ssl
 import nl.nlportal.documentenapi.domain.DocumentStatus
 import nl.nlportal.documentenapi.domain.DocumentStatus.DEFINITIEF
@@ -50,7 +51,7 @@ class DocumentApisConfig {
 
         fun getConfig(documentApi: String): DocumentApiConfig =
             configurations[documentApi]
-                ?: throw NullPointerException("No documentapi configuration with key $documentApi")
+                ?: throw ModuleNotConfiguredException("documentenapis", "configurations.$documentApi")
 
         fun getConfigForDocumentUrl(documentUrl: String): String =
             configurations
@@ -58,7 +59,7 @@ class DocumentApisConfig {
                     documentUrl.contains(documentenApiConfig.url)
                 }.keys
                 .firstOrNull()
-                ?: throw NullPointerException("No documentapi configuration found for handling: $documentUrl")
+                ?: throw ModuleNotConfiguredException("documentenapis", "configurations (none matches $documentUrl)")
 
         class DocumentApiConfig {
             var url: String = ""

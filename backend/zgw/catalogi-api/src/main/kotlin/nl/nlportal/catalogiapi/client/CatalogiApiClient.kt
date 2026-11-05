@@ -15,6 +15,7 @@
  */
 package nl.nlportal.catalogiapi.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.netty.handler.logging.LogLevel
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig.CatalogiApiConfigProperties
 import nl.nlportal.catalogiapi.domain.BesluitType
@@ -104,8 +105,8 @@ class CatalogiApiClient(
     private fun webClient(): WebClient {
         val token =
             idTokenGenerator.generateToken(
-                catalogiApiConfig.secret,
-                catalogiApiConfig.clientId,
+                catalogiApiConfig.secret.requireConfigured("catalogiapi", "secret"),
+                catalogiApiConfig.clientId.requireConfigured("catalogiapi", "clientId"),
             )
 
         return WebClient
@@ -123,7 +124,7 @@ class CatalogiApiClient(
                     .builder()
                     .codecs { configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }
                     .build(),
-            ).baseUrl(catalogiApiConfig.url)
+            ).baseUrl(catalogiApiConfig.url.requireConfigured("catalogiapi", "url"))
             .defaultHeader("Accept-Crs", "EPSG:4326")
             .defaultHeader("Content-Crs", "EPSG:4326")
             .defaultHeader("Authorization", "Bearer $token")

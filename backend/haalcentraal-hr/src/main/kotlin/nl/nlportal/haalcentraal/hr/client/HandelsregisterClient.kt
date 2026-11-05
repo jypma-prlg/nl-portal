@@ -15,6 +15,7 @@
  */
 package nl.nlportal.haalcentraal.hr.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.handler.logging.LogLevel
@@ -75,7 +76,7 @@ class HandelsregisterClient(
                             result
                         },
                 ),
-            ).baseUrl(haalCentraalHrClientConfig.url)
+            ).baseUrl(haalCentraalHrClientConfig.url.requireConfigured("haalcentraal-hr", "url"))
             .apply {
                 if (!haalCentraalHrClientConfig.apiKey.isNullOrBlank()) {
                     it.defaultHeader("X-API-KEY", haalCentraalHrClientConfig.apiKey!!)
