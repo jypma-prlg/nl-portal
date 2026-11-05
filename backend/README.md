@@ -1,6 +1,6 @@
 # NL Portal Backend
 
-![Java 21](https://img.shields.io/badge/Java-21-green)
+![Java 25](https://img.shields.io/badge/Java-25-green)
 
 The backend stack of the [NL Portal monorepo](../README.md). It is a single Kotlin/Spring Boot
 multi-module Gradle project containing:
@@ -15,7 +15,7 @@ supporting (ZGW) services.
 
 ## Requirements
 
-- Java 21
+- Java 25
 - Docker (integration tests and the local supporting-services stack rely on it)
 
 ## Building
