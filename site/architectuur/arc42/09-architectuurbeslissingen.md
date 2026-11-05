@@ -35,6 +35,10 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   release-notes-archief) en een footer-only Compliance-sectie. Root-conventiebestanden
   (AGENTS.md, CONTRIBUTING.md, ...) verhuizen niet mee.
 
+- [`0011-mutation-testing-backend-core.md`](../../development/adr/0011-mutation-testing-backend-core.md) — **geaccepteerd**.
+  Mutation testing met pitest op `backend/core`: ratchet op de gemeten baseline voor het totaal,
+  80% voor nieuwe en gewijzigde klassen, in CI op PR's (gewijzigde klassen) en nachtelijk.
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:

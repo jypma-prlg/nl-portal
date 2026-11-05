@@ -15,6 +15,7 @@
  */
 plugins {
     kotlin("jvm")
+    id("info.solidsoft.pitest")
 }
 
 val jar: Jar by tasks
@@ -55,6 +56,28 @@ dependencies {
     testImplementation(TestDependencies.springBootTestWebClient)
     testImplementation(TestDependencies.kotlinCoroutines)
     testImplementation(TestDependencies.mockitoKotlin)
+}
+
+// Mutation testing (#95, ADR 0011). Bewust een eigen taak, niet onderdeel van `build`/`check`.
+pitest {
+    pitestVersion.set("1.30.1")
+    junit5PluginVersion.set("1.2.3")
+    // CI (PR-run) beperkt de run tot gewijzigde klassen via -PpitestTargetClasses=a.B,c.D en eist dan een hogere drempel.
+    targetClasses.set(
+        providers
+            .gradleProperty("pitestTargetClasses")
+            .map { it.split(",").toSet() }
+            .orElse(setOf("nl.nlportal.core.*")),
+    )
+    targetTests.set(setOf("nl.nlportal.core.*"))
+    // Kotlin genereert null-checks en logging-aanroepen waarvan mutaties geen gedrag veranderen (equivalente mutanten).
+    avoidCallsTo.set(setOf("kotlin.jvm.internal", "mu", "io.github.oshai.kotlinlogging", "org.slf4j"))
+    threads.set(4)
+    outputFormats.set(setOf("HTML", "XML"))
+    timestampedReports.set(false)
+    // Ratchet: vloer = gemeten baseline (21%, 15/70 gedood). Alleen verhogen, nooit verlagen (ADR 0011).
+    mutationThreshold.set(providers.gradleProperty("pitestThreshold").map { it.toInt() }.orElse(20))
+    failWhenNoMutations.set(false)
 }
 
 apply(from = "gradle/publishing.gradle.kts")
