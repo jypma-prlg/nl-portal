@@ -10,6 +10,22 @@ Issue tracker: GitHub Issues on this repo (`gh issue ...`), using native sub-iss
 relationships. Any skill that needs to find, file, or link a ticket — `wayfinder`'s map and tickets
 included — looks here.
 
+## Hard rules
+
+Read these before anything else; every other section is reference.
+
+1. **Skill first.** Match the task to the table under "Workflow" and call that skill before acting.
+2. **Branch first.** Run `git branch --show-current` before the first edit. On `main`, create a
+   branch; changes reach `main` only through a PR (see "Branches").
+3. **Hooks pass.** Run `git commit` and `git push` directly and let the Husky hooks pass; fix the
+   cause when one fails, never `--no-verify` (see "Git hooks and `pnpm`").
+4. **Mise for tasks.** Run scripts and repeatable tasks as `mise run <task>`; add a task when none
+   exists. The build and test commands under "Before you call it done" are the exception.
+5. **Done means green.** Build and tests pass per "Before you call it done"; a security- or
+   dependency-relevant change also passes the matching `mise run security:*` task.
+6. **PR title is a Conventional Commit** and non-trivial work starts from an issue (see
+   "Contributing").
+
 ## Agent skills
 
 ### Issue tracker
@@ -115,8 +131,6 @@ pnpm-workspace) leeft onder `frontend/`. Backend-tooling (Gradle, Spotless/ktlin
 - [site/development/workflows/dependency-updates.md](site/development/workflows/dependency-updates.md) and
   [site/development/workflows/security.md](site/development/workflows/security.md) (Dutch) are the source of truth; see also
   [SECURITY.md](SECURITY.md) for vulnerability disclosure.
-- Run every script and repeatable task through `mise run <task>` (`mise.toml`), not as a loose
-  `gradle`/`pnpm`/`npx` call; add a mise task when none exists. Git is the exception (see above).
 - Use the `mise run security:*`, `sbom:*` and `deps:check*` tasks (`mise.toml`) for these jobs
   instead of hand-rolling `gradle`/`syft`/`grype`/`pnpm` invocations — they're what CI runs too.
 - After any backend dependency bump, including the weekly Renovate PR, manually regenerate and
