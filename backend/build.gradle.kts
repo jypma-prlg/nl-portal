@@ -16,7 +16,6 @@
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import io.spring.gradle.dependencymanagement.org.codehaus.plexus.interpolation.os.Os.FAMILY_MAC
 import org.apache.tools.ant.taskdefs.condition.Os
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import java.net.URI
 import kotlin.io.encoding.Base64.Default.decode
@@ -122,6 +121,9 @@ subprojects {
     }
 
     java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(project.property("javaVersion").toString().toInt()))
+        }
         withSourcesJar()
         withJavadocJar()
     }
@@ -165,7 +167,6 @@ subprojects {
 
     tasks.withType<KotlinJvmCompile>().configureEach {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
             freeCompilerArgs.add("-Xjsr305=strict")
             freeCompilerArgs.add("-Xemit-jvm-type-annotations")
         }
