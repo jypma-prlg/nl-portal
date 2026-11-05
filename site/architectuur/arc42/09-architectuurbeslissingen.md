@@ -47,6 +47,10 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   De backend heeft geen eigen database meer (geen JPA, Liquibase of Postgres); module `data` is
   verwijderd. State blijft in de bronsystemen.
 
+- [`0014-feature-flags-via-openfeature.md`](../../development/adr/0014-feature-flags-via-openfeature.md) — **geaccepteerd**.
+  Feature flags via OpenFeature met een flagd-bestand als standaardprovider; de productie-provider is
+  nog niet gekozen (#147).
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:

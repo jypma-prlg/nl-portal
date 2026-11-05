@@ -2,6 +2,10 @@ model {
   extend nlPortal.backend {
     component core 'Core' {
       description 'Gedeelde domeinbegrippen, configuratie en security-basis.'
+
+      component featureFlags 'Feature flags' {
+        description 'FeatureGate op OpenFeature met flagd-bestand als standaardprovider (ADR 0014).'
+      }
     }
     component graphqlApi 'GraphQL API' {
       description 'GraphQL schema en resolvers: het externe contract van de backend.'

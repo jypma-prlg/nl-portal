@@ -62,12 +62,54 @@ NLPORTAL_FRONTEND_PROPERTIES_OVERVIEWMAINTENANCEALERTTEXTNL=Deze omgeving is tij
 
 ### Feature flags
 
-De backend stuurt gedrag aan met feature flags, geëvalueerd via de open standaard [OpenFeature](https://openfeature.dev). Zonder aparte flag-voorziening werkt NL Portal met een meegeleverd flagbestand; je hoeft niets in te stellen.
+NL Portal stuurt gedrag aan met feature flags, geëvalueerd via de open standaard
+[OpenFeature](https://openfeature.dev). **Je hoeft niets in te richten om te starten**: zonder aparte
+instelling gebruikt NL Portal een meegeleverd flagbestand, en de standaardwaarden daarin zijn bedoeld
+als veilige startpositie. Je wijzigt flags door een eigen flagbestand aan te wijzen.
 
-- `nl-portal.feature-flags.file` — pad naar een eigen flagbestand (flagd-formaat). Zonder deze property gebruikt NL Portal het meegeleverde bestand.
-- `nl-portal.feature-flags.poll-interval-ms` — hoe vaak het bestand op wijzigingen wordt gecontroleerd (standaard 5000). Een aangepast bestand werkt dus zonder herstart door.
+**Eigen flagbestand gebruiken**
 
-Een andere OpenFeature-provider sluit je aan door een eigen `FeatureProvider`-bean te registreren. Een permission-flag die niet beoordeeld kan worden, geeft bij twijfel geen toegang.
+| Property | Omgevingsvariabele | Betekenis |
+|---|---|---|
+| `nl-portal.feature-flags.file` | `NLPORTAL_FEATUREFLAGS_FILE` | Pad naar je eigen flagbestand. Zonder deze instelling wordt het meegeleverde bestand gebruikt. |
+| `nl-portal.feature-flags.poll-interval-ms` | `NLPORTAL_FEATUREFLAGS_POLLINTERVALMS` | Hoe vaak het bestand op wijzigingen wordt gecontroleerd (standaard 5000). Een aangepast bestand werkt zonder herstart door. |
+
+Het bestand heeft het [flagd-formaat](https://flagd.dev/reference/flag-definitions/). Het meegeleverde
+bestand is het uitgangspunt: kopieer het uit de broncode van NL Portal
+(`backend/core/src/main/resources/feature-flags/default.flagd.json`) en pas het aan. Een flag aanzetten:
+
+```json
+{
+  "$schema": "https://flagd.dev/schema/v0/flags.json",
+  "flags": {
+    "ops.frontend.message-count": {
+      "state": "ENABLED",
+      "variants": { "on": true, "off": false },
+      "defaultVariant": "on"
+    }
+  }
+}
+```
+
+Op Kubernetes mount je het bestand uit een ConfigMap en zet je `NLPORTAL_FEATUREFLAGS_FILE` op het
+gemounte pad. Een flag die ontbreekt in je bestand valt terug op de standaardwaarde in de code, en een
+flag voor toegang (permission) valt bij twijfel altijd terug op uit. Kubernetes werkt een gemounte
+ConfigMap bij met een bestandswissel; of NL Portal die wijziging zonder herstart oppikt is nog niet in
+een echte clusteromgeving getest, controleer dat in je eigen omgeving.
+
+**Beschikbare flags**
+
+| Flag | Type | Standaard | Effect |
+|---|---|---|---|
+| `ops.frontend.message-count` | ops | uit | Toont het aantal ongelezen berichten in de frontend (`messageCountEnabled`). |
+
+De overige frontend-toggles en de module-activatie worden stapsgewijs flags (zie
+[ADR 0014](../development/adr/0014-feature-flags-via-openfeature.md)); tot die tijd stel je ze in zoals
+hierboven beschreven.
+
+Een andere OpenFeature-provider (bijvoorbeeld een flag-server) sluit je aan door in een eigen
+Spring-configuratie een bean van het type `FeatureProvider` te registreren; die vervangt dan het
+flagbestand.
 
 Zie [Eigen vormgeving](../gebruik-en-inrichting/eigen-vormgeving.md) voor `themeClass` en theming.
 
