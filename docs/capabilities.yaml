@@ -74,7 +74,7 @@ capabilities:
     beschrijving: Burger ziet openstaande taken, vult het bijbehorende formulier in (incl. uploads) en dient het in.
     status: actief
     bewijs: V2-operaties en upload gebruikt in UI; geen V1-varianten meer aanwezig.
-    modules: [backend/zgw/taak, backend/zgw/documenten-api, backend/zgw/objectenapi]
+    modules: [backend/zgw/taak, backend/zgw/documenten-api, backend/zgw/objectenapi, backend/form]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-11-04, commits_12m: 9, deprecated_markers: false}
     ingangen:
       - {type: graphql-query, naam: getTakenV2, frontend_gebruikt: true}
@@ -82,18 +82,6 @@ capabilities:
       - {type: graphql-query, naam: getFormDefinitionByTaskId, frontend_gebruikt: true}
       - {type: graphql-mutation, naam: submitTaakV2, frontend_gebruikt: true}
       - {type: rest, naam: "POST /api/taak/{taakId}/document/content", frontend_gebruikt: true}
-
-  - id: formulierdefinities
-    naam: Formulierdefinities beheren
-    beschrijving: Laadt Form.io-definities bij opstart en levert een formulier op naam.
-    status: twijfel
-    bewijs: In app/build.gradle.kts uitgecommentarieerd maar transitief via zgw:taak aanwezig; GetFormDefinitionByName-document bestaat maar hook wordt nergens gebruikt.
-    actie: Nagaan of zgw:taak form inhoudelijk nodig heeft of alleen meesleept; zo niet → kandidaat-verwijderen.
-    modules: [backend/form]
-    signalen: {in_assembly: true, tests: true, laatste_commit: 2026-08-27, commits_12m: 3, deprecated_markers: false}
-    ingangen:
-      - {type: graphql-query, naam: getFormDefinitionByName, frontend_gebruikt: false}
-      - {type: event-listener, naam: FormApplicationReadyEventListener, frontend_gebruikt: false}
 
   - id: eigen-zaken-case
     naam: Eigen zaken (case-definities)
@@ -286,4 +274,3 @@ technische_schuld:
   - {id: haalcentraal2-deprecated-domein, module: backend/haalcentraal2, omschrijving: "@Deprecated domeinklassen nog aanwezig"}
   - {id: keycloak-legacy-token-exchange, module: backend/zgw/common-ground-authentication, omschrijving: legacy Keycloak token-exchange gemarkeerd als deprecated}
   - {id: clamav-virusscan-api, module: backend/zgw/documenten-api, omschrijving: deprecated ClamAV/VirusScan-API}
-  - {id: form-transitieve-afhankelijkheid, module: backend/form, omschrijving: uitgecommentarieerd in app maar via zgw:taak op classpath}

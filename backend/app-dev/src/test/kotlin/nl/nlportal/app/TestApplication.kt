@@ -15,16 +15,13 @@
  */
 package nl.nlportal.app
 
-import nl.nlportal.data.liquibase.LiquibaseRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
 import reactor.core.publisher.Mono
 import java.util.concurrent.CopyOnWriteArraySet
-import javax.sql.DataSource
 import org.springframework.boot.graphql.autoconfigure.GraphQlSourceBuilderCustomizer
-import org.springframework.boot.liquibase.autoconfigure.LiquibaseProperties
 
 /**
  * Holds the set of GraphQL field names that Spring detected as "unmapped"
@@ -62,22 +59,6 @@ class TestApplication {
                 }
             }
         }
-
-    /**
-     * No-op LiquibaseRunner that prevents LiquibaseRunnerAutoConfiguration from creating its own.
-     * In tests, JPA's hbm2ddl.auto=create-drop manages the schema, so Liquibase must not run.
-     *
-     * LiquibaseRunnerAutoConfiguration uses @ConditionalOnMissingBean(LiquibaseRunner::class),
-     * so defining this bean here suppresses the auto-configured LiquibaseRunner.
-     *
-     * Passing an empty list of change log locations ensures run() iterates over nothing
-     * and exits cleanly without attempting to create any tables.
-     */
-    @Bean
-    fun liquibaseRunner(
-        liquibaseProperties: LiquibaseProperties,
-        datasource: DataSource,
-    ): LiquibaseRunner = LiquibaseRunner(emptyList(), liquibaseProperties, datasource)
 
     @Bean
     fun reactiveJwtDecoder(): ReactiveJwtDecoder {

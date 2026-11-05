@@ -60,17 +60,8 @@ model {
     description 'Burger ziet openstaande taken, vult het bijbehorende formulier in (incl. uploads) en dient het in.'
     metadata {
       status 'actief'
-      modules 'backend/zgw/taak, backend/zgw/documenten-api, backend/zgw/objectenapi'
+      modules 'backend/zgw/taak, backend/zgw/documenten-api, backend/zgw/objectenapi, backend/form'
       ingangen '5'
-    }
-  }
-  capability formulierdefinities 'Formulierdefinities beheren' {
-    #twijfel
-    description 'Laadt Form.io-definities bij opstart en levert een formulier op naam.'
-    metadata {
-      status 'twijfel'
-      modules 'backend/form'
-      ingangen '2'
     }
   }
   capability eigenZakenCase 'Eigen zaken (case-definities)' {
@@ -203,7 +194,7 @@ model {
   takenAfhandelen -> nlPortal.backend.zgwIntegrations.taak 'Geïmplementeerd in'
   takenAfhandelen -> nlPortal.backend.zgwIntegrations.documentenApi 'Geïmplementeerd in'
   takenAfhandelen -> nlPortal.backend.zgwIntegrations.objectenapi 'Geïmplementeerd in'
-  formulierdefinities -> nlPortal.backend.form 'Geïmplementeerd in'
+  takenAfhandelen -> nlPortal.backend.form 'Geïmplementeerd in'
   eigenZakenCase -> nlPortal.backend 'Geïmplementeerd in'
   betalenOgoneDirect -> nlPortal.backend.payment 'Geïmplementeerd in'
   persoonsgegevensBrp -> nlPortal.backend.haalCentraalIntegrations.haalcentraal2 'Geïmplementeerd in'

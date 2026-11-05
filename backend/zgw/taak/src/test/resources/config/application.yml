@@ -36,8 +36,7 @@ nl-portal:
 
 spring:
     liquibase:
-        enabled: true
-        change-log: classpath:config/liquibase/form-master.xml
+        enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: org.h2.Driver

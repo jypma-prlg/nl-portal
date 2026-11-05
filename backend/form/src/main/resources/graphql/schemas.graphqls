@@ -1,11 +1,3 @@
-extend type Query {
-    # find single form definition from repository
-    getFormDefinitionByName(
-        # The form definition name
-        name: String!
-    ): FormDefinition
-}
-
 type FormDefinition {
     formDefinition: JSON!
 }

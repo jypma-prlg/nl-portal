@@ -77,8 +77,7 @@ ingangen (GraphQL-operaties, REST-endpoints, event-listeners) het bereikbaar is.
 | [Zaken inzien](#capability-zaken-inzien) | `actief` | `backend/zgw/zaken`, `backend/zgw/zaken-api`, `backend/zgw/catalogi-api` | 3 |
 | [Besluiten inzien](#capability-besluiten-inzien) | `twijfel` | `backend/zgw/besluiten` | 1 |
 | [Berichten ontvangen](#capability-berichten-ontvangen) | `actief` | `backend/zgw/berichten`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi` | 4 |
-| [Taken afhandelen](#capability-taken-afhandelen) | `actief` | `backend/zgw/taak`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi` | 5 |
-| [Formulierdefinities beheren](#capability-formulierdefinities) | `twijfel` | `backend/form` | 2 |
+| [Taken afhandelen](#capability-taken-afhandelen) | `actief` | `backend/zgw/taak`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi`, `backend/form` | 5 |
 | [Eigen zaken (case-definities)](#capability-eigen-zaken-case) | `verwijderd` | `backend/case` | 0 |
 | [Betalen (Ogone direct)](#capability-betalen-ogone-direct) | `actief` | `backend/payment-direct` | 3 |
 | [Persoonsgegevens (BRP)](#capability-persoonsgegevens-brp) | `actief` | `backend/haalcentraal2` | 2 |
@@ -171,7 +170,7 @@ Burger ziet openstaande taken, vult het bijbehorende formulier in (incl. uploads
 
 - **Status:** `actief`
 - **Bewijs:** V2-operaties en upload gebruikt in UI; geen V1-varianten meer aanwezig.
-- **Modules:** `backend/zgw/taak`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi`
+- **Modules:** `backend/zgw/taak`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi`, `backend/form`
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
 |---|---|---|---|---|
@@ -180,21 +179,6 @@ Burger ziet openstaande taken, vult het bijbehorende formulier in (incl. uploads
 | graphql-query | `getFormDefinitionByTaskId` | ja | `actief` |  |
 | graphql-mutation | `submitTaakV2` | ja | `actief` |  |
 | rest | `POST /api/taak/{taakId}/document/content` | ja | `actief` |  |
-
-<a id="capability-formulierdefinities"></a>
-### Formulierdefinities beheren (`formulierdefinities`)
-
-Laadt Form.io-definities bij opstart en levert een formulier op naam.
-
-- **Status:** `twijfel`
-- **Bewijs:** In app/build.gradle.kts uitgecommentarieerd maar transitief via zgw:taak aanwezig; GetFormDefinitionByName-document bestaat maar hook wordt nergens gebruikt.
-- **Actie:** Nagaan of zgw:taak form inhoudelijk nodig heeft of alleen meesleept; zo niet → kandidaat-verwijderen.
-- **Modules:** `backend/form`
-
-| Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
-|---|---|---|---|---|
-| graphql-query | `getFormDefinitionByName` | nee | `twijfel` |  |
-| event-listener | `FormApplicationReadyEventListener` | nee | `twijfel` |  |
 
 <a id="capability-eigen-zaken-case"></a>
 ### Eigen zaken (case-definities) (`eigen-zaken-case`)

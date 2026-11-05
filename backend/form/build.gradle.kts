@@ -17,28 +17,15 @@ plugins {
     kotlin("jvm")
 }
 
-dockerCompose {
-    setProjectName("$name-test")
-    isRequiredBy(tasks.getByName("integrationTest"))
-    useComposeFiles.addAll("../docker-resources/docker-compose-base-test.yml", "docker-compose-override.yml")
-}
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     api(project(":core"))
-    api(project(":data"))
     api(project(":graphql"))
     api(project(":zgw:objectenapi"))
     api(project(":zgw:common-ground-authentication"))
 
     implementation(Dependencies.kotlinCoroutines)
     implementation(Dependencies.kotlinCoroutinesReactor)
-    implementation("org.springframework.data:spring-data-commons")
-
-    testImplementation(TestDependencies.springBootTest)
-    testImplementation(TestDependencies.assertJCore)
-    testImplementation(TestDependencies.postgresql)
-    testImplementation(TestDependencies.springGraphQLTest)
 }
 
 val jar: Jar by tasks
