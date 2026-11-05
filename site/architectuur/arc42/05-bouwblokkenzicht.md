@@ -79,7 +79,7 @@ ingangen (GraphQL-operaties, REST-endpoints, event-listeners) het bereikbaar is.
 | [Berichten ontvangen](#capability-berichten-ontvangen) | `actief` | `backend/zgw/berichten`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi` | 4 |
 | [Taken afhandelen](#capability-taken-afhandelen) | `actief` | `backend/zgw/taak`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi` | 5 |
 | [Formulierdefinities beheren](#capability-formulierdefinities) | `twijfel` | `backend/form` | 2 |
-| [Eigen zaken (case-definities)](#capability-eigen-zaken-case) | `deprecated` | `backend/case` | 5 |
+| [Eigen zaken (case-definities)](#capability-eigen-zaken-case) | `verwijderd` | `backend/case` | 0 |
 | [Betalen (Ogone direct)](#capability-betalen-ogone-direct) | `actief` | `backend/payment-direct` | 3 |
 | [Persoonsgegevens (BRP)](#capability-persoonsgegevens-brp) | `actief` | `backend/haalcentraal2` | 2 |
 | [Machtigingen (gemachtigde)](#capability-machtigingen) | `actief` | `backend/haalcentraal2` | 1 |
@@ -113,7 +113,7 @@ Levert feature-flags/configuratie aan de frontend en een optionele ping voor mon
 Voert bij opstart de databasemigraties uit.
 
 - **Status:** `actief`
-- **Bewijs:** Infra-listener, nodig voor case/form-tabellen; geen burgerfunctie.
+- **Bewijs:** Infra-listener, nodig voor form-tabellen; geen burgerfunctie.
 - **Modules:** `backend/data`
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
@@ -201,18 +201,10 @@ Laadt Form.io-definities bij opstart en levert een formulier op naam.
 
 Portaal-interne zaakafhandeling - case-definities, case-instanties en indienen van formulieren als case.
 
-- **Status:** `deprecated`
+- **Status:** `verwijderd`
 - **Bewijs:** Geen enkele operatie in frontend gebruikt; overlapt met ZGW-zaken; alleen onderhoudscommits (5).
-- **Besluit:** site/development/adr/0010-verwijderen-case-module.md (2026-11-04); verwijderen na check gateway-logs op externe clients.
+- **Besluit:** site/development/adr/0010-verwijderen-case-module.md (2026-11-04); module verwijderd, zie issue 103 (log-check op externe clients door maintainer).
 - **Modules:** `backend/case`
-
-| Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
-|---|---|---|---|---|
-| graphql-query | `allCaseDefinitions` | nee | `deprecated` |  |
-| graphql-query | `allCaseInstances` | nee | `deprecated` |  |
-| graphql-query | `getCaseInstance` | nee | `deprecated` |  |
-| graphql-mutation | `processSubmission` | nee | `deprecated` |  |
-| event-listener | `CaseDefinitionApplicationReadyEventListener` | nee | `deprecated` |  |
 
 <a id="capability-betalen-ogone-direct"></a>
 ### Betalen (Ogone direct) (`betalen-ogone-direct`)

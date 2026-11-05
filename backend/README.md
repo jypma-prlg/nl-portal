@@ -50,7 +50,7 @@ See [app/README.md](./app/README.md) for configuration details.
 - `app/` - the shippable backend application (`bootJar`; Dockerfile at [`backend/Dockerfile`](./Dockerfile)).
 - `app-dev/` - the developer-only dev sandbox (run-from-sources only, never published or imaged; see
   [`app-dev/README.md`](./app-dev/README.md)).
-- `core/`, `graphql/`, `case/`, `form/`, `zgw/`, ... - library modules, consumed by the app via
+- `core/`, `graphql/`, `form/`, `zgw/`, ... - library modules, consumed by the app via
   `project(":…")` references.
 
 Modules are configured centrally (`build.gradle.kts` + `buildSrc/`); shared dependency versions live

@@ -6,9 +6,6 @@ model {
     component graphqlApi 'GraphQL API' {
       description 'GraphQL schema en resolvers: het externe contract van de backend.'
     }
-    component caseModule 'Case' {
-      description 'Zaakdossier: orkestreert Open Zaak voor zaakweergave en -acties.'
-    }
     component form 'Form' {
       description 'Formulierinzendingen en -definities.'
     }
@@ -112,13 +109,11 @@ model {
       description 'Keycloak/OIDC-integratie en autorisatieregels.'
     }
 
-    graphqlApi -> caseModule 'Roept aan'
     graphqlApi -> form 'Roept aan'
     graphqlApi -> zgwIntegrations 'Roept aan'
     graphqlApi -> haalCentraalIntegrations 'Roept aan'
     graphqlApi -> payment 'Roept aan'
     graphqlApi -> product 'Roept aan'
-    caseModule -> zgwIntegrations 'Gebruikt'
     product -> zgwIntegrations 'Gebruikt'
     zgwIntegrations -> core 'Gebruikt'
     haalCentraalIntegrations -> core 'Gebruikt'

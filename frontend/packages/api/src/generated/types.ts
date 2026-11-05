@@ -596,35 +596,6 @@ export type BrpVerblijfsTitelInOnderzoek = {
   datumIngangOnderzoek?: Maybe<BrpDatum>;
 };
 
-export type CaseCreated = {
-  __typename?: 'CaseCreated';
-  caseId?: Maybe<Scalars['UUID']['output']>;
-};
-
-export type CaseDefinition = {
-  __typename?: 'CaseDefinition';
-  id: Scalars['String']['output'];
-  schema: Scalars['JSON']['output'];
-  statusDefinition: Array<Maybe<Scalars['String']['output']>>;
-};
-
-export type CaseInstance = {
-  __typename?: 'CaseInstance';
-  caseDefinitionId: Scalars['String']['output'];
-  createdOn: Scalars['String']['output'];
-  externalId?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['UUID']['output']>;
-  status?: Maybe<Status>;
-  statusHistory?: Maybe<Array<Maybe<HistoricStatus>>>;
-  submission?: Maybe<Scalars['JSON']['output']>;
-  userId: Scalars['String']['output'];
-};
-
-export enum CaseInstanceOrdering {
-  Asc = 'ASC',
-  Desc = 'DESC'
-}
-
 export type Categorie = {
   __typename?: 'Categorie';
   naam: Scalars['String']['output'];
@@ -822,12 +793,6 @@ export type HandelsNaam = {
   volgorde: Scalars['Int']['output'];
 };
 
-export type HistoricStatus = {
-  __typename?: 'HistoricStatus';
-  createdOn: Scalars['String']['output'];
-  status: Status;
-};
-
 export type LinksPage = {
   __typename?: 'LinksPage';
   /**  The elements on this page */
@@ -890,7 +855,6 @@ export type Mutation = {
   deleteUserDigitaleAdres?: Maybe<Scalars['Boolean']['output']>;
   /**  Do Worldline Direct payment */
   doDirectPayment: DirectPaymentResponse;
-  processSubmission?: Maybe<CaseCreated>;
   /**  Submit a task */
   submitTaakV2: TaakV2;
   /**  Update product */
@@ -927,13 +891,6 @@ export type MutationDeleteUserDigitaleAdresArgs = {
 
 export type MutationDoDirectPaymentArgs = {
   paymentRequest: DirectPaymentRequestInput;
-};
-
-
-export type MutationProcessSubmissionArgs = {
-  caseDefinitionId: Scalars['String']['input'];
-  initialStatus?: InputMaybe<Scalars['String']['input']>;
-  submission: Scalars['JSON']['input'];
 };
 
 
@@ -1962,8 +1919,6 @@ export type ProductenPage = {
 
 export type Query = {
   __typename?: 'Query';
-  allCaseDefinitions: Array<Maybe<CaseDefinition>>;
-  allCaseInstances?: Maybe<Array<Maybe<CaseInstance>>>;
   /**  Find the Partij of the authenticated user. */
   findUserPartij?: Maybe<OpenKlant2Partij>;
   /**  Gets the bedrijf data */
@@ -1973,7 +1928,6 @@ export type Query = {
   getBerichten: BerichtenPage;
   /**  Gets the number of people living in the same house of the adresseerbaarObjectIdentificatie */
   getBewonersAantalV2?: Maybe<Scalars['Int']['output']>;
-  getCaseInstance?: Maybe<CaseInstance>;
   getDecision: Array<Scalars['JSON']['output']>;
   getDirectPaymentStatus: DirectPaymentStatus;
   /**  find single form definition from repository */
@@ -2074,11 +2028,6 @@ export type Query = {
 };
 
 
-export type QueryAllCaseInstancesArgs = {
-  orderBy: CaseInstanceOrdering;
-};
-
-
 export type QueryGetBerichtArgs = {
   id: Scalars['UUID']['input'];
 };
@@ -2088,11 +2037,6 @@ export type QueryGetBerichtenArgs = {
   onderwerp?: InputMaybe<Scalars['String']['input']>;
   pageNumber?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type QueryGetCaseInstanceArgs = {
-  id: Scalars['UUID']['input'];
 };
 
 
@@ -2419,12 +2363,6 @@ export enum Sort {
   Asc = 'ASC',
   Desc = 'DESC'
 }
-
-export type Status = {
-  __typename?: 'Status';
-  createdOn: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-};
 
 export type StatusType = {
   __typename?: 'StatusType';

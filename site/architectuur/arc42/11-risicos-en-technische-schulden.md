@@ -59,7 +59,6 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-por
 |---|---|---|---|
 | `besluiten-inzien` | `twijfel` | Alleen veldresolvers + REST-download; /api/besluiten/... nergens in frontend gevonden, wel actief onderhouden (17 commits). |  |
 | `formulierdefinities` | `twijfel` | In app/build.gradle.kts uitgecommentarieerd maar transitief via zgw:taak aanwezig; GetFormDefinitionByName-document bestaat maar hook wordt nergens gebruikt. | Nagaan of zgw:taak form inhoudelijk nodig heeft of alleen meesleept; zo niet → kandidaat-verwijderen. |
-| `eigen-zaken-case` | `deprecated` | Geen enkele operatie in frontend gebruikt; overlapt met ZGW-zaken; alleen onderhoudscommits (5). | site/development/adr/0010-verwijderen-case-module.md (2026-11-04); verwijderen na check gateway-logs op externe clients. |
 | `partij-beheren` | `kandidaat-verwijderen` | Geen van de 4 operaties in frontend; publieke GraphQL-ingangen kunnen weg (na check externe clients). |  |
 | `verificatie` | `kandidaat-verwijderen` | Geen frontend-gebruik; alleen de publieke GraphQL-ingangen gaan weg. De service blijft als interne afhankelijkheid van contactgegevens-beheren (DigitaleAdresMutation). |  |
 | `product-referentiedata` | `twijfel` | 12 lijst/detail-operaties, geen enkele in frontend gebruikt; lijkt 1-op-1 API-doorgifte zonder consument. | Herbeoordelen zodra de OpenProduct-frontend (producten-inzien, product-themas, productacties) af is. |

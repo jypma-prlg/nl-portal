@@ -70,14 +70,13 @@ Thumbs.db
 # NOTE: the committed compose/module env files are NOT ignored here -
 #   * docker-compose/imports/**/*.env  -> named `backend.env`/`frontend.env`
 #     (no leading dot), so the patterns below never match them.
-#   * backend/case/.env and backend/form/.env ARE `.env` files that belong in
+#   * backend/form/.env IS an `.env` file that belongs in
 #     the repo, so they are re-included explicitly.
 .env
 .env.*
 !.env.example
 !.env.*.example
 !.env.template
-!backend/case/.env
 !backend/form/.env
 
 # mise's personal-override config (e.g. a local SONAR_TOKEN) - never commit the real one.

@@ -71,6 +71,14 @@ pnpm -r build && pnpm lint && pnpm lint:css && pnpm typecheck && pnpm test && pn
 For a security- or dependency-relevant change, also run the applicable `mise run security:*` task
 (see below) before considering it done.
 
+### Branches: never commit on `main`
+
+Before the first edit or commit of any task, run `git branch --show-current`. If it prints `main`,
+create a branch first (`git switch -c <type>/<short-name>-<issue>`, e.g.
+`chore/remove-case-module-103`). Never commit to or push `main` directly, also not "just locally":
+changes reach `main` only through a PR. If a commit already landed on `main` by mistake and is not
+pushed, move it: `git branch <new-branch> && git reset --hard origin/main && git switch <new-branch>`.
+
 ### Git hooks and `pnpm`
 
 The Husky hooks under `frontend/.husky` (pre-commit, pre-push) need `pnpm`, which a plain shell

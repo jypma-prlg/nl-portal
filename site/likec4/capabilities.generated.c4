@@ -74,12 +74,12 @@ model {
     }
   }
   capability eigenZakenCase 'Eigen zaken (case-definities)' {
-    #deprecated
+    #verwijderd
     description 'Portaal-interne zaakafhandeling - case-definities, case-instanties en indienen van formulieren als case.'
     metadata {
-      status 'deprecated'
+      status 'verwijderd'
       modules 'backend/case'
-      ingangen '5'
+      ingangen '0'
     }
   }
   capability betalenOgoneDirect 'Betalen (Ogone direct)' {
@@ -204,7 +204,7 @@ model {
   takenAfhandelen -> nlPortal.backend.zgwIntegrations.documentenApi 'Geïmplementeerd in'
   takenAfhandelen -> nlPortal.backend.zgwIntegrations.objectenapi 'Geïmplementeerd in'
   formulierdefinities -> nlPortal.backend.form 'Geïmplementeerd in'
-  eigenZakenCase -> nlPortal.backend.caseModule 'Geïmplementeerd in'
+  eigenZakenCase -> nlPortal.backend 'Geïmplementeerd in'
   betalenOgoneDirect -> nlPortal.backend.payment 'Geïmplementeerd in'
   persoonsgegevensBrp -> nlPortal.backend.haalCentraalIntegrations.haalcentraal2 'Geïmplementeerd in'
   machtigingen -> nlPortal.backend.haalCentraalIntegrations.haalcentraal2 'Geïmplementeerd in'

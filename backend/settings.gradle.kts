@@ -67,7 +67,6 @@ include(
     "zgw:objectenapi",
     "zgw:catalogi-api",
     "zgw:openklant",
-    "case",
     "data",
     "form",
     "haalcentraal-hr",

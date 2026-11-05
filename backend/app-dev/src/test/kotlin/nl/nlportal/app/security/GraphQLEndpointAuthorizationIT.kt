@@ -84,8 +84,6 @@ class GraphQLEndpointAuthorizationIT {
                 "getFormDefinitionById",
                 "getFormDefinitionByName",
                 "getFormDefinitionByObjectenApiUrl",
-                // Case definitions - schema metadata, no user data
-                "allCaseDefinitions",
             )
     }
 
