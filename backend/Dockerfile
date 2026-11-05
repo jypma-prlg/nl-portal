@@ -8,7 +8,7 @@
 ARG BUILD_MODE=local
 
 # --- local: compile the app module (and its project deps) from source ---
-FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-alpine AS build-local
+FROM --platform=$BUILDPLATFORM eclipse-temurin:25-jdk-alpine AS build-local
 WORKDIR /workspace
 COPY . .
 RUN chmod +x ./gradlew && ./gradlew :app:bootJar --no-daemon
@@ -21,7 +21,7 @@ COPY app/build/libs/app.jar ./app/build/libs/app.jar
 # --- select the build source via BUILD_MODE; BuildKit prunes the other stage ---
 FROM build-${BUILD_MODE} AS build
 
-FROM eclipse-temurin:21-jre-alpine AS image
+FROM eclipse-temurin:25-jre-alpine AS image
 
 # Create non-root user
 RUN addgroup -S -g 1001 appgroup && adduser -S -u 1001 -G appgroup -H appuser
