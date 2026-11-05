@@ -894,7 +894,6 @@ export type MutationDoDirectPaymentArgs = {
 };
 
 
-
 export type MutationSubmitTaakV2Args = {
   id: Scalars['UUID']['input'];
   submission: Scalars['JSON']['input'];

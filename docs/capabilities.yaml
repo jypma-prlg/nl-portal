@@ -28,7 +28,7 @@ capabilities:
     naam: Database-initialisatie (Liquibase)
     beschrijving: Voert bij opstart de databasemigraties uit.
     status: actief
-    bewijs: Infra-listener, nodig voor case/form-tabellen; geen burgerfunctie.
+    bewijs: Infra-listener, nodig voor form-tabellen; geen burgerfunctie.
     modules: [backend/data]
     signalen: {in_assembly: true, tests: false, laatste_commit: 2026-08-27, commits_12m: 2, deprecated_markers: false}
     ingangen:

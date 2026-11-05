@@ -113,7 +113,7 @@ Levert feature-flags/configuratie aan de frontend en een optionele ping voor mon
 Voert bij opstart de databasemigraties uit.
 
 - **Status:** `actief`
-- **Bewijs:** Infra-listener, nodig voor case/form-tabellen; geen burgerfunctie.
+- **Bewijs:** Infra-listener, nodig voor form-tabellen; geen burgerfunctie.
 - **Modules:** `backend/data`
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
