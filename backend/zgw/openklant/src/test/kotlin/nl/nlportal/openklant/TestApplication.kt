@@ -17,7 +17,6 @@ package nl.nlportal.openklant
 
 import nl.nlportal.core.security.OauthSecurityAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -26,7 +25,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 @SpringBootApplication(
     exclude = [
         OauthSecurityAutoConfiguration::class,
-        DataSourceAutoConfiguration::class,
     ],
 )
 class TestApplication {

@@ -32,7 +32,6 @@ deploy:
         stagingRepositories:
           - case/build/sonatypeCentralStaging
           - core/build/sonatypeCentralStaging
-          - data/build/sonatypeCentralStaging
           - form/build/sonatypeCentralStaging
           - graphql/build/sonatypeCentralStaging
           - haalcentraal-hr/build/sonatypeCentralStaging
@@ -63,7 +62,6 @@ deploy:
         stagingRepositories:
           - case/build/sonatypeCentralStaging
           - core/build/sonatypeCentralStaging
-          - data/build/sonatypeCentralStaging
           - form/build/sonatypeCentralStaging
           - graphql/build/sonatypeCentralStaging
           - haalcentraal-hr/build/sonatypeCentralStaging

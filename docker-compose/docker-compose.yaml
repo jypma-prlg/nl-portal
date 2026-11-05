@@ -10,7 +10,6 @@ services:
         image: alpine:latest
         command: sleep infinity
         ports:
-            - "5432:5432" # NL Portal Database port
             - "8082:8082" # Keycloak port
             - "8001:8001" # OpenZaak
             - "8010:8010" # Open Object
@@ -20,17 +19,6 @@ services:
             - "5010:5010" # Haalcentraal BRP
             - "5011:5011" # Haalcentraal Bewoning
             - "3310:3310" # ClamAV virus scan
-
-    nl-portal-database:
-        container_name: nl-portal-database
-        image: postgres:15
-        network_mode: "service:localhost"
-        volumes:
-            - nl-portal-database-data:/var/lib/postgres
-        environment:
-            POSTGRES_USER: nlportal
-            POSTGRES_PASSWORD: password
-            POSTGRES_DB: nl-portal
 
     nl-portal-keycloak:
         container_name: nl-portal-keycloak
@@ -509,5 +497,4 @@ services:
             - nl-portal-configuration-panel-database-data:/var/lib/postgres # persist data even if container shuts down
 
 volumes:
-    nl-portal-database-data:
     nl-portal-configuration-panel-database-data:

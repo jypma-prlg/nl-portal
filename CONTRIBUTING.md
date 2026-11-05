@@ -95,8 +95,9 @@ valid Conventional Commit.
 
 ## Building and testing locally
 
-- **Backend**: from `backend/`, `./gradlew build` (integration tests auto-provision a database via
-  the docker-compose plugin; Docker must be running).
+- **Backend**: from `backend/`, `./gradlew build` (no database is needed; only the `zgw:openklant`
+  integration tests start an OpenKlant container through the docker-compose plugin, so Docker must be
+  running for those).
 - **Frontend**: from `frontend/`, `pnpm install` then `pnpm -r build`, `pnpm test`, `pnpm lint` and
   `pnpm prettier`.
 

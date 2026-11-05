@@ -9,9 +9,8 @@ NL Portal is bewust **laag 5 (interactielaag)**: het bevat geen eigen "bron"-dat
 op bij de datalaag (primair ZGW-bronnen). Dit volgt direct uit twee Common Ground-uitgangspunten
 (zie [`site/architectuur/applicatiearchitectuur.md`](../applicatiearchitectuur.md)):
 componenten in plaats van monolieten, en data gescheiden van business-logica. Consequentie: NL
-Portal's eigen database (zie `site/likec4`, container `database`) bevat vrijwel uitsluitend
-portal-eigen state (autorisatie, formulierinzendingen, caches) — geen kopie van brondata die elders
-leidend is.
+Portal is **stateless**: het heeft geen eigen database en bewaart geen kopie van brondata die
+elders leidend is.
 
 ## 4.2 Eén backend als enige ZGW-cliënt
 

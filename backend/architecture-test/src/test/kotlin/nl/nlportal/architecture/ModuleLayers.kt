@@ -41,7 +41,6 @@ object ModuleLayers {
     val production: List<ModuleMapping> =
         listOf(
             ModuleMapping(":core", "nl.nlportal.core", Layer.CORE),
-            ModuleMapping(":data", "nl.nlportal.data", Layer.SHARED_INFRA),
             ModuleMapping(":graphql", "nl.nlportal.graphql", Layer.SHARED_INFRA),
             ModuleMapping(":portal-authentication", "nl.nlportal.portal.authentication", Layer.SHARED_INFRA),
             ModuleMapping(":zgw:zaken-api", "nl.nlportal.zakenapi", Layer.FEATURE),

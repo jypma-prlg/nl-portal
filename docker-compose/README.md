@@ -11,7 +11,7 @@
       * [From sources (active development, fast inner loop)](#from-sources-active-development-fast-inner-loop)
     * [Starting up supporting services only](#starting-up-supporting-services-only)
       * [Including all ZGW related services](#including-all-zgw-related-services)
-      * [Keycloak and database only](#keycloak-and-database-only)
+      * [Keycloak only](#keycloak-only)
   * [Maintenance](#maintenance)
     * [Demo data imports](#demo-data-imports)
     * [Regenerating fixtures](#regenerating-fixtures)
@@ -50,7 +50,6 @@ network namespace), so from your host every service is reachable on `localhost:<
 | NL Portal Frontend (build from source)  | 3000  | RUN_MODE=local    |
 | NL Portal Backend (published image)     | 8080  | RUN_MODE=remote   |
 | NL Portal Frontend (published image)    | 3000  | RUN_MODE=remote   |
-| NL Portal Database (postgres)           | 5432 | - (core)          |
 | Keycloak                                | 8082  | - (core)          |
 | Keycloak Database (postgres)            | -     | - (core)          |
 | Open Zaak                               | 8001  | zgw, openzaak     |
@@ -144,7 +143,7 @@ To run only the supporting services (e.g. when running the application from your
 leave `RUN_MODE` at its default (`sources`), which starts no app container. Two options:
 - Including all ZGW related services, like Open Zaak, Open Klant and Open Object (Objects API and
   Objecttypes API, served together by one container)
-- Keycloak and database only
+- Keycloak only
 
 #### Including all ZGW related services
 Execute the following command:
@@ -156,7 +155,6 @@ The following services will be started:
 
 | Service                           |      Mapped port      |
 |-----------------------------------|:-------------:|
-| NL Portal database (postgres)     |  5432         |
 | Keycloak                          |  8082         |
 | Keycloak database (postgres)      |    -   |
 | Open Zaak                         | 8001 |
@@ -192,7 +190,7 @@ docker compose --profile clamav up -d
 |-----------------------|:-----------:|
 | ClamAV                |    3310     |
 
-#### Keycloak and database only
+#### Keycloak only
 Execute the following command: 
 ```shell
 docker compose up -d
@@ -200,7 +198,6 @@ docker compose up -d
 
 | Service   |      Mapped port      |
 |----------|:-------------:|
-| NL Portal database (postgres) |  5432         |
 | Keycloak |  8082         |
 | Keycloak database (postgres) |    -   |
 

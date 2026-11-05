@@ -37,6 +37,4 @@ object Versions {
     const val hamcrest = "3.0"
     const val mockitoKotlin = "6.1.0"
     const val okHttp3 = "5.2.0"
-    const val postgresql = "42.7.14"
-    const val h2 = "2.4.240"
 }

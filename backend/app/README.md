@@ -20,7 +20,7 @@ cd ../backend/app && cp .env.properties.example .env.properties
 cd .. && ./gradlew :app:bootRun
 ```
 
-The GraphQL endpoint is served at `/graphql`. Keycloak, databases and ZGW service URLs (and the test
+The GraphQL endpoint is served at `/graphql`. Keycloak and ZGW service URLs (and the test
 users to log in with) are provided by the `docker-compose/` stack - see its
 [README](../../docker-compose/README.md) for service ports and credentials.
 

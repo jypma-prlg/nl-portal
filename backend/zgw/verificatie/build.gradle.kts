@@ -31,7 +31,6 @@ dependencies {
     implementation("org.springframework.data:spring-data-commons")
 
     testImplementation(project(":zgw:common-ground-authentication-test"))
-    testImplementation(TestDependencies.postgresql)
     testImplementation(TestDependencies.springBootTest)
     testImplementation(TestDependencies.springSecurityTest)
     testImplementation(TestDependencies.springBootWebClientTest)

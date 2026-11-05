@@ -34,7 +34,6 @@ dependencies {
     implementation(project(":zgw:verificatie"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    api("org.postgresql:postgresql")
 
     // Silences the netty macOS DNS resolver stacktrace on Apple Silicon at startup.
     // developmentOnly = bootRun classpath only, never packaged into the bootJar.
@@ -43,7 +42,6 @@ dependencies {
     }
 
     testImplementation(project(":zgw:common-ground-authentication-test"))
-    testImplementation(TestDependencies.postgresql)
     testImplementation(TestDependencies.springBootTest)
     // testImplementation(TestDependencies.springSecurityTest)
     testImplementation(TestDependencies.springBootWebClientTest)
@@ -73,12 +71,6 @@ tasks.withType<PublishToMavenRepository>().configureEach {
 
 tasks.withType<PublishToMavenLocal>().configureEach {
     enabled = false
-}
-
-dockerCompose {
-    setProjectName("$name-test")
-    isRequiredBy(tasks.getByName("integrationTest"))
-    useComposeFiles.addAll("../docker-resources/docker-compose-base-test.yml", "docker-compose-override.yml")
 }
 
 // Local development config for a from-source run. `.env.properties` is the ONLY

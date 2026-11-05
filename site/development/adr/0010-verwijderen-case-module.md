@@ -34,4 +34,6 @@ tests) zonder dat er functionaliteit tegenover staat.
 
 - `backend/case`, de opname in `app`/`app-dev` en de bijbehorende GraphQL-schema's verdwijnen.
 - Gemeenten die het portaal zelf hosten krijgen een vermelding in de changelog als breaking change.
-- `database-migratie` blijft nodig zolang `form` tabellen gebruikt.
+- `database-migratie` blijft nodig zolang `form` tabellen gebruikt. Achterhaald: `form` gebruikt geen
+  persistentie meer (#135) en de capability, de `data`-module en alle database-infrastructuur zijn
+  verwijderd (#142).

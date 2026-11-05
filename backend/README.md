@@ -26,8 +26,7 @@ From `backend/`:
 ./gradlew build
 ```
 
-Integration tests auto-provision a PostgreSQL container through the docker-compose Gradle plugin, so
-Docker must be running. To build only the application jar:
+To build only the application jar:
 
 ```shell
 ./gradlew :app:bootJar

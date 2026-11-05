@@ -26,16 +26,6 @@ spring:
             resourceserver:
                 jwt:
                     jwk-set-uri: http://localhost:8082/auth/realms/nlportal/protocol/openid-connect/certs
-    liquibase:
-        enabled: false
-    datasource:
-        type: com.zaxxer.hikari.HikariDataSource
-        driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:5432/nl-portal
-        username: nlportal
-        password: password
-    jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
     graphql:
         graphiql:
             enabled: true
@@ -51,7 +41,6 @@ graphql:
 logging:
     level:
         root: DEBUG
-        liquibase: WARN
 
 nl-portal:
     support:

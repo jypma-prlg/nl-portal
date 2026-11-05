@@ -45,13 +45,13 @@ dir = "backend"
 run = "./gradlew :core:pitest"
 
 [tasks."backend:integration-test"]
-description = "Backend-integratietests over alle modules (Postgres via docker compose, vereist Docker)"
+description = "Backend-integratietests over alle modules (vereist Docker voor de OpenKlant-container in zgw:openklant)"
 dir = "backend"
 shell = "bash -c"
 run = "./gradlew integrationTest --continue"
 
 [tasks."backend:integration-test-app"]
-description = "Backend-integratietests alleen voor :app (sneller; vereist Docker)"
+description = "Backend-integratietests alleen voor :app (sneller)"
 dir = "backend"
 shell = "bash -c"
 run = "./gradlew :app:integrationTest"

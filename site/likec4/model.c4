@@ -19,16 +19,7 @@ model {
       technology 'Kotlin, Spring Boot, GraphQL'
     }
 
-    container database 'NL Portal database' {
-      description 'Opslag voor portal-specifieke state (o.a. autorisatie, formulierinzendingen, caches).'
-      technology 'PostgreSQL'
-      style {
-        shape storage
-      }
-    }
-
     frontend -> backend 'Bevraagt' 'GraphQL / REST, OIDC-token'
-    backend -> database 'Leest/schrijft' 'JDBC'
   }
 
   system keycloak 'Keycloak' {

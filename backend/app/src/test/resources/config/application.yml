@@ -4,24 +4,6 @@ server:
 spring:
     profiles:
         default: test
-    datasource:
-        type: com.zaxxer.hikari.HikariDataSource
-        driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:5450/app-test
-        username: postgres
-        password: test
-        hikari:
-            auto-commit: false
-    jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
-        database: postgresql
-        show_sql: false
-        open-in-view: false
-        properties:
-            hibernate:
-                hbm2ddl.auto: create-drop
-    liquibase:
-        enabled: false
     graphql:
         graphiql:
             enabled: true

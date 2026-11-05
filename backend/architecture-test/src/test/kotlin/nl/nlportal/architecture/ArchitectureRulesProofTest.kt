@@ -45,7 +45,7 @@ class ArchitectureRulesProofTest {
     fun `infra rule fails when shared infra depends on a feature`() {
         val rules =
             rules(
-                ModuleMapping(":data", "$base.infravio.infra", Layer.SHARED_INFRA),
+                ModuleMapping(":infra", "$base.infravio.infra", Layer.SHARED_INFRA),
                 ModuleMapping(":feature", "$base.infravio.feature", Layer.FEATURE),
             )
         assertThatThrownBy { rules.sharedInfraDoesNotDependOnFeature().check(classesOf("infravio")) }

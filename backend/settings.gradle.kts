@@ -40,7 +40,6 @@ pluginManagement {
     plugins {
         kotlin("jvm") version kotlinVersion apply false
         kotlin("plugin.spring") version kotlinVersion apply false
-        kotlin("plugin.jpa") version kotlinVersion apply false
         kotlin("plugin.allopen") version kotlinVersion apply false
 
         id("org.springframework.boot") version springBootVersion apply false
@@ -67,7 +66,6 @@ include(
     "zgw:objectenapi",
     "zgw:catalogi-api",
     "zgw:openklant",
-    "data",
     "form",
     "haalcentraal-hr",
     "haalcentraal2",
