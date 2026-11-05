@@ -21,7 +21,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import nl.nlportal.commonground.authentication.WithBurgerUser
 import nl.nlportal.core.util.Mapper
 import nl.nlportal.haalcentraal2.TestHelper
-import nl.nlportal.haalcentraal2.autoconfiguration.HaalCentraal2ModuleConfiguration
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -47,7 +46,6 @@ import org.springframework.test.context.DynamicPropertySource
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 internal class HaalCentraal2BewoningenQueryIT(
     @Autowired private val httpGraphQlTester: HttpGraphQlTester,
-    @Autowired private val haalCentraal2ModuleConfiguration: HaalCentraal2ModuleConfiguration,
 ) {
     companion object {
         private val passThroughHeaders =
@@ -99,8 +97,6 @@ internal class HaalCentraal2BewoningenQueryIT(
     @BeforeEach
     internal fun setUp() {
         setupMockServer()
-        url = server?.url("/").toString()
-        haalCentraal2ModuleConfiguration.properties.bewoningApiUrl = url
     }
 
     @Test

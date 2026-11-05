@@ -19,7 +19,6 @@ import tools.jackson.databind.JsonNode
 import nl.nlportal.commonground.authentication.WithBurgerUser
 import nl.nlportal.haalcentraal2.TestHelper
 import nl.nlportal.haalcentraal.hr.client.HaalCentraalHrConfig
-import nl.nlportal.haalcentraal2.autoconfiguration.HaalCentraal2ModuleConfiguration
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -44,7 +43,6 @@ import org.springframework.test.context.DynamicPropertySource
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 internal class HaalCentraal2GemachtigdeQueryIT(
     @Autowired private val httpGraphQlTester: HttpGraphQlTester,
-    @Autowired private val haalCentraal2ModuleConfiguration: HaalCentraal2ModuleConfiguration,
     @Autowired private val haalCentraalHrClientConfig: HaalCentraalHrConfig,
 ) {
     companion object {
@@ -80,7 +78,6 @@ internal class HaalCentraal2GemachtigdeQueryIT(
     internal fun setUp() {
         setupMockServer()
         url = server?.url("/").toString()
-        haalCentraal2ModuleConfiguration.properties.brpApiUrl = url
         haalCentraalHrClientConfig.properties.url = url
     }
 

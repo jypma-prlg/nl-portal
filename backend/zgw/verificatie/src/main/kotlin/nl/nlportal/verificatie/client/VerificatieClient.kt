@@ -15,6 +15,7 @@
  */
 package nl.nlportal.verificatie.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.handler.logging.LogLevel
@@ -43,60 +44,57 @@ class VerificatieClient(
     private val verificatieConfigurationProperties: VerificatieConfigurationProperties,
     private val clientSslContextResolver: ClientSslContextResolver? = null,
 ) {
-    val webClient: WebClient
+    val webClient: WebClient by lazy {
+        WebClient
+            .builder()
+            .clone()
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    HttpClient
+                        .create()
+                        .wiretap(
+                            "reactor.netty.http.client.HttpClient",
+                            LogLevel.TRACE,
+                            AdvancedByteBufFormat.TEXTUAL,
+                        ).let { client ->
+                            var result = client
+                            if (clientSslContextResolver != null) {
+                                verificatieConfigurationProperties.ssl?.let {
+                                    val sslContext =
+                                        clientSslContextResolver.resolve(
+                                            it.key,
+                                            it.trustedCertificate,
+                                        )
 
-    init {
-        this.webClient =
-            WebClient
-                .builder()
-                .clone()
-                .clientConnector(
-                    ReactorClientHttpConnector(
-                        HttpClient
-                            .create()
-                            .wiretap(
-                                "reactor.netty.http.client.HttpClient",
-                                LogLevel.TRACE,
-                                AdvancedByteBufFormat.TEXTUAL,
-                            ).let { client ->
-                                var result = client
-                                if (clientSslContextResolver != null) {
-                                    verificatieConfigurationProperties.ssl?.let {
-                                        val sslContext =
-                                            clientSslContextResolver.resolve(
-                                                it.key,
-                                                it.trustedCertificate,
-                                            )
+                                    result = client.secure { builder -> builder.sslContext(sslContext) }
 
-                                        result = client.secure { builder -> builder.sslContext(sslContext) }
-
-                                        logger.debug { "Client SSL context was set: private key=${it.key != null}, trusted certificate=${it.trustedCertificate != null}." }
-                                    }
+                                    logger.debug { "Client SSL context was set: private key=${it.key != null}, trusted certificate=${it.trustedCertificate != null}." }
                                 }
-                                result
-                            },
-                    ),
-                ).apply {
-                    val token = getToken()
-                    if (token != null) {
-                        it.defaultHeader("Authorization", "Bearer $token")
-                    }
-                }.exchangeStrategies(
-                    ExchangeStrategies
-                        .builder()
-                        .codecs { configurer ->
-                            with(configurer.defaultCodecs()) {
-                                maxInMemorySize(16 * 1024 * 1024)
-                                jacksonJsonEncoder(
-                                    JacksonJsonEncoder(Mapper.get()),
-                                )
-                                jacksonJsonDecoder(
-                                    JacksonJsonDecoder(Mapper.get()),
-                                )
                             }
-                        }.build(),
-                ).baseUrl(verificatieConfigurationProperties.url.toString())
-                .build()
+                            result
+                        },
+                ),
+            ).apply {
+                val token = getToken()
+                if (token != null) {
+                    it.defaultHeader("Authorization", "Bearer $token")
+                }
+            }.exchangeStrategies(
+                ExchangeStrategies
+                    .builder()
+                    .codecs { configurer ->
+                        with(configurer.defaultCodecs()) {
+                            maxInMemorySize(16 * 1024 * 1024)
+                            jacksonJsonEncoder(
+                                JacksonJsonEncoder(Mapper.get()),
+                            )
+                            jacksonJsonDecoder(
+                                JacksonJsonDecoder(Mapper.get()),
+                            )
+                        }
+                    }.build(),
+            ).baseUrl(verificatieConfigurationProperties.url.requireConfigured("verificatie", "url").toString())
+            .build()
     }
 
     suspend fun create(

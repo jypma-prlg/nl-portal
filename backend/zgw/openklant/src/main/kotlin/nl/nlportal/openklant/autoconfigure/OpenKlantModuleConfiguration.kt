@@ -23,17 +23,6 @@ class OpenKlantModuleConfiguration {
     var enabled: Boolean = false
     var properties: OpenKlantConfigurationProperties = OpenKlantConfigurationProperties()
 
-    init {
-        if (enabled) {
-            requireNotNull(properties.klantinteractiesApiUrl) {
-                "OpenKlant Klantinteracties API URL not configured"
-            }
-            requireNotNull(properties.token) {
-                "OpenKlant token not configured"
-            }
-        }
-    }
-
     class OpenKlantConfigurationProperties(
         var contactgegevensApiUrl: URI? = null,
         var klantinteractiesApiUrl: URI? = null,

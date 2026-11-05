@@ -24,20 +24,6 @@ class OpenProductModuleConfiguration {
     var enabled: Boolean = false
     var properties: OpenProductConfigurationProperties = OpenProductConfigurationProperties()
 
-    init {
-        if (enabled) {
-            requireNotNull(properties.productApiUrl) {
-                "OpenProduct Product API URL not configured"
-            }
-            requireNotNull(properties.productTypeApiUrl) {
-                "OpenProduct ProductType API URL not configured"
-            }
-            requireNotNull(properties.token) {
-                "OpenProduct token not configured"
-            }
-        }
-    }
-
     class OpenProductConfigurationProperties {
         var productApiUrl: URI? = null
         var productTypeApiUrl: URI? = null

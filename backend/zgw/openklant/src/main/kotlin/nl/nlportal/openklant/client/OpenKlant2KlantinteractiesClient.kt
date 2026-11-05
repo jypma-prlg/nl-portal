@@ -15,6 +15,7 @@
  */
 package nl.nlportal.openklant.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.netty.handler.logging.LogLevel.TRACE
 import kotlin.reflect.full.primaryConstructor
 import nl.nlportal.core.util.Mapper
@@ -35,10 +36,10 @@ class OpenKlant2KlantinteractiesClient(
 
     fun webClient(): WebClient =
         webclientBuilder
-            .baseUrl(openKlantConfigurationProperties.klantinteractiesApiUrl.toString())
+            .baseUrl(openKlantConfigurationProperties.klantinteractiesApiUrl.requireConfigured("openklant", "klantinteractiesApiUrl").toString())
             .defaultHeader("Accept-Crs", "EPSG:4326")
             .defaultHeader("Content-Crs", "EPSG:4326")
-            .defaultHeader("Authorization", "Token ${openKlantConfigurationProperties.token}")
+            .defaultHeader("Authorization", "Token ${openKlantConfigurationProperties.token.requireConfigured("openklant", "token")}")
             .build()
 
     private val webclientBuilder =
