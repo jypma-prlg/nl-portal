@@ -122,7 +122,7 @@ subprojects {
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(project.property("javaVersion").toString().toInt()))
+            languageVersion.set(JavaLanguageVersion.of(providers.gradleProperty("javaVersion").get()))
         }
         withSourcesJar()
         withJavadocJar()
