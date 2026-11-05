@@ -63,15 +63,45 @@ plugins {
     signing
 }
 
+// Copyright headers (ADR 0015): a file that already carries the Ritense header keeps it (year frozen), every
+// other file gets the PinkRoccade header. Leading whitespace or a BOM must not hide an existing Ritense header.
+val ritenseHeader = """\A[\x{FEFF}\s]*/\*\s*\n\s*\* Copyright [^\n]*Den Haag, Ritense"""
+val notRitenseHeader = """\A(?![\x{FEFF}\s]*/\*\s*\n\s*\* Copyright [^\n]*Den Haag, Ritense)"""
+
+fun copyrightHeaders(addHeaderStep: (File) -> com.diffplug.gradle.spotless.FormatExtension.LicenseHeaderConfig) {
+    addHeaderStep(rootProject.file("licenses/ritense.template")).named("ritense").onlyIfContentMatches(ritenseHeader)
+    addHeaderStep(rootProject.file("licenses/pinkroccade.template"))
+        .named("pinkroccade")
+        .onlyIfContentMatches(notRitenseHeader)
+}
+
+// The PinkRoccade end year only moves in changed files: a separate format with ratchetFrom that is only registered
+// for spotlessApply. spotlessCheck (CI) accepts any year and needs no git history.
+val bumpCopyrightYear = gradle.startParameter.taskNames.any { it.substringAfterLast(':') == "spotlessApply" }
+val copyrightRatchetFrom = providers.gradleProperty("copyrightRatchetFrom").getOrElse("origin/main")
+
+fun com.diffplug.gradle.spotless.SpotlessExtension.pinkroccadeCopyrightYear(
+    name: String,
+    delimiter: String,
+    vararg targets: String,
+) {
+    if (!bumpCopyrightYear) return
+    format(name) {
+        target(*targets)
+        ratchetFrom(copyrightRatchetFrom)
+        licenseHeaderFile(rootProject.file("licenses/pinkroccade.template"), delimiter)
+            .onlyIfContentMatches(notRitenseHeader)
+            .updateYearWithLatest(true)
+    }
+}
+
 spotless {
     kotlinGradle {
         target("*.gradle.kts", "gradle/*.gradle.kts")
         ktlint()
-        licenseHeaderFile(
-            rootProject.file("licenses/kts.template"),
-            "\\w.*",
-        )
+        copyrightHeaders { licenseHeaderFile(it, "\\w.*") }
     }
+    pinkroccadeCopyrightYear("pinkroccadeCopyrightYearKts", "\\w.*", "*.gradle.kts", "gradle/*.gradle.kts")
 }
 
 allprojects {
@@ -117,16 +147,15 @@ subprojects {
     configure<com.diffplug.gradle.spotless.SpotlessExtension> {
         kotlin {
             ktlint()
-            licenseHeaderFile(rootProject.file("licenses/kt.template"))
+            copyrightHeaders { licenseHeaderFile(it) }
         }
         kotlinGradle {
             target("*.gradle.kts", "gradle/*.gradle.kts")
             ktlint()
-            licenseHeaderFile(
-                rootProject.file("licenses/kts.template"),
-                "\\w.*",
-            )
+            copyrightHeaders { licenseHeaderFile(it, "\\w.*") }
         }
+        pinkroccadeCopyrightYear("pinkroccadeCopyrightYearKt", "(package |@file|import )", "src/**/*.kt")
+        pinkroccadeCopyrightYear("pinkroccadeCopyrightYearKts", "\\w.*", "*.gradle.kts", "gradle/*.gradle.kts")
     }
 
     java {

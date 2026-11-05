@@ -24,17 +24,25 @@ repositories {
     mavenCentral()
 }
 
+// Copyright headers (ADR 0015), same rules as backend/build.gradle.kts (buildSrc cannot share that script):
+// a file that already carries the Ritense header keeps it, every other file gets the PinkRoccade header.
+// The PinkRoccade year is not bumped here; buildSrc has no PinkRoccade files yet.
+val ritenseHeader = """\A[\x{FEFF}\s]*/\*\s*\n\s*\* Copyright [^\n]*Den Haag, Ritense"""
+val notRitenseHeader = """\A(?![\x{FEFF}\s]*/\*\s*\n\s*\* Copyright [^\n]*Den Haag, Ritense)"""
+
+fun copyrightHeaders(addHeaderStep: (File) -> com.diffplug.gradle.spotless.FormatExtension.LicenseHeaderConfig) {
+    addHeaderStep(rootDir.parentFile.resolve("licenses/ritense.template")).named("ritense").onlyIfContentMatches(ritenseHeader)
+    addHeaderStep(rootDir.parentFile.resolve("licenses/pinkroccade.template")).named("pinkroccade").onlyIfContentMatches(notRitenseHeader)
+}
+
 spotless {
     kotlin {
         ktlint()
-        licenseHeaderFile(rootDir.parentFile.resolve("licenses/kt.template"), "\\w.*")
+        copyrightHeaders { licenseHeaderFile(it, "\\w.*") }
     }
     kotlinGradle {
         target("*.gradle.kts")
         ktlint()
-        licenseHeaderFile(
-            rootDir.parentFile.resolve("licenses/kts.template"),
-            "\\w.*",
-        )
+        copyrightHeaders { licenseHeaderFile(it, "\\w.*") }
     }
 }
