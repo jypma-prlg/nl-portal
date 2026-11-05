@@ -82,9 +82,7 @@ pushed, move it: `git branch <new-branch> && git reset --hard origin/main && git
 ### Git hooks and `pnpm`
 
 `pnpm` staat op de `PATH` van de ontwikkelaar. Draai `git commit` en `git push` dus gewoon direct:
-de Husky-hooks onder `frontend/.husky` (pre-commit, pre-push) vinden `pnpm` zelf. Alle overige
-scripts en taken draaien via `mise` (`mise run <taak>`, zie `mise.toml`), niet als losse
-`gradle`/`pnpm`/`npx`-aanroepen die niet in een mise-taak zitten.
+de Husky-hooks onder `frontend/.husky` (pre-commit, pre-push) vinden `pnpm` zelf.
 
 Faalt een hook toch met "pnpm: command not found" (andere machine of shell zonder die `PATH`),
 draai dan git via mise: `mise exec -- git commit ...` / `mise exec -- git push ...`, of zet de tool
@@ -117,6 +115,8 @@ pnpm-workspace) leeft onder `frontend/`. Backend-tooling (Gradle, Spotless/ktlin
 - [site/development/workflows/dependency-updates.md](site/development/workflows/dependency-updates.md) and
   [site/development/workflows/security.md](site/development/workflows/security.md) (Dutch) are the source of truth; see also
   [SECURITY.md](SECURITY.md) for vulnerability disclosure.
+- Run every script and repeatable task through `mise run <task>` (`mise.toml`), not as a loose
+  `gradle`/`pnpm`/`npx` call; add a mise task when none exists. Git is the exception (see above).
 - Use the `mise run security:*`, `sbom:*` and `deps:check*` tasks (`mise.toml`) for these jobs
   instead of hand-rolling `gradle`/`syft`/`grype`/`pnpm` invocations — they're what CI runs too.
 - After any backend dependency bump, including the weekly Renovate PR, manually regenerate and
