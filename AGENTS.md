@@ -10,6 +10,22 @@ Issue tracker: GitHub Issues on this repo (`gh issue ...`), using native sub-iss
 relationships. Any skill that needs to find, file, or link a ticket — `wayfinder`'s map and tickets
 included — looks here.
 
+## Hard rules
+
+Read these before anything else; every other section is reference.
+
+1. **Skill first.** Match the task to the table under "Workflow" and call that skill before acting.
+2. **Branch first.** Run `git branch --show-current` before the first edit. On `main`, create a
+   branch; changes reach `main` only through a PR (see "Branches").
+3. **Hooks pass.** Run `git commit` and `git push` directly and let the Husky hooks pass; fix the
+   cause when one fails, never `--no-verify` (see "Git hooks and `pnpm`").
+4. **Mise for tasks.** Run scripts and repeatable tasks as `mise run <task>`; add a task when none
+   exists. The build and test commands under "Before you call it done" are the exception.
+5. **Done means green.** Build and tests pass per "Before you call it done"; a security- or
+   dependency-relevant change also passes the matching `mise run security:*` task.
+6. **PR title is a Conventional Commit** and non-trivial work starts from an issue (see
+   "Contributing").
+
 ## Agent skills
 
 ### Issue tracker
@@ -81,12 +97,13 @@ pushed, move it: `git branch <new-branch> && git reset --hard origin/main && git
 
 ### Git hooks and `pnpm`
 
-The Husky hooks under `frontend/.husky` (pre-commit, pre-push) need `pnpm`, which a plain shell
-often lacks on `PATH` even though `mise` provides it. A "pnpm: command not found" failure means
-run git through mise: `mise exec -- git commit ...` / `mise exec -- git push ...`. Never use
-`--no-verify`. If `mise exec` hangs (it may try to install every tool in `mise.toml`), put the
-installed tool on `PATH` instead: `PATH="$(mise where pnpm):$PATH" git commit ...`. Gradle needs
-`JAVA_HOME="$(mise where java)"`.
+`pnpm` staat op de `PATH` van de ontwikkelaar. Draai `git commit` en `git push` dus gewoon direct:
+de Husky-hooks onder `frontend/.husky` (pre-commit, pre-push) vinden `pnpm` zelf.
+
+Faalt een hook toch met "pnpm: command not found" (andere machine of shell zonder die `PATH`),
+draai dan git via mise: `mise exec -- git commit ...` / `mise exec -- git push ...`, of zet de tool
+op de `PATH`: `PATH="$(mise where pnpm):$PATH" git commit ...`. Gebruik nooit `--no-verify`.
+Gradle heeft `JAVA_HOME="$(mise where java)"` nodig.
 
 ## Repo-indeling
 

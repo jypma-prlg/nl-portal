@@ -270,7 +270,4 @@ modules_zonder_ingang:
 
 # Technische schuld: geen capability, wel opruimitems.
 technische_schuld:
-  - {id: openklant-deprecated-domein, module: backend/zgw/openklant, omschrijving: "@Deprecated domeinklassen nog aanwezig"}
-  - {id: haalcentraal2-deprecated-domein, module: backend/haalcentraal2, omschrijving: "@Deprecated domeinklassen nog aanwezig"}
   - {id: keycloak-legacy-token-exchange, module: backend/zgw/common-ground-authentication, omschrijving: legacy Keycloak token-exchange gemarkeerd als deprecated}
-  - {id: clamav-virusscan-api, module: backend/zgw/documenten-api, omschrijving: deprecated ClamAV/VirusScan-API}

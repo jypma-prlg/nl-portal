@@ -48,8 +48,6 @@ data class OpenKlant2SubIdentificatorVan(
 enum class OpenKlant2PartijIdentificatorenFilters(
     @JsonValue val value: String,
 ) : OpenKlant2Filters {
-    @Deprecated("will be removed in a future release.")
-    ANDERE_PARTIJ_IDENTIFICATOR("anderePartijIdentificator"),
     PAGE("page"),
     PARTIJ_IDENTIFICATOR_CODEOBJECTTYPE("partijIdentificatorCodeObjecttype"),
     PARTIJ_IDENTIFICATOR_CODESOORTOBJECTID("partijIdentificatorCodeSoortObjectId"),
