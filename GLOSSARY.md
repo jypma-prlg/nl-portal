@@ -33,6 +33,10 @@ staat; voeg een nieuwe term toe zodra een module ernaar vernoemd wordt (zie de
   relevant voor Haal Centraal Bewoning-gegevens.
 - **Mijn Omgeving** — de productcategorie waartoe NL Portal behoort: een persoonlijk
   overheids-portaal voor klanten.
+- **Feature flag** — een schakelaar die het gedrag van NL Portal stuurt vanuit externe
+  configuratie in plaats van uit de code. Vier typen: *ops* (runtime-gedrag), *permission* (toegang;
+  bij twijfel geweigerd), *experiment* en *release* (kortlevend). NL Portal werkt ook zonder
+  aparte flag-voorziening (zie issue #143).
 
 Zie ook `site/architectuur/arc42/12-glossarium.md` voor architectuurspecifieke
 afkortingen (C1/C2/C3, ADR, SBOM, ...), en de `/codebase-design`-skill voor de architectuurvocabulaire

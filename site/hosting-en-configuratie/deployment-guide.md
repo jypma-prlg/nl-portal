@@ -48,7 +48,8 @@ Alle module properties, inclusief de optionele, zijn met inline documentatie te 
 
 De frontend haalt zijn feature-toggles en -eigenschappen op via `GET /api/public/frontend`, gevuld vanuit `nl-portal.frontend` op de backend. Deze volgen dezelfde relaxed-binding naamconventie, bijvoorbeeld `NLPORTAL_FRONTEND_TOGGLES_OVERVIEWMAINTENANCEALERTENABLED=true`.
 
-- `nl-portal.frontend.toggles.*` — booleans, zoals `messageCountEnabled`, `casesPartialSearchEnabled`, `openProductEnabled`, `casesResultExplanationEnabled`, `myInhabitantCountEnabled`, `casesContactMomentsEnabled`, `overviewIntroEnabled`, `overviewMaintenanceAlertEnabled`.
+- Feature flags: de toggle `messageCountEnabled` komt uit de feature flag `ops.frontend.message-count` (zie [Feature flags](#feature-flags)) en wordt niet meer via `nl-portal.frontend.toggles` ingesteld.
+- `nl-portal.frontend.toggles.*` — booleans, zoals `casesPartialSearchEnabled`, `openProductEnabled`, `casesResultExplanationEnabled`, `myInhabitantCountEnabled`, `casesContactMomentsEnabled`, `overviewIntroEnabled`, `overviewMaintenanceAlertEnabled`.
 - `nl-portal.frontend.properties.*` — waarden, zoals `messageCountPollingInterval`, `overviewCurrentCasesPreviewLength`, `overviewCurrentTasksPreviewLength`, `themeClass`, de `overviewMaintenanceAlert{Title,Text}{Nl,En}` teksten en de BRP/adres-URL's.
 
 De onderhoudsmelding op de overzichtspagina zet je bijvoorbeeld aan met:
@@ -58,6 +59,15 @@ NLPORTAL_FRONTEND_TOGGLES_OVERVIEWMAINTENANCEALERTENABLED=true
 NLPORTAL_FRONTEND_PROPERTIES_OVERVIEWMAINTENANCEALERTTITLENL=Onderhoud
 NLPORTAL_FRONTEND_PROPERTIES_OVERVIEWMAINTENANCEALERTTEXTNL=Deze omgeving is tijdelijk in onderhoud.
 ```
+
+### Feature flags
+
+De backend stuurt gedrag aan met feature flags, geëvalueerd via de open standaard [OpenFeature](https://openfeature.dev). Zonder aparte flag-voorziening werkt NL Portal met een meegeleverd flagbestand; je hoeft niets in te stellen.
+
+- `nl-portal.feature-flags.file` — pad naar een eigen flagbestand (flagd-formaat). Zonder deze property gebruikt NL Portal het meegeleverde bestand.
+- `nl-portal.feature-flags.poll-interval-ms` — hoe vaak het bestand op wijzigingen wordt gecontroleerd (standaard 5000). Een aangepast bestand werkt dus zonder herstart door.
+
+Een andere OpenFeature-provider sluit je aan door een eigen `FeatureProvider`-bean te registreren. Een permission-flag die niet beoordeeld kan worden, geeft bij twijfel geen toegang.
 
 Zie [Eigen vormgeving](../gebruik-en-inrichting/eigen-vormgeving.md) voor `themeClass` en theming.
 
