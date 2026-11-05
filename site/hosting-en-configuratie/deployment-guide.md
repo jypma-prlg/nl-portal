@@ -48,7 +48,8 @@ Alle module properties, inclusief de optionele, zijn met inline documentatie te 
 
 De frontend haalt zijn feature-toggles en -eigenschappen op via `GET /api/public/frontend`, gevuld vanuit `nl-portal.frontend` op de backend. Deze volgen dezelfde relaxed-binding naamconventie, bijvoorbeeld `NLPORTAL_FRONTEND_TOGGLES_OVERVIEWMAINTENANCEALERTENABLED=true`.
 
-- `nl-portal.frontend.toggles.*` — booleans, zoals `messageCountEnabled`, `casesPartialSearchEnabled`, `openProductEnabled`, `casesResultExplanationEnabled`, `myInhabitantCountEnabled`, `casesContactMomentsEnabled`, `overviewIntroEnabled`, `overviewMaintenanceAlertEnabled`.
+- Feature flags: de toggle `messageCountEnabled` komt uit de feature flag `ops.frontend.message-count` (zie [Feature flags](#feature-flags)) en wordt niet meer via `nl-portal.frontend.toggles` ingesteld.
+- `nl-portal.frontend.toggles.*` — booleans, zoals `casesPartialSearchEnabled`, `openProductEnabled`, `casesResultExplanationEnabled`, `myInhabitantCountEnabled`, `casesContactMomentsEnabled`, `overviewIntroEnabled`, `overviewMaintenanceAlertEnabled`.
 - `nl-portal.frontend.properties.*` — waarden, zoals `messageCountPollingInterval`, `overviewCurrentCasesPreviewLength`, `overviewCurrentTasksPreviewLength`, `themeClass`, de `overviewMaintenanceAlert{Title,Text}{Nl,En}` teksten en de BRP/adres-URL's.
 
 De onderhoudsmelding op de overzichtspagina zet je bijvoorbeeld aan met:
@@ -58,6 +59,57 @@ NLPORTAL_FRONTEND_TOGGLES_OVERVIEWMAINTENANCEALERTENABLED=true
 NLPORTAL_FRONTEND_PROPERTIES_OVERVIEWMAINTENANCEALERTTITLENL=Onderhoud
 NLPORTAL_FRONTEND_PROPERTIES_OVERVIEWMAINTENANCEALERTTEXTNL=Deze omgeving is tijdelijk in onderhoud.
 ```
+
+### Feature flags
+
+NL Portal stuurt gedrag aan met feature flags, geëvalueerd via de open standaard
+[OpenFeature](https://openfeature.dev). **Je hoeft niets in te richten om te starten**: zonder aparte
+instelling gebruikt NL Portal een meegeleverd flagbestand, en de standaardwaarden daarin zijn bedoeld
+als veilige startpositie. Je wijzigt flags door een eigen flagbestand aan te wijzen.
+
+**Eigen flagbestand gebruiken**
+
+| Property | Omgevingsvariabele | Betekenis |
+|---|---|---|
+| `nl-portal.feature-flags.file` | `NLPORTAL_FEATUREFLAGS_FILE` | Pad naar je eigen flagbestand. Zonder deze instelling wordt het meegeleverde bestand gebruikt. |
+| `nl-portal.feature-flags.poll-interval-ms` | `NLPORTAL_FEATUREFLAGS_POLLINTERVALMS` | Hoe vaak het bestand op wijzigingen wordt gecontroleerd (standaard 5000). Een aangepast bestand werkt zonder herstart door. |
+
+Het bestand heeft het [flagd-formaat](https://flagd.dev/reference/flag-definitions/). Het meegeleverde
+bestand is het uitgangspunt: kopieer het uit de broncode van NL Portal
+(`backend/core/src/main/resources/feature-flags/default.flagd.json`) en pas het aan. Een flag aanzetten:
+
+```json
+{
+  "$schema": "https://flagd.dev/schema/v0/flags.json",
+  "flags": {
+    "ops.frontend.message-count": {
+      "state": "ENABLED",
+      "variants": { "on": true, "off": false },
+      "defaultVariant": "on"
+    }
+  }
+}
+```
+
+Op Kubernetes mount je het bestand uit een ConfigMap en zet je `NLPORTAL_FEATUREFLAGS_FILE` op het
+gemounte pad. Een flag die ontbreekt in je bestand valt terug op de standaardwaarde in de code, en een
+flag voor toegang (permission) valt bij twijfel altijd terug op uit. Kubernetes werkt een gemounte
+ConfigMap bij met een bestandswissel; of NL Portal die wijziging zonder herstart oppikt is nog niet in
+een echte clusteromgeving getest, controleer dat in je eigen omgeving.
+
+**Beschikbare flags**
+
+| Flag | Type | Standaard | Effect |
+|---|---|---|---|
+| `ops.frontend.message-count` | ops | uit | Toont het aantal ongelezen berichten in de frontend (`messageCountEnabled`). |
+
+De overige frontend-toggles en de module-activatie worden stapsgewijs flags (zie
+[ADR 0014](../development/adr/0014-feature-flags-via-openfeature.md)); tot die tijd stel je ze in zoals
+hierboven beschreven.
+
+Een andere OpenFeature-provider (bijvoorbeeld een flag-server) sluit je aan door in een eigen
+Spring-configuratie een bean van het type `FeatureProvider` te registreren; die vervangt dan het
+flagbestand.
 
 Zie [Eigen vormgeving](../gebruik-en-inrichting/eigen-vormgeving.md) voor `themeClass` en theming.
 

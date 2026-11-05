@@ -45,7 +45,6 @@ nl-portal:
   }'
 
     toggles:
-      message-count-enabled: true
       cases-partial-search-enabled: true
       cases-result-explanation-enabled: true
       open-product-enabled: true

@@ -1,2 +1,3 @@
 nl.nlportal.core.security.OauthSecurityAutoConfiguration
 nl.nlportal.core.autoconfiguration.CoreAutoConfiguration
+nl.nlportal.core.featureflag.FeatureFlagAutoConfiguration

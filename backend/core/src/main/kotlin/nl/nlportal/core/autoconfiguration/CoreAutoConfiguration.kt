@@ -15,6 +15,7 @@
  */
 package nl.nlportal.core.autoconfiguration
 
+import nl.nlportal.core.featureflag.FeatureGate
 import nl.nlportal.core.frontend.configuration.FrontendConfigurationProperties
 import nl.nlportal.core.frontend.configuration.FrontendModuleConfigurationProperties
 import nl.nlportal.core.frontend.service.FrontendConfigurationService
@@ -43,9 +44,11 @@ class CoreAutoConfiguration {
     fun frontendConfigurationService(
         frontendConfigurationProperties: FrontendConfigurationProperties,
         frontendModuleConfigurationProperties: FrontendModuleConfigurationProperties,
+        featureGate: FeatureGate,
     ) = FrontendConfigurationService(
         frontendConfigurationProperties = frontendConfigurationProperties,
         frontendModuleConfigurationProperties = frontendModuleConfigurationProperties,
+        featureGate = featureGate,
     )
 
     @Bean

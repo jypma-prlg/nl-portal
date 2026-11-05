@@ -30,6 +30,8 @@ object Dependencies {
     val graphqlJavaExtendedScalars by lazy { "com.graphql-java:graphql-java-extended-scalars:${Versions.graphqlJavaScalars}" }
 
     val jacksonKotlinModule by lazy { "tools.jackson.module:jackson-module-kotlin" }
+    val openFeatureSdk by lazy { "dev.openfeature:sdk:${Versions.openFeatureSdk}" }
+    val openFeatureFlagd by lazy { "dev.openfeature.contrib.providers:flagd:${Versions.openFeatureFlagd}" }
     val kotlinLogging by lazy { "io.github.oshai:kotlin-logging-jvm:${Versions.kotlinLogging}" }
     val springCloudStream by lazy { "org.springframework.cloud:spring-cloud-stream:${Versions.springCloud}" }
     val springCloudStreamBinderRabbit by lazy { "org.springframework.cloud:spring-cloud-stream-binder-rabbit:${Versions.springCloud}" }

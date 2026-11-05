@@ -60,3 +60,19 @@ lopen, niet als hardcoded string.
 Elk backend- (`.kt`/`.kts`) en frontend-bestand (`.ts`/`.tsx`/`.js`/`.jsx`) draagt een EUPL
 1.2-header, afgedwongen door Spotless (backend) resp. een ESLint-regel + Husky (frontend). Nieuwe
 bestanden moeten deze header krijgen — zie `CONTRIBUTING.md` voor de exacte tooling.
+
+## 8.8 Feature flags
+
+Gedrag dat per omgeving of tenant moet kunnen verschillen, wordt gestuurd met feature flags
+([ADR 0014](../../development/adr/0014-feature-flags-via-openfeature.md)). De backend evalueert flags
+via de open standaard OpenFeature; `FeatureGate` (module `core`) is het enige aanspreekpunt voor
+featurecode. Zonder aparte flag-voorziening gebruikt NL Portal een flagbestand (flagd-formaat) dat
+periodiek wordt herladen; een andere OpenFeature-provider sluit je aan met een eigen bean.
+
+- **Typen**: ops (runtime-gedrag), permission (toegang; bij twijfel geweigerd), experiment en release
+  (kortlevend). Flagsleutels hebben het formaat `<type>.<module>.<naam>`.
+- **Frontend**: de uitkomst voor de frontend komt via `GET /api/public/frontend`; de browser praat
+  nooit met een flag-systeem.
+- **Nu flag-gedreven**: alleen de toggle `messageCountEnabled` (`ops.frontend.message-count`). De
+  overige toggles en de module-activatie volgen (#143).
+- **Grens**: credentials en andere secrets horen niet in een flag-systeem.

@@ -61,6 +61,11 @@ class FrontendConfigurationResourceTest(
             responseJson.requiredAt("/toggles/casesContactMomentsEnabled").booleanValue(),
         )
         assertEquals(
+            false,
+            responseJson.requiredAt("/toggles/messageCountEnabled").booleanValue(),
+            "message count comes from the bundled flag file when no flag file is configured",
+        )
+        assertEquals(
             true,
             responseJson.requiredAt("/modules/taak/enabled").booleanValue(),
         )

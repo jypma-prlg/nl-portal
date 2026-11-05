@@ -15,7 +15,8 @@ er zijn.
 
 De backend is Gradle-modules per verantwoordelijkheid (`backend/settings.gradle.kts`):
 
-- **Core** — gedeelde domeinbegrippen, configuratie, security-basis. Elke andere module hangt hierop.
+- **Core** — gedeelde domeinbegrippen, configuratie, security-basis en feature flags (`FeatureGate` op
+  OpenFeature, zie 8.8). Elke andere module hangt hierop.
 - **GraphQL** — het externe contract; roept de domeinmodules aan.
 - **Case** — zaakdossier-orkestratie (leunt op de ZGW-integraties).
 - **Form** — formulierinzendingen en -definities.
