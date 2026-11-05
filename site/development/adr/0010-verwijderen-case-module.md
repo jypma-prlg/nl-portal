@@ -2,7 +2,9 @@
 
 ## Status
 
-Geaccepteerd (deprecated). Verwijdering volgt na controle op externe clients.
+Geaccepteerd en uitgevoerd (module verwijderd, #103). Omdat de applicatie nog niet in productie
+draait, is er geen opruim-migratie voor bestaande `case`-tabellen toegevoegd: er verdwijnt niets uit
+live systemen en er blijven geen restanten achter in de codebase.
 
 ## Context
 
