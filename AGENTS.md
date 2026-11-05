@@ -81,12 +81,15 @@ pushed, move it: `git branch <new-branch> && git reset --hard origin/main && git
 
 ### Git hooks and `pnpm`
 
-The Husky hooks under `frontend/.husky` (pre-commit, pre-push) need `pnpm`, which a plain shell
-often lacks on `PATH` even though `mise` provides it. A "pnpm: command not found" failure means
-run git through mise: `mise exec -- git commit ...` / `mise exec -- git push ...`. Never use
-`--no-verify`. If `mise exec` hangs (it may try to install every tool in `mise.toml`), put the
-installed tool on `PATH` instead: `PATH="$(mise where pnpm):$PATH" git commit ...`. Gradle needs
-`JAVA_HOME="$(mise where java)"`.
+`pnpm` staat op de `PATH` van de ontwikkelaar. Draai `git commit` en `git push` dus gewoon direct:
+de Husky-hooks onder `frontend/.husky` (pre-commit, pre-push) vinden `pnpm` zelf. Alle overige
+scripts en taken draaien via `mise` (`mise run <taak>`, zie `mise.toml`), niet als losse
+`gradle`/`pnpm`/`npx`-aanroepen die niet in een mise-taak zitten.
+
+Faalt een hook toch met "pnpm: command not found" (andere machine of shell zonder die `PATH`),
+draai dan git via mise: `mise exec -- git commit ...` / `mise exec -- git push ...`, of zet de tool
+op de `PATH`: `PATH="$(mise where pnpm):$PATH" git commit ...`. Gebruik nooit `--no-verify`.
+Gradle heeft `JAVA_HOME="$(mise where java)"` nodig.
 
 ## Repo-indeling
 
