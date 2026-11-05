@@ -43,9 +43,6 @@ dependencies {
 
     api(Dependencies.commonsCodec)
 
-    // Liquibase
-    api("org.springframework.boot:spring-boot-starter-liquibase")
-
     // Apache Commons
     api(Dependencies.commonsIo)
     api(Dependencies.apacheCommons)

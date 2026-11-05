@@ -21,7 +21,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 /**
- * Enforces the layering described in site/architectuur/arc42: core -> shared infra (data, graphql,
+ * Enforces the layering described in site/architectuur/arc42: core -> shared infra (graphql,
  * portal-authentication) -> feature modules -> app/app-dev. The module -> package -> layer relation
  * lives in [ModuleLayers]; a violation here fails the build instead of surfacing at code review.
  */

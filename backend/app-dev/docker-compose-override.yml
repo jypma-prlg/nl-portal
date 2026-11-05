@@ -1,6 +1,0 @@
-services:
-    db:
-        ports:
-            - "5451:5432"
-        environment:
-            - POSTGRES_DB=app-test

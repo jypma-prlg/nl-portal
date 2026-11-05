@@ -31,9 +31,9 @@ Buiten deze repository: Helm-charts rollen de twee images (backend, frontend) ui
 Ritense's `nl-portal/helm-charts` werd hier eerder voor gebruikt; pinkroccade's eigen equivalent is
 nog niet ingericht, zie [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18). Dit
 arc42-document beschrijft die laag niet in detail, maar benoemt wel de aanname die eruit volgt:
-**NL Portal's eigen
-database is per-installatie**, niet gedeeld tussen afnemers; elke overheidsorganisatie draait haar
-eigen instantie tegen haar eigen ZGW-landschap.
+**NL Portal heeft geen eigen
+database**: de backend is stateless en vereist geen persistentielaag. Elke overheidsorganisatie
+draait haar eigen instantie tegen haar eigen ZGW-landschap.
 
 ## 7.4 Open vraag
 

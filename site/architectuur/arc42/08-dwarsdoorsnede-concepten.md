@@ -35,8 +35,9 @@ lopen, niet als hardcoded string.
 
 ## 8.5 Testen
 
-- **Backend**: `./gradlew build` draait unit- en integratietests; integratietests provisionen een
-  database via de Gradle docker-compose-plugin (Docker moet lokaal draaien). Zie `CONTRIBUTING.md`.
+- **Backend**: `./gradlew build` draait unit- en integratietests; integratietests hebben geen
+  database nodig; alleen de `zgw:openklant`-tests starten via de Gradle docker-compose-plugin een
+  OpenKlant-container (Docker moet dan draaien). Zie `CONTRIBUTING.md`.
 - **Frontend**: `pnpm test` (vitest, workspace-breed via `vitest.workspace.ts`), `pnpm lint`,
   `pnpm prettier`.
 - **Observatie uit de architectuurreview**: de ZGW-HTTP-clients hebben vandaag geen test-dubbel

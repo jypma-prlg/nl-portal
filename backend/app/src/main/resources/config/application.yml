@@ -26,17 +26,6 @@ spring:
             resourceserver:
                 jwt:
                     jwk-set-uri: ${JWKS_URI}
-    liquibase:
-        enabled: false
-    datasource:
-        type: com.zaxxer.hikari.HikariDataSource
-        driver-class-name: org.postgresql.Driver
-        url: ${DATABASE_URL}
-        name: nl-portal-app
-        username: ${DATABASE_USERNAME}
-        password: ${DATABASE_PASSWORD}
-    jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
     graphql:
         graphiql:
             enabled: false
@@ -52,7 +41,6 @@ graphql:
 logging:
     level:
         root: ${LOGLEVEL:INFO}
-        liquibase: WARN
 
 nl-portal:
     authentication:

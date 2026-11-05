@@ -10,7 +10,6 @@ er zijn.
 |---|---|---|
 | Frontend | Presentatie en interactie voor de klant | React, TypeScript, Vite |
 | Backend | GraphQL-contract, orkestratie van ZGW-aanroepen, autorisatie | Kotlin, Spring Boot |
-| NL Portal database | Portal-eigen state (niet de brondata) | PostgreSQL |
 
 ## 5.2 Niveau 2 — Backend-componenten (zie likec4-view `backendComponents`)
 
@@ -73,7 +72,6 @@ ingangen (GraphQL-operaties, REST-endpoints, event-listeners) het bereikbaar is.
 | Capability | Status | Modules | Ingangen |
 |---|---|---|---|
 | [Portaalconfiguratie en health](#capability-portaal-configuratie) | `actief` | `backend/core` | 2 |
-| [Database-initialisatie (Liquibase)](#capability-database-migratie) | `actief` | `backend/data` | 1 |
 | [Zaken inzien](#capability-zaken-inzien) | `actief` | `backend/zgw/zaken`, `backend/zgw/zaken-api`, `backend/zgw/catalogi-api` | 3 |
 | [Besluiten inzien](#capability-besluiten-inzien) | `twijfel` | `backend/zgw/besluiten` | 1 |
 | [Berichten ontvangen](#capability-berichten-ontvangen) | `actief` | `backend/zgw/berichten`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi` | 4 |
@@ -105,19 +103,6 @@ Levert feature-flags/configuratie aan de frontend en een optionele ping voor mon
 |---|---|---|---|---|
 | rest | `GET /api/public/frontend` | ja | `actief` |  |
 | rest | `GET /api/public/ping` | nee | `actief` |  |
-
-<a id="capability-database-migratie"></a>
-### Database-initialisatie (Liquibase) (`database-migratie`)
-
-Voert bij opstart de databasemigraties uit.
-
-- **Status:** `actief`
-- **Bewijs:** Infra-listener, nodig voor form-tabellen; geen burgerfunctie.
-- **Modules:** `backend/data`
-
-| Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
-|---|---|---|---|---|
-| event-listener | `LiquibaseInitializationEventListener` | nee | `actief` |  |
 
 <a id="capability-zaken-inzien"></a>
 ### Zaken inzien (`zaken-inzien`)

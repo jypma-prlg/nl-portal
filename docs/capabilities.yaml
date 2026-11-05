@@ -24,16 +24,6 @@ capabilities:
       - {type: rest, naam: "GET /api/public/frontend", frontend_gebruikt: true}
       - {type: rest, naam: "GET /api/public/ping", frontend_gebruikt: false}
 
-  - id: database-migratie
-    naam: Database-initialisatie (Liquibase)
-    beschrijving: Voert bij opstart de databasemigraties uit.
-    status: actief
-    bewijs: Infra-listener, nodig voor form-tabellen; geen burgerfunctie.
-    modules: [backend/data]
-    signalen: {in_assembly: true, tests: false, laatste_commit: 2026-08-27, commits_12m: 2, deprecated_markers: false}
-    ingangen:
-      - {type: event-listener, naam: LiquibaseInitializationEventListener, frontend_gebruikt: false}
-
   - id: zaken-inzien
     naam: Zaken inzien
     beschrijving: Burger/ondernemer ziet zijn lopende en afgeronde zaken met status, documenten en besluiten.

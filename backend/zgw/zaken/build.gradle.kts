@@ -47,7 +47,6 @@ dependencies {
     testImplementation(TestDependencies.mockitoKotlin)
     testImplementation(TestDependencies.okHttpMockWebserver)
     testImplementation(TestDependencies.okHttp)
-    testImplementation(TestDependencies.postgresql)
 }
 
 val jar: Jar by tasks

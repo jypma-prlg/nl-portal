@@ -54,6 +54,8 @@ Contributor branches are cut from `main`:
 - **`feature/*`** - new functionality (optionally split into short-lived `story/*` branches that
   merge back into the feature branch).
 - **`bugfix/*`** - bug fixes targeting `main`.
+- **`chore/*`** - maintenance tasks targeting `main`: removals, cleanup, dependency and tooling upkeep
+  (e.g. `chore/remove-case-module-103`). This is the form `AGENTS.md` prescribes for AI-assisted work.
 - **`hotfix/*`** - urgent patches for a `release/<major>.x` line that cannot wait for the next
   version. A hotfix is authored on the maintenance line and then propagated as described in
   [Fix propagation](#fix-propagation).
@@ -95,8 +97,9 @@ valid Conventional Commit.
 
 ## Building and testing locally
 
-- **Backend**: from `backend/`, `./gradlew build` (integration tests auto-provision a database via
-  the docker-compose plugin; Docker must be running).
+- **Backend**: from `backend/`, `./gradlew build` (no database is needed; only the `zgw:openklant`
+  integration tests start an OpenKlant container through the docker-compose plugin, so Docker must be
+  running for those).
 - **Frontend**: from `frontend/`, `pnpm install` then `pnpm -r build`, `pnpm test`, `pnpm lint` and
   `pnpm prettier`.
 

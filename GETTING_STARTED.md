@@ -2,7 +2,7 @@
 
 NL Portal can be run three ways, each for a different purpose. All of them use the
 [`docker-compose/`](./docker-compose/README.md) stack for the supporting services (Keycloak,
-databases, ZGW). Pick the mode that matches what you are doing; each links to the fuller docs.
+ZGW). Pick the mode that matches what you are doing; each links to the fuller docs.
 
 ## 1. Remote — evaluate the released product
 

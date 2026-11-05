@@ -35,7 +35,6 @@ plugins {
     // https://kotlinlang.org/docs/reference/compiler-plugins.html#spring-support
 
     kotlin("plugin.spring")
-    kotlin("plugin.jpa")
     kotlin("plugin.allopen")
 
     // Allows to package executable jar or war archives, run Spring Boot applications,
@@ -146,7 +145,6 @@ subprojects {
             }
             dependencies {
                 // Security overrides on top of the Spring Boot 4.1.0 BOM.
-                dependency("org.postgresql:postgresql:${Versions.postgresql}")
                 dependency("org.apache.httpcomponents.core5:httpcore5:${Versions.httpCore5}")
                 dependency("org.apache.httpcomponents.core5:httpcore5-h2:${Versions.httpCore5}")
                 dependency("org.apache.logging.log4j:log4j-api:${Versions.log4j2}")
@@ -158,9 +156,6 @@ subprojects {
 
     println("Enabling Kotlin Spring plugin in project ${project.name}...")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-
-    println("Enabling Kotlin JPA plugin in project ${project.name}...")
-    apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
 
     println("Enabling Kotlin All-open plugin in project ${project.name}...")
     apply(plugin = "org.jetbrains.kotlin.plugin.allopen")

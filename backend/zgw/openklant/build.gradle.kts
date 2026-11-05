@@ -24,7 +24,7 @@ val isLib = true
 dockerCompose {
     setProjectName("$name-test")
     isRequiredBy(tasks.getByName("integrationTest"))
-    useComposeFiles.addAll("../../docker-resources/docker-compose-base-test.yml", "docker-compose-override.yml")
+    useComposeFiles.addAll("docker-compose-override.yml")
 }
 
 dependencies {
@@ -39,7 +39,6 @@ dependencies {
     implementation("org.springframework.data:spring-data-commons")
 
     testImplementation(project(":zgw:common-ground-authentication-test"))
-    testImplementation(TestDependencies.postgresql)
     testImplementation(TestDependencies.springBootTest)
     testImplementation(TestDependencies.springBootWebClientTest)
     testImplementation(TestDependencies.springBootTestWebClient)

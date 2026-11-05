@@ -19,7 +19,6 @@ const BACKEND = "nlPortal.backend";
 const ZGW = `${BACKEND}.zgwIntegrations`;
 const MODULE_ELEMENTS = {
   "backend/core": `${BACKEND}.core`,
-  "backend/data": `${BACKEND}.core`,
   "backend/graphql": `${BACKEND}.graphqlApi`,
   "backend/form": `${BACKEND}.form`,
   "backend/payment-direct": `${BACKEND}.payment`,

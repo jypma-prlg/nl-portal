@@ -28,8 +28,8 @@ services:
           - CELERY_RESULT_BACKEND=redis://redis-test:6379/0
           - DISABLE_2FA=true
       volumes:
-          - ./imports/openklant-2/init:/app/init
-          - ./imports/openklant-2/fixtures:/app/src/openklant/fixtures
+          - ../../docker-resources/imports/openklant-2/init:/app/init
+          - ../../docker-resources/imports/openklant-2/fixtures:/app/src/openklant/fixtures
       command: sh /app/init/init.sh
 
   openklant-2-db:
