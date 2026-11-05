@@ -15,6 +15,7 @@
  */
 package nl.nlportal.openproduct.service
 
+import nl.nlportal.core.util.ModuleNotConfiguredException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
@@ -1031,7 +1032,7 @@ class OpenProductService(
             return document to content
         } catch (e: Exception) {
             logger.error(e) { "Error getting product document: " + e.message }
-            if (e is NullPointerException) {
+            if (e is NullPointerException || e is ModuleNotConfiguredException) {
                 throw ResponseStatusException(HttpStatus.BAD_REQUEST)
             }
             throw e

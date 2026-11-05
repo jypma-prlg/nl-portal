@@ -15,6 +15,7 @@
  */
 package nl.nlportal.payment.direct.client
 
+import nl.nlportal.core.util.requireConfigured
 import com.onlinepayments.domain.CreateHostedCheckoutRequest
 import com.onlinepayments.domain.CreateHostedCheckoutResponse
 import io.github.oshai.kotlinlogging.KLogger
@@ -46,40 +47,37 @@ class DirectPaymentClient(
     private val directPaymentProperties: DirectPaymentProperties,
     private val clientSslContextResolver: ClientSslContextResolver? = null,
 ) {
-    val webClient: WebClient
+    val webClient: WebClient by lazy {
+        WebClient
+            .builder()
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    HttpClient
+                        .create()
+                        .wiretap(
+                            "reactor.netty.http.client.HttpClient",
+                            LogLevel.TRACE,
+                            AdvancedByteBufFormat.TEXTUAL,
+                        ).let { client ->
+                            var result = client
+                            if (clientSslContextResolver != null) {
+                                directPaymentProperties.ssl?.let {
+                                    val sslContext =
+                                        clientSslContextResolver.resolve(
+                                            it.key,
+                                            it.trustedCertificate,
+                                        )
 
-    init {
-        this.webClient =
-            WebClient
-                .builder()
-                .clientConnector(
-                    ReactorClientHttpConnector(
-                        HttpClient
-                            .create()
-                            .wiretap(
-                                "reactor.netty.http.client.HttpClient",
-                                LogLevel.TRACE,
-                                AdvancedByteBufFormat.TEXTUAL,
-                            ).let { client ->
-                                var result = client
-                                if (clientSslContextResolver != null) {
-                                    directPaymentProperties.ssl?.let {
-                                        val sslContext =
-                                            clientSslContextResolver.resolve(
-                                                it.key,
-                                                it.trustedCertificate,
-                                            )
+                                    result = client.secure { builder -> builder.sslContext(sslContext) }
 
-                                        result = client.secure { builder -> builder.sslContext(sslContext) }
-
-                                        logger.debug { "Client SSL context was set: private key=${it.key != null}, trusted certificate=${it.trustedCertificate != null}." }
-                                    }
+                                    logger.debug { "Client SSL context was set: private key=${it.key != null}, trusted certificate=${it.trustedCertificate != null}." }
                                 }
-                                result
-                            },
-                    ),
-                ).baseUrl(directPaymentProperties.url)
-                .build()
+                            }
+                            result
+                        },
+                ),
+            ).baseUrl(directPaymentProperties.url.requireConfigured("payment-direct", "url"))
+            .build()
     }
 
     suspend fun hostedCheckout(

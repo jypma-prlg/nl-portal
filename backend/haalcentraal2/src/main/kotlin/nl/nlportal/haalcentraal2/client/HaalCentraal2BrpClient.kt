@@ -15,6 +15,7 @@
  */
 package nl.nlportal.haalcentraal2.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.handler.logging.LogLevel
@@ -34,53 +35,50 @@ class HaalCentraal2BrpClient(
 ) {
     inline fun <reified P : HaalCentraal2Path> path(): P = P::class.primaryConstructor!!.call(this)
 
-    val webClient: WebClient
+    val webClient: WebClient by lazy {
+        webClientBuilder
+            .clone()
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    HttpClient
+                        .create()
+                        .wiretap(
+                            "reactor.netty.http.client.HttpClient",
+                            LogLevel.TRACE,
+                            AdvancedByteBufFormat.TEXTUAL,
+                        ).let { client ->
+                            var result = client
+                            if (clientSslContextResolver != null) {
+                                haalCentraal2ConfigurationProperties.ssl?.let {
+                                    val sslContext =
+                                        clientSslContextResolver.resolve(
+                                            it.key,
+                                            it.trustedCertificate,
+                                        )
 
-    init {
-        this.webClient =
-            webClientBuilder
-                .clone()
-                .clientConnector(
-                    ReactorClientHttpConnector(
-                        HttpClient
-                            .create()
-                            .wiretap(
-                                "reactor.netty.http.client.HttpClient",
-                                LogLevel.TRACE,
-                                AdvancedByteBufFormat.TEXTUAL,
-                            ).let { client ->
-                                var result = client
-                                if (clientSslContextResolver != null) {
-                                    haalCentraal2ConfigurationProperties.ssl?.let {
-                                        val sslContext =
-                                            clientSslContextResolver.resolve(
-                                                it.key,
-                                                it.trustedCertificate,
-                                            )
+                                    result = client.secure { builder -> builder.sslContext(sslContext) }
 
-                                        result = client.secure { builder -> builder.sslContext(sslContext) }
-
-                                        logger.debug { "Client SSL context was set: private key=${it.key != null}, trusted certificate=${it.trustedCertificate != null}." }
-                                    }
+                                    logger.debug { "Client SSL context was set: private key=${it.key != null}, trusted certificate=${it.trustedCertificate != null}." }
                                 }
-                                result
-                            },
-                    ),
-                ).baseUrl(haalCentraal2ConfigurationProperties.brpApiUrl)
-                .apply {
-                    if (haalCentraal2ConfigurationProperties.additionalHeaders.isNotEmpty()) {
-                        it.defaultHeaders { headers ->
-                            haalCentraal2ConfigurationProperties.additionalHeaders.forEach { (name, value) ->
-                                headers[name] = value
                             }
+                            result
+                        },
+                ),
+            ).baseUrl(haalCentraal2ConfigurationProperties.brpApiUrl.requireConfigured("haalcentraal2", "brpApiUrl"))
+            .apply {
+                if (haalCentraal2ConfigurationProperties.additionalHeaders.isNotEmpty()) {
+                    it.defaultHeaders { headers ->
+                        haalCentraal2ConfigurationProperties.additionalHeaders.forEach { (name, value) ->
+                            headers[name] = value
                         }
-                        logger.debug { "Additional default headers were set for client: ${haalCentraal2ConfigurationProperties.additionalHeaders.keys}" }
                     }
-                    if (!haalCentraal2ConfigurationProperties.apiKey.isNullOrBlank()) {
-                        it.defaultHeader("X-API-KEY", haalCentraal2ConfigurationProperties.apiKey!!)
-                        logger.debug { "X-API-KEY was set for client" }
-                    }
-                }.build()
+                    logger.debug { "Additional default headers were set for client: ${haalCentraal2ConfigurationProperties.additionalHeaders.keys}" }
+                }
+                if (!haalCentraal2ConfigurationProperties.apiKey.isNullOrBlank()) {
+                    it.defaultHeader("X-API-KEY", haalCentraal2ConfigurationProperties.apiKey!!)
+                    logger.debug { "X-API-KEY was set for client" }
+                }
+            }.build()
     }
 
     companion object {

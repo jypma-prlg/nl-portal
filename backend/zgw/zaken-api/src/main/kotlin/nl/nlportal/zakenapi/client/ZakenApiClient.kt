@@ -15,6 +15,7 @@
  */
 package nl.nlportal.zakenapi.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.netty.handler.logging.LogLevel
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig.CatalogiApiConfigProperties
 import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
@@ -50,41 +51,38 @@ class ZakenApiClient(
     private val catalogiApiConfig: CatalogiApiConfigProperties,
     webClientBuilder: WebClient.Builder,
 ) {
-    val webClient: WebClient
-
-    init {
-        this.webClient =
-            webClientBuilder
-                .clone()
-                .baseUrl(zakenApiConfig.url)
-                .clientConnector(
-                    ReactorClientHttpConnector(
-                        HttpClient.create().wiretap(
-                            "reactor.netty.http.client.HttpClient",
-                            LogLevel.TRACE,
-                            AdvancedByteBufFormat.TEXTUAL,
-                        ),
+    val webClient: WebClient by lazy {
+        webClientBuilder
+            .clone()
+            .baseUrl(zakenApiConfig.url.requireConfigured("zakenapi", "url"))
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    HttpClient.create().wiretap(
+                        "reactor.netty.http.client.HttpClient",
+                        LogLevel.TRACE,
+                        AdvancedByteBufFormat.TEXTUAL,
                     ),
-                ).filter(
-                    ExchangeFilterFunction.ofRequestProcessor {
-                        Mono.just(
-                            ClientRequest.from(it).header("Authorization", "Bearer ${getToken()}").build(),
-                        )
-                    },
-                ).defaultHeader("Accept-Crs", "EPSG:4326")
-                .defaultHeader("Content-Crs", "EPSG:4326")
-                .build()
+                ),
+            ).filter(
+                ExchangeFilterFunction.ofRequestProcessor {
+                    Mono.just(
+                        ClientRequest.from(it).header("Authorization", "Bearer ${getToken()}").build(),
+                    )
+                },
+            ).defaultHeader("Accept-Crs", "EPSG:4326")
+            .defaultHeader("Content-Crs", "EPSG:4326")
+            .build()
     }
 
     private fun getToken(): String =
         IdTokenGenerator().generateToken(
-            zakenApiConfig.secret,
-            zakenApiConfig.clientId,
+            zakenApiConfig.secret.requireConfigured("zakenapi", "secret"),
+            zakenApiConfig.clientId.requireConfigured("zakenapi", "clientId"),
         )
 
-    fun getZaakUrl(zaakId: Any): String = "${zakenApiConfig.url}/zaken/api/v1/zaken/$zaakId"
+    fun getZaakUrl(zaakId: Any): String = "${zakenApiConfig.url.requireConfigured("zakenapi", "url")}/zaken/api/v1/zaken/$zaakId"
 
-    fun getZaakTypeUrl(zaakTypeId: UUID): String = "${catalogiApiConfig.url}/catalogi/api/v1/zaaktypen/$zaakTypeId"
+    fun getZaakTypeUrl(zaakTypeId: UUID): String = "${catalogiApiConfig.url.requireConfigured("catalogiapi", "url")}/catalogi/api/v1/zaaktypen/$zaakTypeId"
 
     fun zaken(): Zaken = ZakenImpl(this)
 

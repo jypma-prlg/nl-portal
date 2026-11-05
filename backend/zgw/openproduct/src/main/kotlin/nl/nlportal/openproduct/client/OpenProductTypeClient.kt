@@ -15,6 +15,7 @@
  */
 package nl.nlportal.openproduct.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.netty.handler.logging.LogLevel
 import kotlin.reflect.full.primaryConstructor
 import nl.nlportal.core.util.Mapper
@@ -33,40 +34,37 @@ class OpenProductTypeClient(
 ) {
     inline fun <reified P : OpenProductPath> path(): P = P::class.primaryConstructor!!.call(this)
 
-    val webClient: WebClient
-
-    init {
-        this.webClient =
-            WebClient
-                .builder()
-                .clone()
-                .clientConnector(
-                    ReactorClientHttpConnector(
-                        HttpClient.create().wiretap(
-                            "reactor.netty.http.client.HttpClient",
-                            LogLevel.TRACE,
-                            AdvancedByteBufFormat.TEXTUAL,
-                        ),
+    val webClient: WebClient by lazy {
+        WebClient
+            .builder()
+            .clone()
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    HttpClient.create().wiretap(
+                        "reactor.netty.http.client.HttpClient",
+                        LogLevel.TRACE,
+                        AdvancedByteBufFormat.TEXTUAL,
                     ),
-                ).baseUrl(openProductConfigurationProperties.productTypeApiUrl.toString())
-                .apply {
-                    it.defaultHeader("Authorization", "Token ${openProductConfigurationProperties.token}")
-                    it.defaultHeader("Accept-Crs", "EPSG:4326")
-                    it.defaultHeader("Content-Crs", "EPSG:4326")
-                }.exchangeStrategies(
-                    ExchangeStrategies
-                        .builder()
-                        .codecs { configurer ->
-                            with(configurer.defaultCodecs()) {
-                                maxInMemorySize(16 * 1024 * 1024)
-                                jacksonJsonEncoder(
-                                    JacksonJsonEncoder(Mapper.get()),
-                                )
-                                jacksonJsonDecoder(
-                                    JacksonJsonDecoder(Mapper.get()),
-                                )
-                            }
-                        }.build(),
-                ).build()
+                ),
+            ).baseUrl(openProductConfigurationProperties.productTypeApiUrl.requireConfigured("openproduct", "productTypeApiUrl").toString())
+            .apply {
+                it.defaultHeader("Authorization", "Token ${openProductConfigurationProperties.token.requireConfigured("openproduct", "token")}")
+                it.defaultHeader("Accept-Crs", "EPSG:4326")
+                it.defaultHeader("Content-Crs", "EPSG:4326")
+            }.exchangeStrategies(
+                ExchangeStrategies
+                    .builder()
+                    .codecs { configurer ->
+                        with(configurer.defaultCodecs()) {
+                            maxInMemorySize(16 * 1024 * 1024)
+                            jacksonJsonEncoder(
+                                JacksonJsonEncoder(Mapper.get()),
+                            )
+                            jacksonJsonDecoder(
+                                JacksonJsonDecoder(Mapper.get()),
+                            )
+                        }
+                    }.build(),
+            ).build()
     }
 }

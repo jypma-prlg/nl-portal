@@ -25,14 +25,6 @@ class VerificatieModuleConfiguration {
     var enabled: Boolean = false
     var properties: VerificatieConfigurationProperties = VerificatieConfigurationProperties()
 
-    init {
-        if (enabled) {
-            requireNotNull(properties.url) {
-                "Verificatie API URL not configured"
-            }
-        }
-    }
-
     class VerificatieConfigurationProperties(
         var url: URI? = null,
         var clientId: String? = null,

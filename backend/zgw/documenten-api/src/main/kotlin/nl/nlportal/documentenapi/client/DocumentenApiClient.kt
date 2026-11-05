@@ -15,6 +15,7 @@
  */
 package nl.nlportal.documentenapi.client
 
+import nl.nlportal.core.util.requireConfigured
 import io.netty.handler.logging.LogLevel
 import kotlinx.coroutines.flow.Flow
 import io.github.oshai.kotlinlogging.KLogger
@@ -133,7 +134,7 @@ class DocumentenApiClient(
                             result
                         },
                 ),
-            ).baseUrl(documentenApiConfig.url)
+            ).baseUrl(documentenApiConfig.url.requireConfigured("documentenapis", "configurations.$documentApi.url"))
             .defaultHeader("Accept-Crs", "EPSG:4326")
             .defaultHeader("Content-Crs", "EPSG:4326")
             .apply {

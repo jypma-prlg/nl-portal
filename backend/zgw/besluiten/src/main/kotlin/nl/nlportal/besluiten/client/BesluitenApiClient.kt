@@ -15,6 +15,7 @@
  */
 package nl.nlportal.besluiten.client
 
+import nl.nlportal.core.util.requireConfigured
 import nl.nlportal.besluiten.client.BesluitenApiConfig.BesluitenApiConfigProperties
 import nl.nlportal.besluiten.domain.Besluit
 import nl.nlportal.besluiten.domain.BesluitAuditTrail
@@ -35,22 +36,19 @@ class BesluitenApiClient(
     private val besluitenApiConfig: BesluitenApiConfigProperties,
     webClientBuilder: WebClient.Builder,
 ) {
-    val webClient: WebClient
-
-    init {
-        this.webClient =
-            webClientBuilder
-                .clone()
-                .baseUrl(besluitenApiConfig.url)
-                .filter(
-                    ExchangeFilterFunction.ofRequestProcessor {
-                        Mono.just(
-                            ClientRequest.from(it).header("Authorization", "Bearer ${getToken()}").build(),
-                        )
-                    },
-                ).defaultHeader("Accept-Crs", "EPSG:4326")
-                .defaultHeader("Content-Crs", "EPSG:4326")
-                .build()
+    val webClient: WebClient by lazy {
+        webClientBuilder
+            .clone()
+            .baseUrl(besluitenApiConfig.url.requireConfigured("besluitenapi", "url"))
+            .filter(
+                ExchangeFilterFunction.ofRequestProcessor {
+                    Mono.just(
+                        ClientRequest.from(it).header("Authorization", "Bearer ${getToken()}").build(),
+                    )
+                },
+            ).defaultHeader("Accept-Crs", "EPSG:4326")
+            .defaultHeader("Content-Crs", "EPSG:4326")
+            .build()
     }
 
     suspend fun getBesluiten(
@@ -135,8 +133,8 @@ class BesluitenApiClient(
 
     private fun getToken(): String =
         IdTokenGenerator().generateToken(
-            besluitenApiConfig.secret,
-            besluitenApiConfig.clientId,
+            besluitenApiConfig.secret.requireConfigured("besluitenapi", "secret"),
+            besluitenApiConfig.clientId.requireConfigured("besluitenapi", "clientId"),
         )
 
     fun WebClient.ResponseSpec.handleStatus() =
