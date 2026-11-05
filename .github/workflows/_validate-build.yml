@@ -3,9 +3,6 @@ name: _validate-build
 on:
     workflow_call:
         inputs:
-            javaVersion:
-                type: string
-                default: "21"
             nodeVersion:
                 type: string
                 default: "24"
@@ -27,11 +24,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-            -   name: Set up JDK ${{ inputs.javaVersion }}
-                uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
-                with:
-                    java-version: ${{ inputs.javaVersion }}
-                    distribution: temurin
+            -   name: Set up JDK
+                uses: ./.github/actions/setup-backend-jdk
             -   name: Set up Gradle
                 uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
             -   name: Build with Gradle

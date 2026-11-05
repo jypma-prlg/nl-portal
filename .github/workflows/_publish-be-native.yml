@@ -16,9 +16,6 @@ on:
             uploadReports:
                 type: boolean
                 default: false
-            javaVersion:
-                type: string
-                default: "21"
 
 permissions:
     contents: read
@@ -28,11 +25,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-            -   name: Set up JDK ${{ inputs.javaVersion }}
-                uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
-                with:
-                    java-version: ${{ inputs.javaVersion }}
-                    distribution: temurin
+            -   name: Set up JDK
+                uses: ./.github/actions/setup-backend-jdk
             -   name: Download stage bundle
                 uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
                 with:

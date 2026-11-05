@@ -1,0 +1,21 @@
+name: Setup backend JDK
+description: Installeert de JDK voor de backend; de versie komt uit javaVersion in backend/gradle.properties (vereist een voorafgaande checkout).
+
+runs:
+    using: composite
+    steps:
+        -   name: Read Java version
+            id: java
+            shell: bash
+            run: |
+                version=$(sed -n 's/^javaVersion=//p' backend/gradle.properties | tr -d '\r')
+                if [ -z "${version}" ]; then
+                  echo "::error::javaVersion ontbreekt in backend/gradle.properties"
+                  exit 1
+                fi
+                echo "version=${version}" >> "$GITHUB_OUTPUT"
+        -   name: Set up JDK ${{ steps.java.outputs.version }}
+            uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+            with:
+                java-version: ${{ steps.java.outputs.version }}
+                distribution: temurin
