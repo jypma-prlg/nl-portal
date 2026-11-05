@@ -21,7 +21,6 @@ const MODULE_ELEMENTS = {
   "backend/core": `${BACKEND}.core`,
   "backend/data": `${BACKEND}.core`,
   "backend/graphql": `${BACKEND}.graphqlApi`,
-  "backend/case": `${BACKEND}.caseModule`,
   "backend/form": `${BACKEND}.form`,
   "backend/payment-direct": `${BACKEND}.payment`,
   "backend/product": `${BACKEND}.product`,
@@ -164,7 +163,7 @@ function renderLikeC4(inv) {
   out.push("");
   for (const c of inv.capabilities) {
     for (const m of c.modules) {
-      if (!MODULE_ELEMENTS[m]) console.warn(`Waarschuwing: module '${m}' (${c.id}) staat niet in MODULE_ELEMENTS; gerelateerd aan ${BACKEND}.`);
+      if (!MODULE_ELEMENTS[m] && c.status !== "verwijderd") console.warn(`Waarschuwing: module '${m}' (${c.id}) staat niet in MODULE_ELEMENTS; gerelateerd aan ${BACKEND}.`);
     }
     const targets = [...new Set(c.modules.map((m) => MODULE_ELEMENTS[m] ?? BACKEND))];
     for (const t of targets) out.push(`  ${c4Id(c.id)} -> ${t} 'Geïmplementeerd in'`);

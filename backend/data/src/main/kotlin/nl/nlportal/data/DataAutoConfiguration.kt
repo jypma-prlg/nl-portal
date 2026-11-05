@@ -15,12 +15,14 @@
  */
 package nl.nlportal.data
 
-import org.hibernate.type.format.jackson.JacksonJsonFormatMapper
+import nl.nlportal.data.liquibase.LiquibaseMasterChangeLogLocation
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.persistence.autoconfigure.EntityScan
 import org.springframework.context.annotation.Bean
-import tools.jackson.databind.ObjectMapper
 
 @AutoConfiguration
 @EntityScan("nl.nlportal.data.domain")
-class DataAutoConfiguration
+class DataAutoConfiguration {
+    @Bean
+    fun dataLiquibaseConfig(): LiquibaseMasterChangeLogLocation = LiquibaseMasterChangeLogLocation("config/liquibase/data-master.xml")
+}

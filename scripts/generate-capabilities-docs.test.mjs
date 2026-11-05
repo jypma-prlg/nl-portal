@@ -128,7 +128,7 @@ test("LikeC4 file has capability elements tagged by status and related to compon
     assert.match(c4, /#deprecated/);
     assert.match(c4, /zakenInzien -> nlPortal\.backend\.zgwIntegrations\.zaken /);
     assert.match(c4, /zakenInzien -> nlPortal\.backend\.zgwIntegrations\.zakenApi /);
-    assert.match(c4, /eigenZakenCase -> nlPortal\.backend\.caseModule /);
+    assert.match(c4, /eigenZakenCase -> nlPortal\.backend /);
   });
 });
 

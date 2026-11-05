@@ -57,7 +57,6 @@ object ModuleLayers {
             ModuleMapping(":zgw:common-ground-authentication", "nl.nlportal.commonground", Layer.FEATURE),
             ModuleMapping(":zgw:objectenapi", "nl.nlportal.zgw.objectenapi", Layer.FEATURE),
             ModuleMapping(":zgw:taak", "nl.nlportal.zgw.taak", Layer.FEATURE),
-            ModuleMapping(":case", "nl.nlportal.case", Layer.FEATURE),
             ModuleMapping(":form", "nl.nlportal.form", Layer.FEATURE),
             ModuleMapping(":payment-direct", "nl.nlportal.payment.direct", Layer.FEATURE),
             ModuleMapping(":haalcentraal2", "nl.nlportal.haalcentraal2", Layer.FEATURE),

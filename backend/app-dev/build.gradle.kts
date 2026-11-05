@@ -22,7 +22,6 @@ plugins {
 dependencies {
     implementation(project(":zgw:openklant"))
     // implementation(project(":form"))
-    implementation(project(":case"))
     implementation(project(":haalcentraal-hr"))
     implementation(project(":haalcentraal2"))
     implementation(project(":zgw:taak"))
@@ -33,7 +32,6 @@ dependencies {
     implementation(project(":zgw:zaken"))
     implementation(project(":zgw:openproduct"))
     implementation(project(":zgw:verificatie"))
-    implementation(project(":case"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     api("org.postgresql:postgresql")

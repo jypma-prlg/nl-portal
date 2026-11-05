@@ -98,17 +98,11 @@ capabilities:
   - id: eigen-zaken-case
     naam: Eigen zaken (case-definities)
     beschrijving: Portaal-interne zaakafhandeling - case-definities, case-instanties en indienen van formulieren als case.
-    status: deprecated
+    status: verwijderd
     bewijs: Geen enkele operatie in frontend gebruikt; overlapt met ZGW-zaken; alleen onderhoudscommits (5).
-    besluit: site/development/adr/0010-verwijderen-case-module.md (2026-11-04); verwijderen na check gateway-logs op externe clients.
+    besluit: site/development/adr/0010-verwijderen-case-module.md (2026-11-04); module verwijderd, zie issue 103 (log-check op externe clients door maintainer).
     modules: [backend/case]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-10-20, commits_12m: 5, deprecated_markers: false}
-    ingangen:
-      - {type: graphql-query, naam: allCaseDefinitions, frontend_gebruikt: false}
-      - {type: graphql-query, naam: allCaseInstances, frontend_gebruikt: false}
-      - {type: graphql-query, naam: getCaseInstance, frontend_gebruikt: false}
-      - {type: graphql-mutation, naam: processSubmission, frontend_gebruikt: false}
-      - {type: event-listener, naam: CaseDefinitionApplicationReadyEventListener, frontend_gebruikt: false}
 
   - id: betalen-ogone-direct
     naam: Betalen (Ogone direct)
