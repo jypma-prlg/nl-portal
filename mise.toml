@@ -35,6 +35,11 @@ run = "npx --yes likec4@1.60.0 start site/likec4"
 description = "Export the LikeC4 views to PNG under site/architectuur/img/likec4 (shown on the C4-model page; re-run and commit after changing the model)"
 run = "npx --yes likec4@1.60.0 export png site/likec4 --output site/architectuur/img/likec4"
 
+[tasks."backend:pitest"]
+description = "Mutation testing op backend/core (ADR 0011); HTML-rapport in backend/core/build/reports/pitest"
+dir = "backend"
+run = "./gradlew :core:pitest"
+
 [tasks."deps:check-backend"]
 description = "List available backend dependency updates (does not apply them)"
 dir = "backend"
