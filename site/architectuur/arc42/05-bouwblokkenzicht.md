@@ -392,7 +392,7 @@ Opvragen van bestanden, contacten, links, locaties, organisaties en prijzen uit 
 |---|---|
 | `backend/graphql` | library (GraphQL-config, scalars, exceptionhandler) |
 | `backend/portal-authentication` | infra (authenticatie-basis) |
-| `backend/zgw/common-ground-authentication` | infra (Keycloak/OIDC; bevat deprecated legacy token-exchange) |
+| `backend/zgw/common-ground-authentication` | infra (Keycloak/OIDC) |
 | `backend/zgw/common-ground-authentication-test` | test-library |
 | `backend/zgw/idtoken-authentication` | library (ZGW JWT naar API's) |
 | `backend/zgw/objectenapi` | library (client Objecten API) |

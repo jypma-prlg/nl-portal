@@ -255,7 +255,7 @@ capabilities:
 modules_zonder_ingang:
   - {module: backend/graphql, rol: library (GraphQL-config, scalars, exceptionhandler)}
   - {module: backend/portal-authentication, rol: infra (authenticatie-basis)}
-  - {module: backend/zgw/common-ground-authentication, rol: infra (Keycloak/OIDC; bevat deprecated legacy token-exchange)}
+  - {module: backend/zgw/common-ground-authentication, rol: infra (Keycloak/OIDC)}
   - {module: backend/zgw/common-ground-authentication-test, rol: test-library}
   - {module: backend/zgw/idtoken-authentication, rol: library (ZGW JWT naar API's)}
   - {module: backend/zgw/objectenapi, rol: library (client Objecten API)}
@@ -269,5 +269,4 @@ modules_zonder_ingang:
   - {module: backend/product, rol: verwijderd 2026-10-22; alleen lokale build/-map over (mag weg)}
 
 # Technische schuld: geen capability, wel opruimitems.
-technische_schuld:
-  - {id: keycloak-legacy-token-exchange, module: backend/zgw/common-ground-authentication, omschrijving: legacy Keycloak token-exchange gemarkeerd als deprecated}
+technische_schuld: []

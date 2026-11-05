@@ -12,7 +12,7 @@ NL-Portal is samengevoegd tot een monorepo met een enkele, gedeelde versie voor 
 * Er is een optie toegevoegd om het zoeken naar klantcontact(en) te beperken op basis van de referentie van het gekoppelde object. Hiermee kunnen implementaties het zoeken naar contacten beperken tot contacten die zijn gekoppeld aan een OpenZaak-zaak, een OpenProduct-product of beide.
 * Voor monitoring tools is er een ping endpoint beschikbaar gekomen `GET /api/public/ping`, response is platte tekst. Dit endpoint is standaard uit gezet. Via property kan deze aangezet worden via `nl-portal.support.ping-endpoint.enabled=true` of via .env `NLPORTAL_SUPPORT_PINGENDPOINT_ENABLED=false` 
 * Samenvoeging van Objecttype API en Objecten API in Open Object in docker compose en fixtures samengevoegd
-* **Ondersteuning voor Keycloak standard token exchange (v2).** De variant kies je met `nl-portal.authentication.keycloak.token-exchange-version` (`v1` of `v2`), of via de env-variabele `KEYCLOAK_TOKEN_EXCHANGE_VERSION`. `v1` blijft de standaardwaarde, dus bestaande omgevingen wijzigen niet van gedrag. Met `v2` zijn de `KC_FEATURES` vlaggen, de fine-grained token-exchange permission en de aparte token-exchange client niet langer nodig; twee clients volstaan. De docker-compose demo-omgeving draait nu op v2. Zie [Standard token exchange (v2)](../../../../hosting-en-configuratie/keycloak-token-exchange-v2.md). **Draaide je de demo-omgeving al eerder?** Keycloak importeert met strategie `IGNORE_EXISTING` en houdt dan het oude v1-realm vast, waardoor elke login mislukt; zie [Referentieconfiguratie](../../../../hosting-en-configuratie/keycloak.md#referentieconfiguratie) voor hoe je dat herstelt.
+* **Ondersteuning voor Keycloak standard token exchange (v2).** De variant kies je met `nl-portal.authentication.keycloak.token-exchange-version` (`v1` of `v2`), of via de env-variabele `KEYCLOAK_TOKEN_EXCHANGE_VERSION`. `v1` blijft de standaardwaarde, dus bestaande omgevingen wijzigen niet van gedrag. Met `v2` zijn de `KC_FEATURES` vlaggen, de fine-grained token-exchange permission en de aparte token-exchange client niet langer nodig; twee clients volstaan. De docker-compose demo-omgeving draait nu op v2. Zie [Standard token exchange (v2)](../../../../hosting-en-configuratie/keycloak-token-exchange.md). **Draaide je de demo-omgeving al eerder?** Keycloak importeert met strategie `IGNORE_EXISTING` en houdt dan het oude v1-realm vast, waardoor elke login mislukt; zie [Referentieconfiguratie](../../../../hosting-en-configuratie/keycloak.md#referentieconfiguratie) voor hoe je dat herstelt.
 
 ## Bugfixes
 
@@ -35,7 +35,7 @@ NL-Portal is samengevoegd tot een monorepo met een enkele, gedeelde versie voor 
 
 ## Deprecations
 
-* **Keycloak legacy token exchange (v1).** De legacy token exchange is verouderd. In de hele 4.x-lijn blijft `v1` de standaardwaarde, zodat bestaande omgevingen niets hoeven te wijzigen; draai je op `v1`, dan meldt de applicatie dat bij het opstarten met een waarschuwing. In **5.0** wordt `v2` de standaard — dat is een breaking change — en in een latere release verdwijnt `v1` helemaal. Migreren kan zonder downtime, zie [Migratie van v1 naar v2](../../../../hosting-en-configuratie/keycloak-token-exchange-v2.md#migratie-van-v1-naar-v2).
+* **Keycloak legacy token exchange (v1).** *Inmiddels verwijderd in dit project: alleen standard token exchange wordt nog ondersteund.* De legacy token exchange is verouderd. In de hele 4.x-lijn blijft `v1` de standaardwaarde, zodat bestaande omgevingen niets hoeven te wijzigen; draai je op `v1`, dan meldt de applicatie dat bij het opstarten met een waarschuwing. In **5.0** wordt `v2` de standaard — dat is een breaking change — en in een latere release verdwijnt `v1` helemaal. Migreren kan zonder downtime, zie [Standard token exchange](../../../../hosting-en-configuratie/keycloak-token-exchange.md).
 
 ## Removals
 
@@ -43,7 +43,7 @@ NL-Portal is samengevoegd tot een monorepo met een enkele, gedeelde versie voor 
 
 ## Migratie-instructies
 
-**Keycloak token exchange v1 → v2 (optioneel).** Niet verplicht voor 4.x: laat je alles staan, dan blijft je omgeving op `v1` werken. Wil je nu al over, dan beschrijft [Migratie van v1 naar v2](../../../../hosting-en-configuratie/keycloak-token-exchange-v2.md#migratie-van-v1-naar-v2) het pad zonder downtime, inclusief terugrolstap. Let op: zet `KEYCLOAK_TOKEN_EXCHANGE_VERSION=v2` en maak `KEYCLOAK_TOKEN_EXCHANGE_AUDIENCE` in dezelfde wijziging leeg — een audience die uit de v1-opstelling blijft staan laat elke exchange mislukken.
+**Keycloak token exchange v1 → v2 (optioneel).** Niet verplicht voor 4.x: laat je alles staan, dan blijft je omgeving op `v1` werken. Wil je nu al over, dan beschrijft [Standard token exchange](../../../../hosting-en-configuratie/keycloak-token-exchange.md) het pad zonder downtime, inclusief terugrolstap. Let op: zet `KEYCLOAK_TOKEN_EXCHANGE_VERSION=v2` en maak `KEYCLOAK_TOKEN_EXCHANGE_AUDIENCE` in dezelfde wijziging leeg — een audience die uit de v1-opstelling blijft staan laat elke exchange mislukken.
 
 **Frontend-features naar de backend.** Verplaats de voorheen via `window.*` gezette features naar `nl-portal.config.features.*` (of de env-vorm `NLPORTAL_CONFIG_FEATURES_*` met relaxed binding). Mapping oude `window.*` var → nieuwe backend-property:
 

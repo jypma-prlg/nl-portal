@@ -47,7 +47,6 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-por
 
 | Id | Module | Omschrijving |
 |---|---|---|
-| `keycloak-legacy-token-exchange` | `backend/zgw/common-ground-authentication` | legacy Keycloak token-exchange gemarkeerd als deprecated |
 
 ### Capabilities met status twijfel, kandidaat-verwijderen of deprecated
 

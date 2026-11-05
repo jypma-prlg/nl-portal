@@ -8,48 +8,35 @@ Deze documentatie beschrijft de **burger flow** (gebruiker met BSN, ingelogd via
 
 Als je een api call doet naar de backend wordt de token onderschept en wordt er een call naar Keycloak gedaan, waarmee een nieuwe token wordt opgehaald waar de bsn/kvk wél in zit. Deze wordt daarna in de rest van de applicatie gebruikt. De token van de browser bevat nooit een BSN of KVK.
 
-### Twee varianten
+NL Portal gebruikt de [standard token exchange](./keycloak-token-exchange.md). Die vereist Keycloak 26.2 of hoger, geen server features en twee clients. De legacy token exchange (v1) wordt niet meer ondersteund.
 
-Keycloak kent twee varianten van de token exchange. Welke je gebruikt stel je in met één property:
-
-| Variant | `token-exchange-version` | Wanneer |
-| ------- | ------------------------ | ------- |
-| [Standard token exchange (v2)](./keycloak-token-exchange-v2.md) | `v2` | **Aanbevolen.** Vereist Keycloak 26.2 of hoger. Geen server features nodig, twee clients. |
-| [Legacy token exchange (v1)](./keycloak-token-exchange-v1.md) | `v1` (standaard) | Verouderd. Voor bestaande omgevingen en voor Keycloak-versies ouder dan 26.2. Vereist twee verouderde server features en drie clients. |
-
-`v1` blijft in de hele 4.x-lijn de standaardwaarde, zodat bestaande omgevingen bij een upgrade niets hoeven te wijzigen. In **5.0** wordt `v2` de standaard en in een latere release verdwijnt `v1`. Draai je op `v1`, dan meldt de applicatie dat bij het opstarten met een waarschuwing.
-
-De [v2-pagina](./keycloak-token-exchange-v2.md#migratie-van-v1-naar-v2) bevat een migratiepad zonder downtime, inclusief terugrolstap.
-
-Zie de [officiële Keycloak documentatie](https://www.keycloak.org/securing-apps/token-exchange) voor de achterliggende verschillen tussen beide varianten.
+Zie de [officiële Keycloak documentatie](https://www.keycloak.org/securing-apps/token-exchange) voor achtergrond over de token exchange.
 
 ## Clients en backend configuratie
 
-Welke clients je nodig hebt verschilt per variant:
+Je hebt twee clients nodig:
 
-| Client (voorbeeldnaam) | Type | v1 | v2 | Doel |
-| ---------------------- | ---- | -- | -- | ---- |
-| `nl-portal` | public, standard flow | ✓ | ✓ | Login van de frontend (SPA). Draagt de `middel` mapper. |
-| `nl-portal-m2m` | confidential, service accounts, met secret | ✓ | ✓ | Voert de token exchange uit namens de backend ("m2m" = machine-to-machine). |
-| `nl-portal-token-exchange` | public, geen flows | ✓ | — | Doelclient (audience) van de token exchange. Alleen bij v1 nodig. |
+| Client (voorbeeldnaam) | Type | Doel |
+| ---------------------- | ---- | ---- |
+| `nl-portal` | public, standard flow | Login van de frontend (SPA). Draagt de `middel` mapper. |
+| `nl-portal-m2m` | confidential, service accounts, met secret | Voert de token exchange uit namens de backend ("m2m" = machine-to-machine). |
 
-De volledige inrichting per variant staat op de [v2-pagina](./keycloak-token-exchange-v2.md#clients) en de [v1-pagina](./keycloak-token-exchange-v1.md#clients).
+De volledige inrichting staat op de [token exchange pagina](./keycloak-token-exchange.md#clients).
 
-De koppeling met de backend verloopt in beide gevallen via dezelfde environment variabelen van de app image (zie ook de [Deployment guide](./deployment-guide.md)):
+De koppeling met de backend verloopt via de volgende environment variabelen van de app image (zie ook de [Deployment guide](./deployment-guide.md)):
 
 | Variabele | Betekenis |
 | --------- | --------- |
 | `JWKS_URI` | Wijst de backend naar het realm waarmee hij tokens valideert: `<keycloak-url>/realms/<realm>/protocol/openid-connect/certs`. Draait je Keycloak onder een pad (zoals de demo-omgeving, met `KC_HTTP_RELATIVE_PATH=/auth`), neem dat pad dan mee: `<keycloak-url>/auth/realms/<realm>/protocol/openid-connect/certs`. |
-| `KEYCLOAK_TOKEN_EXCHANGE_VERSION` | `v1` of `v2`. Standaard `v1`. |
 | `KEYCLOAK_CLIENT_ID` | Client id van de m2m (backend) client |
 | `KEYCLOAK_CLIENT_SECRET` | Secret van de m2m (backend) client |
-| `KEYCLOAK_TOKEN_EXCHANGE_AUDIENCE` | Client id van de token-exchange client. Alleen voor `v1`, waar de waarde verplicht is. Laat leeg bij `v2`. |
+| `KEYCLOAK_TOKEN_EXCHANGE_AUDIENCE` | Optioneel. Filter op de `aud` van de uitgewisselde token. Laat leeg, tenzij de m2m client deze audience mag uitgeven. |
 
 De redirect-URI van de `nl-portal` (frontend) client moet overeenkomen met de frontend-variabele `OIDC_REDIRECT_URI`. De SPA plaatst zijn OIDC-callback automatisch op dat pad, dus elk pad op je eigen origin werkt; registreer die redirect-URI op de client.
 
 ## Gebruikerstypen
 
-De backend bepaalt het type gebruiker op basis van claims in de **geëxchangede** token. Dit geldt voor beide varianten:
+De backend bepaalt het type gebruiker op basis van claims in de **geëxchangede** token.:
 
 1. Claim `aanvrager.bsn` aanwezig → de gebruiker is een **burger**.
 2. Claim `aanvrager.kvk` aanwezig → de gebruiker is een **bedrijf** (zie [Overige flows](#overige-flows)).
@@ -60,7 +47,7 @@ De backend bepaalt het type gebruiker op basis van claims in de **geëxchangede*
 Voor de burger flow betekent dit:
 
 * De gebruiker in het portal realm heeft een **user attribute** `bsn` (bijvoorbeeld `999993847`).
-* Er staat een protocol mapper (type *User Attribute*) die het user attribute `bsn` mapt naar de claim `aanvrager.bsn` in het access token. Op welke client die mapper hoort verschilt per variant: bij [v2](./keycloak-token-exchange-v2.md#stap-1-client-scope-met-de-aanvrager-mappers) op een client scope van de m2m client, bij [v1](./keycloak-token-exchange-v1.md#clients) op de token-exchange client.
+* Er staat een protocol mapper (type *User Attribute*) die het user attribute `bsn` mapt naar de claim `aanvrager.bsn` in het access token. Die mapper hoort op een [client scope van de m2m client](./keycloak-token-exchange.md#stap-1-client-scope-met-de-aanvrager-mappers).
 * Daarnaast heeft de gebruiker het user attribute `authenticationMethod` met waarde `digid`, dat via de `middel` claim de frontend features bepaalt (zie [De middel claim](#de-middel-claim)).
 
 Een burger heeft daarmee toegang tot onder andere de Mijn Gegevens pagina (BRP gegevens via Haal Centraal) en ziet zaken waarop hij of zij als initiator met dat BSN geregistreerd staat.
@@ -128,21 +115,18 @@ Twee aandachtspunten:
 
 **Voorwaarde: de tokens moeten de audience ook daadwerkelijk dragen.** Dezelfde decoder verwerkt zowel de token van de browser als de geëxchangede token. Draagt één van beide de audience niet, dan mislukt élk verzoek. Richt daarom eerst de audience mappers in, en zet deze property pas daarna aan.
 
-Welke waarde je invult verschilt per variant:
-
-* **[v2](./keycloak-token-exchange-v2.md):** de audience mappers uit [stap 2](./keycloak-token-exchange-v2.md#stap-2-audience-mappers) zetten `nl-portal-m2m` op beide tokens. Het bovenstaande voorbeeld is daarmee direct bruikbaar.
-* **[v1](./keycloak-token-exchange-v1.md):** de geëxchangede token wordt opgebouwd vanuit de doelclient en draagt daardoor een ándere audience dan de token van de browser. De waarde hierboven klopt dan niet. Controleer eerst de `aud` van beide tokens en voeg waar nodig audience mappers toe, voordat je dit aanzet.
+De [audience mappers](./keycloak-token-exchange.md#stap-2-audience-mappers) zetten `nl-portal-m2m` op beide tokens. Het bovenstaande voorbeeld is daarmee direct bruikbaar.
 
 ## Referentieconfiguratie
 
-De docker-compose demo-omgeving in de monorepo bevat een volledig werkend voorbeeld van alle bovenstaande configuratie, ingericht op **v2**. Gebruik deze als referentie bij het inrichten van een eigen Keycloak:
+De docker-compose demo-omgeving in de monorepo bevat een volledig werkend voorbeeld van alle bovenstaande configuratie, ingericht op de standard token exchange. Gebruik deze als referentie bij het inrichten van een eigen Keycloak:
 
-* `docker-compose/docker-compose.yaml` — de Keycloak service. Let op dat hier géén `KC_FEATURES` staat: dat is precies wat de v2-variant oplevert.
+* `docker-compose/docker-compose.yaml` — de Keycloak service. Let op dat hier géén `KC_FEATURES` staat: dat is precies wat de standard token exchange oplevert.
 * `docker-compose/imports/keycloak/nlportal-realm.json` — een volledig realm met de twee clients, de `aanvrager` client scope, de audience mappers, de `middel` mapper en testgebruikers (`burger` met BSN attribuut en `authenticationMethod` `digid`, `bedrijf` met KVK attribuut en `authenticationMethod` `eherkenning`).
 
 De bestandsnamen van de realm-imports eindigen op `-realm.json`. Dat is geen vormvoorkeur: Keycloak gebruikt die naamgeving om de importvolgorde te bepalen, en zonder die naamgeving start Keycloak 26 niet op.
 
-**Let op bij een bestaande omgeving:** Keycloak importeert met strategie `IGNORE_EXISTING`. Draaide je de stack al vóórdat het realm op v2 werd omgezet, dan blijft het oude realm in de database van de `nl-portal-keycloak-database` container staan en wordt de nieuwe versie **niet** geïmporteerd. De backend staat dan op v2 terwijl het realm nog op v1 staat, met als resultaat `Standard token exchange is not enabled for the requested client` bij elke login.
+**Let op bij een bestaande omgeving:** Keycloak importeert met strategie `IGNORE_EXISTING`. Draaide je de stack al vóórdat het realm op de standard token exchange werd omgezet, dan blijft het oude realm in de database van de `nl-portal-keycloak-database` container staan en wordt de nieuwe versie **niet** geïmporteerd. De backend verwacht dan standard token exchange terwijl het realm nog op de legacy variant staat, met als resultaat `Standard token exchange is not enabled for the requested client` bij elke login.
 
 Het oude realm verdwijnt pas als je het volume van de `nl-portal-keycloak-database` container weggooit. Het eenvoudigste commando daarvoor doet meteen iets ruimers:
 

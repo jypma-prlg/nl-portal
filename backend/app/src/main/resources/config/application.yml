@@ -57,7 +57,6 @@ logging:
 nl-portal:
     authentication:
         keycloak:
-            token-exchange-version: ${KEYCLOAK_TOKEN_EXCHANGE_VERSION:v1}
             resource: ${KEYCLOAK_CLIENT_ID}
             audience: ${KEYCLOAK_TOKEN_EXCHANGE_AUDIENCE:}
             credentials:
