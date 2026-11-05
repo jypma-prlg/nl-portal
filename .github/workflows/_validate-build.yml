@@ -31,6 +31,27 @@ jobs:
             -   name: Build with Gradle
                 working-directory: backend
                 run: ./gradlew build
+            # New modules or layer changes in ModuleLayers are architecture decisions; summarise them
+            # in plain language for the PR (#177). ci.yml posts the summary as a PR comment.
+            # Informational only: a failure here must not block the PR gate.
+            -   name: Summarise module layer changes
+                id: module-layers
+                if: ${{ github.event_name == 'pull_request' }}
+                continue-on-error: true
+                working-directory: backend
+                env:
+                    BASE_REF: ${{ github.base_ref }}
+                run: |
+                    git fetch --no-tags --depth=1 origin "${BASE_REF}"
+                    ./gradlew :architecture-test:moduleLayerChanges -PmoduleLayersBaseRef=FETCH_HEAD
+                    cat architecture-test/build/reports/module-layers/pr-summary.md >> "${GITHUB_STEP_SUMMARY}"
+            -   name: Upload module layer summary
+                if: ${{ steps.module-layers.outcome == 'success' }}
+                uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+                with:
+                    name: module-layers-summary
+                    path: backend/architecture-test/build/reports/module-layers/pr-summary.md
+                    if-no-files-found: error
 
     build-fe:
         if: ${{ inputs.runFrontend }}
