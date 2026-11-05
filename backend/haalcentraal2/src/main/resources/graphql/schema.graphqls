@@ -155,7 +155,6 @@ type BrpInOnderzoek {
     #deprecated(
     # reason: "This value is deprecated and should be removed."
     #)
-    indicatieGezagMinderjarige: Boolean
     leeftijd: Boolean
 }
 
@@ -281,7 +280,6 @@ type BrpPersoon {
     #deprecated(
     # reason: "This value is deprecated and should be removed."
     #)
-    indicatieGezagMinderjarige: BrpCodeOmschrijving
     kinderen: [BrpKind!]
     leeftijd: Int
     naam: BrpNaam

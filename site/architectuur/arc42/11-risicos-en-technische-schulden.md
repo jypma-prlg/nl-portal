@@ -47,8 +47,6 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-por
 
 | Id | Module | Omschrijving |
 |---|---|---|
-| `openklant-deprecated-domein` | `backend/zgw/openklant` | @Deprecated domeinklassen nog aanwezig |
-| `haalcentraal2-deprecated-domein` | `backend/haalcentraal2` | @Deprecated domeinklassen nog aanwezig |
 | `keycloak-legacy-token-exchange` | `backend/zgw/common-ground-authentication` | legacy Keycloak token-exchange gemarkeerd als deprecated |
 | `form-transitieve-afhankelijkheid` | `backend/form` | uitgecommentarieerd in app maar via zgw:taak op classpath |
 

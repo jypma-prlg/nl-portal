@@ -32,7 +32,6 @@ query {
         indicatieActief
         indicatieGeheimhouding
         interneNotitie
-        nummer
         partijIdentificatoren {
             uuid
             url
