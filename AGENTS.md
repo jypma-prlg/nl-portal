@@ -15,8 +15,8 @@ included — looks here.
 Read these before anything else; every other section is reference.
 
 1. **Skill first.** Match the task to the table under "Workflow" and call that skill before acting.
-2. **Branch first.** Run `git branch --show-current` before the first edit. On `main`, create a
-   branch; changes reach `main` only through a PR (see "Branches").
+2. **Eigen branch per taak.** Elke taak krijgt een eigen branch vanaf `main`, ook als je al op een
+   andere branch staat; changes reach `main` only through a PR (see "Branches").
 3. **Hooks pass.** Run `git commit` and `git push` directly and let the Husky hooks pass; fix the
    cause when one fails, never `--no-verify` (see "Git hooks and `pnpm`").
 4. **Mise for tasks.** Run scripts and repeatable tasks as `mise run <task>`; add a task when none
@@ -89,9 +89,12 @@ For a security- or dependency-relevant change, also run the applicable `mise run
 
 ### Branches: never commit on `main`
 
-Before the first edit or commit of any task, run `git branch --show-current`. If it prints `main`,
-create a branch first (`git switch -c <type>/<short-name>-<issue>`, e.g.
-`chore/remove-case-module-103`). Types: `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci` and
+Before the first edit or commit of any task, run `git branch --show-current` and `git status --short`.
+Cut a branch for the task from `main` (`git switch -c <type>/<short-name>-<issue>`, e.g.
+`chore/remove-case-module-103`). Staat de huidige branch voor een ander ticket, of bevat de werkboom
+wijzigingen die niet van jou zijn (bijvoorbeeld van een andere sessie), werk dan in een worktree:
+`git worktree add -b <branch> ../<map> main`. Stage alleen je eigen paden (nooit `git add <map>` op
+een vuile werkboom) en controleer `git diff --cached --stat` vóór het commit. Types: `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci` and
 `chore`; maintenance tasks (removals, cleanup, dependency and tooling upkeep) use `chore/`.
 Never commit to or push `main` directly, also not "just locally":
 changes reach `main` only through a PR. If a commit already landed on `main` by mistake and is not
@@ -105,7 +108,10 @@ de Husky-hooks onder `frontend/.husky` (pre-commit, pre-push) vinden `pnpm` zelf
 Faalt een hook toch met "pnpm: command not found" (andere machine of shell zonder die `PATH`),
 draai dan git via mise: `mise exec -- git commit ...` / `mise exec -- git push ...`, of zet de tool
 op de `PATH`: `PATH="$(mise where pnpm):$PATH" git commit ...`. Gebruik nooit `--no-verify`.
-Gradle heeft `JAVA_HOME="$(mise where java)"` nodig.
+Gradle heeft `JAVA_HOME="$(mise where java)"` nodig; draai het als `mise exec -- ./gradlew <taak>`.
+Python is niet geïnstalleerd; gebruik `mise exec -- node` voor scripts.
+
+Documentatie, commitberichten en ADR's schrijf je in het Nederlands (domeintaal); gespreksoutput mag Engels zijn.
 
 ## Repo-indeling
 
