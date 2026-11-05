@@ -58,8 +58,10 @@ lopen, niet als hardcoded string.
 ## 8.7 Copyright-headers
 
 Elk backend- (`.kt`/`.kts`) en frontend-bestand (`.ts`/`.tsx`/`.js`/`.jsx`) draagt een EUPL
-1.2-header, afgedwongen door Spotless (backend) resp. een ESLint-regel + Husky (frontend). Nieuwe
-bestanden moeten deze header krijgen — zie `CONTRIBUTING.md` voor de exacte tooling.
+1.2-header, afgedwongen door Spotless (backend) resp. een ESLint-regel + Husky (frontend). Bestanden
+uit NL Portal houden de Ritense-header; nieuwe bestanden krijgen de PinkRoccade-header
+([ADR 0015](../../development/adr/0015-copyright-headers-pink-edition.md)). Zie `CONTRIBUTING.md`
+voor de exacte tooling.
 
 ## 8.8 Feature flags
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-$YEAR Den Haag, Ritense, the Netherlands.
+ * Copyright 2026 PinkRoccade Local Government B.V.
  *
  * Licensed under EUPL, Version 1.2 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,3 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import typescriptParser from "@typescript-eslint/parser";
+import { copyrightHeaderConfig } from "./eslint-rules/copyright-header.mjs";
+
+// Lint-staged only (ADR 0015): brings the PinkRoccade end year of committed files up to date.
+// The regular eslint.config.mjs accepts any year, so CI does not fail on 1 January.
+export default [
+  {
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: { parser: typescriptParser },
+  },
+  ...copyrightHeaderConfig({ bumpYear: true }),
+];

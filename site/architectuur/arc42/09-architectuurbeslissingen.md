@@ -51,6 +51,10 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   Feature flags via OpenFeature met een flagd-bestand als standaardprovider; de productie-provider is
   nog niet gekozen (#147).
 
+- [`0015-copyright-headers-pink-edition.md`](../../development/adr/0015-copyright-headers-pink-edition.md) — **geaccepteerd**.
+  Bestanden uit NL Portal houden de Ritense-header (jaartal bevroren); nieuwe bestanden krijgen
+  `Copyright <jaar> PinkRoccade Local Government B.V.`, alles onder EUPL 1.2.
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:

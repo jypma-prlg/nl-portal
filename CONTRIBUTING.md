@@ -108,17 +108,31 @@ See `backend/README.md`, `frontend/README.md` and `docker-compose/README.md` for
 ## Copyright headers
 
 Every backend `.kt` / `.kts` and frontend `.ts` / `.tsx` / `.js` / `.jsx` file
-carries the EUPL 1.2 header. Enforcement:
+carries the EUPL 1.2 header, in one of two forms
+([ADR 0015](site/development/adr/0015-copyright-headers-pink-edition.md)):
+
+- A file that already has `Copyright 2015-<year> Den Haag, Ritense, the Netherlands.`
+  keeps it, also when you change it. Its year is frozen.
+- Every other file, so every new file, gets
+  `Copyright <year> PinkRoccade Local Government B.V.`. The end year moves to the
+  current year when the file is changed (`2026` becomes `2026-2027`).
+
+Both templates live in `backend/licenses/`. Never remove a Ritense header by hand:
+the tooling would then put the PinkRoccade header on that file. Enforcement:
 
 - Backend: `./gradlew spotlessCheck` (CI-blocking, part of `check` / `build`).
-  Apply locally with `./gradlew spotlessApply`.
+  Apply locally with `./gradlew spotlessApply`; that also brings the PinkRoccade
+  year up to date in files that differ from `origin/main` (another base:
+  `-PcopyrightRatchetFrom=<ref>`).
 - Frontend: `cd frontend && pnpm lint` (CI-blocking in `_stage-fe.yml`, husky
   pre-commit via lint-staged, husky pre-push via `.husky/pre-push`). Apply /
-  auto-repair locally with `pnpm lint:fix`.
+  auto-repair locally with `pnpm lint:fix`. Lint-staged brings the PinkRoccade
+  year of committed files up to date via `eslint.copyright-year.config.mjs`.
 
-The frontend quality gate is normally Prettier, not ESLint. The `notice/notice`
-rule is an intentional exception because ESLint is the only tool with a fixable,
-dynamic-year header rule that plugs into the existing husky / lint-staged wiring.
+The frontend quality gate is normally Prettier, not ESLint. The `copyright/header`
+rule (`frontend/eslint-rules/copyright-header.mjs`) is an intentional exception
+because ESLint is the only tool with a fixable header rule that plugs into the
+existing husky / lint-staged wiring.
 `eslint-config-prettier` is included in the flat config so ESLint's stylistic
 rules cannot collide with Prettier.
 
