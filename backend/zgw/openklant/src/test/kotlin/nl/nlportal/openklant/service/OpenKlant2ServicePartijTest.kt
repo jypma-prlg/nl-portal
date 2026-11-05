@@ -19,6 +19,10 @@ import java.util.UUID
 import kotlinx.coroutines.test.runTest
 import nl.nlportal.commonground.authentication.JwtBuilder
 import nl.nlportal.openklant.TestHelper
+import nl.nlportal.openklant.TestHelper.mockJsonResponse
+import nl.nlportal.openklant.TestHelper.singlePartij
+import nl.nlportal.openklant.TestHelper.singlePartijPage
+import nl.nlportal.openklant.TestHelper.url
 import nl.nlportal.openklant.autoconfigure.OpenKlantModuleConfiguration
 import nl.nlportal.openklant.autoconfigure.OpenKlantModuleConfiguration.OpenKlantConfigurationProperties
 import nl.nlportal.openklant.client.OpenKlant2KlantinteractiesClient
@@ -32,18 +36,17 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
 
 /**
- * Covers the branching logic in [OpenKlant2Service] that [OpenKlant2ServiceTest] doesn't:
- * error handling on the OpenKlant2 client, the Partij/PartijIdentificator rollback-on-failure
- * flow, and the Burger/Bedrijf/unsupported-authentication branches used across the service.
+ * Behaviour of [OpenKlant2Service] around the Partij of the authenticated user: finding it (by BSN, or by
+ * KVK scoped to a vestigingsnummer), creating it together with its PartijIdentificator (rolling the Partij
+ * back when the identificator fails), and what happens when OpenKlant2 or the authentication type misbehaves.
  */
-class OpenKlant2ServiceCoverageTest {
+class OpenKlant2ServicePartijTest {
     private lateinit var openklantModuleConfiguration: OpenKlantModuleConfiguration
     private lateinit var mockServer: MockWebServer
     private lateinit var openKlant2Client: OpenKlant2KlantinteractiesClient
@@ -98,7 +101,7 @@ class OpenKlant2ServiceCoverageTest {
 
             assertNotNull(partij)
             val request = mockServer.takeRequest()
-            assertTrue(request.path!!.contains("partijIdentificator__objectId=$VESTIGINGSNUMMER"))
+            assertEquals(VESTIGINGSNUMMER, request.url.queryParameter("partijIdentificator__objectId"))
         }
 
     @Test
@@ -131,7 +134,7 @@ class OpenKlant2ServiceCoverageTest {
             mockServer.takeRequest() // failed create identificator
             val deleteRequest = mockServer.takeRequest()
             assertEquals("DELETE", deleteRequest.method)
-            assertTrue(deleteRequest.path!!.endsWith("/partijen/$PARTIJ_ID"))
+            assertEquals(listOf("partijen", PARTIJ_ID), deleteRequest.url.pathSegments.takeLast(2))
         }
 
     @Test
@@ -162,27 +165,6 @@ class OpenKlant2ServiceCoverageTest {
             assertNotNull(result)
         }
 
-    @Test
-    fun `findDigitaleAdressen returns an empty list when the client call fails`() =
-        runTest {
-            mockServer.enqueue(MockResponse().setResponseCode(500))
-
-            val result =
-                service.findDigitaleAdressen(
-                    JwtBuilder().aanvragerBsn(BSN).buildBurgerAuthentication(),
-                )
-
-            assertEquals(emptyList<Any>(), result)
-        }
-
-    @Test
-    fun `findDigitalAdres returns null when the Digitale Adres can not be found`() =
-        runTest {
-            mockServer.enqueue(MockResponse().setResponseCode(404))
-
-            assertNull(service.findDigitalAdres(UUID.fromString(DIGITALE_ADRES_ID)))
-        }
-
     private fun somePartij() =
         OpenKlant2Partij(
             indicatieActief = true,
@@ -200,33 +182,6 @@ class OpenKlant2ServiceCoverageTest {
                     codeRegister = "brp",
                 ),
         )
-
-    private fun mockJsonResponse(body: String) =
-        MockResponse()
-            .addHeader("Content-Type", "application/json; charset=utf-8")
-            .setResponseCode(200)
-            .setBody(body)
-
-    private fun singlePartij(uuid: String) =
-        """
-        {
-            "uuid": "$uuid",
-            "url": "http://localhost:8007/klantinteracties/api/v1/partijen/$uuid",
-            "soortPartij": "persoon",
-            "indicatieActief": true,
-            "partijIdentificatie": { "contactnaam": {} }
-        }
-        """.trimIndent()
-
-    private fun singlePartijPage(uuid: String) =
-        """
-        {
-            "count": 1,
-            "next": null,
-            "previous": null,
-            "results": [${singlePartij(uuid)}]
-        }
-        """.trimIndent()
 
     private fun somePartijIdentificatorJson() =
         """
@@ -246,7 +201,6 @@ class OpenKlant2ServiceCoverageTest {
     companion object {
         private const val PARTIJ_ID = "9f8e8009-2d1c-40ae-931e-c08861ba7207"
         private const val PARTIJ_IDENTIFICATOR_ID = "dd328a2e-7b8e-4809-be28-f9f894c11c34"
-        private const val DIGITALE_ADRES_ID = "1300d2ab-13cb-4c12-9818-3b76e2a5d993"
         private const val BSN = "296648875"
         private const val KVK = "69599084"
         private const val VESTIGINGSNUMMER = "000037178899"

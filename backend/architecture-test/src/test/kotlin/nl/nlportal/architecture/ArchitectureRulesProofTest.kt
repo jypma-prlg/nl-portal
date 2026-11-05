@@ -19,9 +19,15 @@ import com.tngtech.archunit.core.importer.ClassFileImporter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.nio.file.Files
+import java.nio.file.Path
 
 /** Proves every rule actually fails on a deliberate violation (fixtures live in test code only). */
 class ArchitectureRulesProofTest {
+    @TempDir
+    lateinit var tempDir: Path
+
     private val base = "nl.nlportal.architecture.fixtures"
 
     private fun classesOf(pkg: String) = ClassFileImporter().importPackages("$base.$pkg")
@@ -104,21 +110,108 @@ class ArchitectureRulesProofTest {
         rules.cycleFree().check(classesOf("zgwlike"))
     }
 
+    private val coreMapping = ModuleMapping(":core", "nl.nlportal.core", Layer.CORE, "de basis van het portaal")
+
+    private fun module(
+        path: String,
+        vararg sourcePackages: String,
+    ): BuildModule {
+        val dir = Files.createTempDirectory(tempDir, "module")
+        sourcePackages.forEach { pkg ->
+            val packageDir = dir.resolve("src/main/kotlin/${pkg.replace('.', '/')}").also { Files.createDirectories(it) }
+            Files.writeString(packageDir.resolve("X.kt"), "package $pkg")
+        }
+        return BuildModule(path, dir)
+    }
+
+    private fun coverageFailure(
+        modules: List<BuildModule>,
+        mappings: List<ModuleMapping>,
+        excluded: Map<String, String> = emptyMap(),
+    ) = assertThatThrownBy { ModuleCoverage.assertComplete(modules, mappings, excluded) }.isInstanceOf(AssertionError::class.java)
+
     @Test
-    fun `a gradle module without a mapping is reported`() {
-        val mappings = listOf(ModuleMapping(":core", "nl.nlportal.core", Layer.CORE))
-        assertThat(ArchitectureRules.unmappedModules(listOf(":core", ":brand-new"), mappings))
-            .containsExactly(":brand-new")
+    fun `module coverage passes for a complete mapping`() {
+        ModuleCoverage.assertComplete(
+            listOf(module(":core", "nl.nlportal.core"), module(":agg")),
+            listOf(coreMapping),
+            mapOf(":agg" to "aggregator zonder code"),
+        )
     }
 
     @Test
-    fun `a mapped module that left the build is reported`() {
-        val mappings =
-            listOf(
-                ModuleMapping(":core", "nl.nlportal.core", Layer.CORE),
-                ModuleMapping(":gone", "x.gone", Layer.FEATURE),
+    fun `module coverage fails on a gradle module without a mapping and points to the intended fix`() {
+        coverageFailure(listOf(module(":core", "nl.nlportal.core"), module(":brand-new", "nl.nlportal.brandnew")), listOf(coreMapping))
+            .hasMessageContaining(":brand-new")
+            .hasMessageContaining("Kies bewust een laag")
+            .hasMessageContaining("niet toe aan ModuleLayers.excluded")
+    }
+
+    @Test
+    fun `module coverage fails on a mapped module that left the build`() {
+        coverageFailure(
+            listOf(module(":core", "nl.nlportal.core")),
+            listOf(coreMapping, ModuleMapping(":gone", "x.gone", Layer.FEATURE, "weg")),
+        ).hasMessageContaining(":gone").hasMessageContaining("bestaat niet meer")
+    }
+
+    @Test
+    fun `module coverage fails on a stale exclusion`() {
+        coverageFailure(listOf(module(":core", "nl.nlportal.core")), listOf(coreMapping), mapOf(":gone" to "reden"))
+            .hasMessageContaining(":gone")
+            .hasMessageContaining("bestaat niet meer")
+    }
+
+    @Test
+    fun `module coverage fails when an excluded module ships production classes`() {
+        coverageFailure(
+            listOf(module(":core", "nl.nlportal.core"), module(":sneaky", "nl.nlportal.sneaky")),
+            listOf(coreMapping),
+            mapOf(":sneaky" to "reden"),
+        ).hasMessageContaining(":sneaky").hasMessageContaining("productieklassen")
+    }
+
+    @Test
+    fun `module coverage fails on a module that is both mapped and excluded`() {
+        coverageFailure(listOf(module(":core", "nl.nlportal.core")), listOf(coreMapping), mapOf(":core" to "reden"))
+            .hasMessageContaining("zowel")
+    }
+
+    @Test
+    fun `module coverage fails when an exclusion has no reason`() {
+        coverageFailure(listOf(module(":core", "nl.nlportal.core"), module(":agg")), listOf(coreMapping), mapOf(":agg" to " "))
+            .hasMessageContaining("geen reden")
+    }
+
+    @Test
+    fun `module coverage fails when a mapping has no description`() {
+        coverageFailure(listOf(module(":core", "nl.nlportal.core")), listOf(ModuleMapping(":core", "nl.nlportal.core", Layer.CORE)))
+            .hasMessageContaining("geen omschrijving")
+    }
+
+    @Test
+    fun `module coverage fails when a mapped module contributes no classes to its package`() {
+        coverageFailure(listOf(module(":core", "nl.nlportal.other")), listOf(coreMapping))
+            .hasMessageContaining(":core")
+            .hasMessageContaining("geen productieklassen")
+    }
+
+    @Test
+    fun `a layer rule fails instead of passing vacuously when its layer has no classes`() {
+        val rules = rules(ModuleMapping(":feature", "$base.corevio.feature", Layer.FEATURE))
+        assertThatThrownBy { rules.coreDoesNotDependOnFeature().check(classesOf("corevio")) }
+            .isInstanceOf(AssertionError::class.java)
+    }
+
+    @Test
+    fun `a layer rule failure names the intended fix`() {
+        val rules =
+            rules(
+                ModuleMapping(":core", "$base.corevio.core", Layer.CORE),
+                ModuleMapping(":feature", "$base.corevio.feature", Layer.FEATURE),
             )
-        assertThat(ArchitectureRules.staleModules(listOf(":core"), mappings)).containsExactly(":gone")
+        assertThatThrownBy { rules.coreDoesNotDependOnFeature().check(classesOf("corevio")) }
+            .hasMessageContaining("pas niet de mapping")
     }
 
     @Test

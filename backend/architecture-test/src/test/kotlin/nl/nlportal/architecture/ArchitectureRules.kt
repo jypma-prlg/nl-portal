@@ -49,12 +49,23 @@ class ArchitectureRules(
             .that(inLayer(from))
             .should()
             .dependOnClassesThat(inLayer(to))
+            .allowEmptyShould(false)
+            .because(
+                "laag ${from.name} (${from.label}) mag niet afhangen van laag ${to.name} (${to.label}). " +
+                    "Verplaats de gedeelde code naar een laag die beide mogen gebruiken, of draai de afhankelijkheid om; " +
+                    "pas niet de mapping of het filter aan om de fout te laten verdwijnen",
+            )
 
     fun nothingDependsOnApp(): ArchRule =
         noClasses()
             .that(notInLayer(Layer.APP))
             .should()
             .dependOnClassesThat(inLayer(Layer.APP))
+            .allowEmptyShould(false)
+            .because(
+                "alleen app/app-dev stelt de modules samen; laat gedeelde code niet van app afhangen " +
+                    "maar verplaats die naar een lagere laag",
+            )
 
     /** Slices per Gradle module (not per package), so modules sharing a package stay distinct. */
     fun cycleFree(): ArchRule {
@@ -71,7 +82,15 @@ class ArchitectureRules(
 
                 override fun getDescription() = "gradle modules"
             }
-        return slices().assignedFrom(assignment).should().beFreeOfCycles()
+        return slices()
+            .assignedFrom(assignment)
+            .should()
+            .beFreeOfCycles()
+            .allowEmptyShould(false)
+            .because(
+                "modules mogen elkaar niet wederzijds nodig hebben; breek de cyclus door gedeelde code " +
+                    "naar een eigen module of een lagere laag te verplaatsen",
+            )
     }
 
     /** Production classes under nl.nlportal that no mapping claims; they would escape every rule. */
@@ -80,18 +99,4 @@ class ArchitectureRules(
             .filter { mappingOf(it) == null }
             .map { it.packageName }
             .toSortedSet()
-
-    companion object {
-        /** Gradle modules missing from the mapping. */
-        fun unmappedModules(
-            buildModules: Collection<String>,
-            mappings: List<ModuleMapping>,
-        ): Set<String> = buildModules.toSet() - mappings.flatMap { it.modules }.toSet()
-
-        /** Mapped modules that no longer exist in the build. */
-        fun staleModules(
-            buildModules: Collection<String>,
-            mappings: List<ModuleMapping>,
-        ): Set<String> = mappings.flatMap { it.modules }.toSet() - buildModules.toSet()
-    }
 }

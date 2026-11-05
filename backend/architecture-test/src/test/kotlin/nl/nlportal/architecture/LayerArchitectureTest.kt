@@ -19,6 +19,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
 
 /**
  * Enforces the layering described in site/architectuur/arc42: core -> shared infra (graphql,
@@ -36,24 +37,22 @@ class LayerArchitectureTest {
     private val buildModules =
         System
             .getProperty("architecture.modules")
-            .split(",")
+            .split("|")
             .filter { it.isNotBlank() }
+            .map { entry -> BuildModule(entry.substringBefore("="), Path.of(entry.substringAfter("="))) }
 
     @Test
-    fun `every gradle module is assigned to a layer`() {
-        assertThat(ArchitectureRules.unmappedModules(buildModules, ModuleLayers.production))
-            .describedAs("Add these modules to ModuleLayers (architecture-test)")
-            .isEmpty()
-        assertThat(ArchitectureRules.staleModules(buildModules, ModuleLayers.production))
-            .describedAs("These ModuleLayers entries no longer exist in the build")
-            .isEmpty()
+    fun `every gradle module is assigned to a layer or deliberately excluded`() {
+        ModuleCoverage.assertComplete(buildModules, ModuleLayers.production, ModuleLayers.excluded)
     }
 
     @Test
     fun `every production package belongs to a mapped module`() {
         assertThat(rules.unmappedPackages(classes))
-            .describedAs("Packages not covered by ModuleLayers")
-            .isEmpty()
+            .describedAs(
+                "Packages not covered by ModuleLayers: map the owning module to a deliberately chosen layer " +
+                    "instead of widening an existing prefix or filtering the scan",
+            ).isEmpty()
     }
 
     @Test

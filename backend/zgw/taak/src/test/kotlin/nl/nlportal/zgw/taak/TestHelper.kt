@@ -16,8 +16,14 @@
 package nl.nlportal.zgw.taak
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import okhttp3.HttpUrl
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.RecordedRequest
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.assertThrows
+import org.springframework.http.HttpStatus
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.server.ResponseStatusException
 import java.util.function.Consumer
 
 object TestHelper {
@@ -43,4 +49,34 @@ object TestHelper {
             .doesNotExist()
             .jsonPath(EXTENSIONS_JSON_PATH)
             .doesNotExist()
+
+    fun mockJsonResponse(body: String): MockResponse =
+        MockResponse()
+            .addHeader("Content-Type", "application/json; charset=utf-8")
+            .setResponseCode(200)
+            .setBody(body)
+
+    fun resultPage(vararg results: String): String =
+        """
+        {
+            "count": ${results.size},
+            "next": null,
+            "previous": null,
+            "results": [${results.joinToString(",")}]
+        }
+        """.trimIndent()
+
+    /** The URL of a recorded request; fails with a readable message instead of a `!!` when the server did not record one. */
+    val RecordedRequest.url: HttpUrl
+        get() = checkNotNull(requestUrl) { "MockWebServer recorded no request URL for $requestLine" }
+
+    /** Asserts that [block] fails with a [ResponseStatusException] carrying [expected], and returns it for further checks. */
+    inline fun assertStatus(
+        expected: HttpStatus,
+        block: () -> Unit,
+    ): ResponseStatusException {
+        val exception = assertThrows<ResponseStatusException> { block() }
+        assertEquals(expected, exception.statusCode)
+        return exception
+    }
 }
