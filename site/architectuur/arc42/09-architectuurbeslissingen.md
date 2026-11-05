@@ -39,6 +39,10 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   Mutation testing met pitest op `backend/core`: ratchet op de gemeten baseline voor het totaal,
   80% voor nieuwe en gewijzigde klassen, in CI op PR's (gewijzigde klassen) en nachtelijk.
 
+- [`0012-breaking-changes-tot-eerste-productie-release.md`](../../development/adr/0012-breaking-changes-tot-eerste-productie-release.md) — **geaccepteerd**.
+  Tot de eerste productie-release (1.0.0) mogen breaking changes zonder deprecation-periode; alle
+  0.x-versies zijn experimenteel. De versie is teruggezet van 4.1.0 (upstream) naar 0.1.0.
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:
