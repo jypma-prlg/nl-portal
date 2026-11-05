@@ -27,8 +27,6 @@ data class HadKlantcontact(
     val inhoud: String,
     val kanaal: String,
     val leiddeTotInterneTaken: List<OpenKlant2ForeignKey>,
-    @Deprecated("use referentienummer")
-    val nummer: String? = null,
     val referentienummer: String? = null,
     val omvatteBijlagen: List<OpenKlant2ForeignKey>,
     val onderwerp: String,
@@ -59,8 +57,6 @@ data class OpenKlant2Klantcontact(
     val inhoud: String,
     val kanaal: String,
     val leiddeTotInterneTaken: List<OpenKlant2ForeignKey>,
-    @Deprecated("use referentienummer")
-    val nummer: String? = null,
     val referentienummer: String? = null,
     val omvatteBijlagen: List<OpenKlant2ForeignKey>,
     val onderwerp: String,

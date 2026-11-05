@@ -43,9 +43,6 @@ data class OpenKlant2Partij(
     @JsonInclude(JsonInclude.Include.NON_NULL)
     val interneNotitie: String? = null,
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Deprecated("do not use it")
-    val nummer: String? = null,
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     val partijIdentificatoren: List<OpenKlant2PartijIdentificator>? = null,
     val rekeningnummers: List<OpenKlant2ForeignKey>? = null,
     val soortPartij: SoortPartij,

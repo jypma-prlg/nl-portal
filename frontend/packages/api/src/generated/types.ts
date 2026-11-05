@@ -379,7 +379,6 @@ export type BrpInOnderzoek = {
    *  reason: "This value is deprecated and should be removed."
    * )
    */
-  indicatieGezagMinderjarige?: Maybe<Scalars['Boolean']['output']>;
   leeftijd?: Maybe<Scalars['Boolean']['output']>;
 };
 
@@ -522,7 +521,6 @@ export type BrpPersoon = {
    *  reason: "This value is deprecated and should be removed."
    * )
    */
-  indicatieGezagMinderjarige?: Maybe<BrpCodeOmschrijving>;
   kinderen?: Maybe<Array<BrpKind>>;
   leeftijd?: Maybe<Scalars['Int']['output']>;
   naam?: Maybe<BrpNaam>;
@@ -776,7 +774,6 @@ export type HadKlantcontact = {
   inhoud: Scalars['String']['output'];
   kanaal: Scalars['String']['output'];
   leiddeTotInterneTaken: Array<OpenKlant2ForeignKey>;
-  nummer?: Maybe<Scalars['String']['output']>;
   omvatteBijlagen: Array<OpenKlant2ForeignKey>;
   onderwerp: Scalars['String']['output'];
   plaatsgevondenOp: Scalars['String']['output'];
@@ -992,7 +989,6 @@ export type OpenKlant2Klantcontact = {
   kanaal: Scalars['String']['output'];
   leiddeTotInterneTaken: Array<OpenKlant2ForeignKey>;
   metadata?: Maybe<Scalars['JSON']['output']>;
-  nummer?: Maybe<Scalars['String']['output']>;
   omvatteBijlagen: Array<OpenKlant2ForeignKey>;
   onderwerp: Scalars['String']['output'];
   plaatsgevondenOp: Scalars['String']['output'];
@@ -1409,7 +1405,6 @@ export type OpenKlant2Partij = {
   indicatieActief: Scalars['Boolean']['output'];
   indicatieGeheimhouding?: Maybe<Scalars['Boolean']['output']>;
   interneNotitie?: Maybe<Scalars['String']['output']>;
-  nummer?: Maybe<Scalars['String']['output']>;
   partijIdentificatie: PartijIdentificatie;
   partijIdentificatoren?: Maybe<Array<OpenKlant2PartijIdentificator>>;
   rekeningnummers?: Maybe<Array<OpenKlant2ForeignKey>>;
