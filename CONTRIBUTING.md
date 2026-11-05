@@ -54,6 +54,8 @@ Contributor branches are cut from `main`:
 - **`feature/*`** - new functionality (optionally split into short-lived `story/*` branches that
   merge back into the feature branch).
 - **`bugfix/*`** - bug fixes targeting `main`.
+- **`chore/*`** - maintenance tasks targeting `main`: removals, cleanup, dependency and tooling upkeep
+  (e.g. `chore/remove-case-module-103`). This is the form `AGENTS.md` prescribes for AI-assisted work.
 - **`hotfix/*`** - urgent patches for a `release/<major>.x` line that cannot wait for the next
   version. A hotfix is authored on the maintenance line and then propagated as described in
   [Fix propagation](#fix-propagation).

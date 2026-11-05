@@ -43,6 +43,10 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   Tot de eerste productie-release (1.0.0) mogen breaking changes zonder deprecation-periode; alle
   0.x-versies zijn experimenteel. De versie is teruggezet van 4.1.0 (upstream) naar 0.1.0.
 
+- [`0013-stateless-backend-zonder-database.md`](../../development/adr/0013-stateless-backend-zonder-database.md) — **geaccepteerd**.
+  De backend heeft geen eigen database meer (geen JPA, Liquibase of Postgres); module `data` is
+  verwijderd. State blijft in de bronsystemen.
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:

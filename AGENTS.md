@@ -91,7 +91,9 @@ For a security- or dependency-relevant change, also run the applicable `mise run
 
 Before the first edit or commit of any task, run `git branch --show-current`. If it prints `main`,
 create a branch first (`git switch -c <type>/<short-name>-<issue>`, e.g.
-`chore/remove-case-module-103`). Never commit to or push `main` directly, also not "just locally":
+`chore/remove-case-module-103`). Types: `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci` and
+`chore`; maintenance tasks (removals, cleanup, dependency and tooling upkeep) use `chore/`.
+Never commit to or push `main` directly, also not "just locally":
 changes reach `main` only through a PR. If a commit already landed on `main` by mistake and is not
 pushed, move it: `git branch <new-branch> && git reset --hard origin/main && git switch <new-branch>`.
 
