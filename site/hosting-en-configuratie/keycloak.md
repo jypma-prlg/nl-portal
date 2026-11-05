@@ -36,7 +36,7 @@ De redirect-URI van de `nl-portal` (frontend) client moet overeenkomen met de fr
 
 ## Gebruikerstypen
 
-De backend bepaalt het type gebruiker op basis van claims in de **geëxchangede** token.:
+De backend bepaalt het type gebruiker op basis van claims in de **geëxchangede** token:
 
 1. Claim `aanvrager.bsn` aanwezig → de gebruiker is een **burger**.
 2. Claim `aanvrager.kvk` aanwezig → de gebruiker is een **bedrijf** (zie [Overige flows](#overige-flows)).

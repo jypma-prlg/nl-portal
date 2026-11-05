@@ -2,6 +2,8 @@
 
 Geraadpleegd op: 2026-11-05. Onderzoek voor #131, gebruikt door #132.
 
+> **Historisch:** dit onderzoek beschrijft de toestand vóór #132. V1 en de `token-exchange-version`-schakelaar bestaan niet meer; de toets na #132 staat in [asvs-5-l3-toetsing-token-exchange.md](./asvs-5-l3-toetsing-token-exchange.md).
+
 > **Kader:** er bestaat geen ASVS versie 6. De maintainer bedoelde **hoofdstuk V6 (Authentication)** van **ASVS 5.0.0 level 3** (besloten 2026-11-05). Dit document behandelt V6 in sectie 10 en de aanpalende hoofdstukken V8, V9 en V10 in de rest. Verwijs in code, PR's en documentatie naar `v5.0.0-<hoofdstuk>.<sectie>.<eis>`.
 
 ## Samenvatting

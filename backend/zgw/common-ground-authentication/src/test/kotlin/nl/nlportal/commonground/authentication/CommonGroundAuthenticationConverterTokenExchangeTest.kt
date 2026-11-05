@@ -87,7 +87,7 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
 
     @Test
     fun `an error response from keycloak fails without exposing any keycloak detail`() {
-        val converter = converter(audience = "stale-v1-audience")
+        val converter = converter(audience = "stale-audience")
         mockServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
@@ -107,7 +107,7 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
         listOf(
             "invalid_request",
             "Requested audience not available",
-            "stale-v1-audience",
+            "stale-audience",
             mockServer.hostName,
             mockServer.port.toString(),
             "400",

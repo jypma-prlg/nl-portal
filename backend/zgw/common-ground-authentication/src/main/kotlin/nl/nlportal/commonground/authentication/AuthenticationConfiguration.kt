@@ -46,8 +46,7 @@ class AuthenticationConfiguration {
         if (keycloakConfig.audience.isNotBlank()) {
             logger.info {
                 "Keycloak token exchange is configured with audience '${keycloakConfig.audience}'. " +
-                    "Ensure the m2m client can issue this audience; a value carried over from the legacy " +
-                    "token exchange will be rejected."
+                    "Ensure the m2m client can issue this audience; otherwise every exchange fails."
             }
         }
 
