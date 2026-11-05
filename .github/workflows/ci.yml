@@ -63,6 +63,19 @@ jobs:
             -   name: Run scripts tests
                 run: node --test "scripts/**/*.test.mjs"
 
+    java-version-consistent:
+        needs: changes
+        if: ${{ needs.changes.outputs.backend == 'true' || needs.changes.outputs.workflows == 'true' || needs.changes.outputs.scripts == 'true' || needs.changes.outputs.docs == 'true' }}
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            -   name: Set up Node.js
+                uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+                with:
+                    node-version: "24"
+            -   name: Check that the Java version is consistent
+                run: node scripts/check-java-version.mjs
+
     capabilities-docs-fresh:
         needs: changes
         if: ${{ needs.changes.outputs.docs == 'true' || needs.changes.outputs.scripts == 'true' }}
@@ -88,7 +101,7 @@ jobs:
                 run: mise run docs:build
 
     ci-required:
-        needs: [changes, validate, test-scripts, capabilities-docs-fresh, docs-site]
+        needs: [changes, validate, test-scripts, java-version-consistent, capabilities-docs-fresh, docs-site]
         if: always()
         runs-on: ubuntu-latest
         steps:
@@ -96,17 +109,22 @@ jobs:
                 env:
                     VALIDATE_RESULT: ${{ needs.validate.result }}
                     SCRIPTS_RESULT: ${{ needs.test-scripts.result }}
+                    JAVA_VERSION_RESULT: ${{ needs.java-version-consistent.result }}
                     CAPABILITIES_RESULT: ${{ needs.capabilities-docs-fresh.result }}
                     DOCS_SITE_RESULT: ${{ needs.docs-site.result }}
                 run: |
                     echo "::notice::validate result = ${VALIDATE_RESULT}"
                     echo "::notice::test-scripts result = ${SCRIPTS_RESULT}"
+                    echo "::notice::java-version-consistent result = ${JAVA_VERSION_RESULT}"
                     echo "::notice::capabilities-docs-fresh result = ${CAPABILITIES_RESULT}"
                     echo "::notice::docs-site result = ${DOCS_SITE_RESULT}"
                     if [ "${VALIDATE_RESULT}" = "failure" ] || [ "${VALIDATE_RESULT}" = "cancelled" ]; then
                       exit 1
                     fi
                     if [ "${SCRIPTS_RESULT}" = "failure" ] || [ "${SCRIPTS_RESULT}" = "cancelled" ]; then
+                      exit 1
+                    fi
+                    if [ "${JAVA_VERSION_RESULT}" = "failure" ] || [ "${JAVA_VERSION_RESULT}" = "cancelled" ]; then
                       exit 1
                     fi
                     if [ "${CAPABILITIES_RESULT}" = "failure" ] || [ "${CAPABILITIES_RESULT}" = "cancelled" ]; then
