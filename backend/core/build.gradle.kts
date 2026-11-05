@@ -47,6 +47,10 @@ dependencies {
     api(Dependencies.commonsIo)
     api(Dependencies.apacheCommons)
 
+    // Feature flags: OpenFeature API (spec-compliant) with flagd file provider as server-less default (#143)
+    api(Dependencies.openFeatureSdk)
+    implementation(Dependencies.openFeatureFlagd)
+
     // Logging for Kotlin
     api(Dependencies.kotlinLogging)
     testImplementation(TestDependencies.springBootTest)

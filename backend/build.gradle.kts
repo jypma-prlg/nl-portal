@@ -77,11 +77,21 @@ spotless {
 allprojects {
     repositories {
         mavenCentral()
-        maven(URI("https://repository.jboss.org/nexus/content/repositories/releases"))
-        maven(URI("https://oss.sonatype.org/content/repositories/releases"))
-        maven(URI("https://app.camunda.com/nexus/content/groups/public"))
-        maven(URI("https://s01.oss.sonatype.org/content/groups/staging/"))
-        maven(URI("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        // The legacy repositories below are only consulted for non-OpenFeature artifacts: the OpenFeature flagd
+        // provider uses dynamic version ranges, and listing those in an unreachable repository fails the build.
+        val legacyRepositories =
+            listOf(
+                "https://repository.jboss.org/nexus/content/repositories/releases",
+                "https://oss.sonatype.org/content/repositories/releases",
+                "https://app.camunda.com/nexus/content/groups/public",
+                "https://s01.oss.sonatype.org/content/groups/staging/",
+                "https://s01.oss.sonatype.org/content/repositories/snapshots/",
+            )
+        legacyRepositories.forEach { url ->
+            maven(URI(url)) {
+                content { excludeGroupByRegex("""dev\.openfeature(\..*)?""") }
+            }
+        }
     }
 }
 
@@ -150,6 +160,7 @@ subprojects {
                 dependency("org.apache.logging.log4j:log4j-api:${Versions.log4j2}")
                 dependency("org.apache.logging.log4j:log4j-to-slf4j:${Versions.log4j2}")
                 dependency("org.bouncycastle:bcprov-jdk18on:${Versions.bouncyCastle}")
+                dependency("com.google.guava:guava:${Versions.guava}")
             }
         }
     }
