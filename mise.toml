@@ -44,6 +44,18 @@ description = "Mutation testing op backend/core (ADR 0011); HTML-rapport in back
 dir = "backend"
 run = "./gradlew :core:pitest"
 
+[tasks."backend:integration-test"]
+description = "Backend-integratietests over alle modules (Postgres via docker compose, vereist Docker)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew integrationTest --continue"
+
+[tasks."backend:integration-test-app"]
+description = "Backend-integratietests alleen voor :app (sneller; vereist Docker)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew :app:integrationTest"
+
 [tasks."deps:check-backend"]
 description = "List available backend dependency updates (does not apply them)"
 dir = "backend"
