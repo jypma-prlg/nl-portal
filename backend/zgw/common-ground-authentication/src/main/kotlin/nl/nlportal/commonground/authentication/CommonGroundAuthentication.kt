@@ -90,19 +90,6 @@ abstract class CommonGroundAuthentication(
         }
     }
 
-    /**
-     * Gets MachtingsDienst UUID property from the JWT
-     *
-     * @return MachtingsDienst UUID
-     */
-    @Deprecated(
-        """
-            Will be removed in a future version.
-            Use machtigingsDienstUUIDs which has support for multiple machtigingen  
-        """,
-    )
-    fun machtigingsDienstUUID(): UUID? = machtigingsDienstUUIDs()?.get(0)
-
     override fun getUserRepresentation() = "${this.userType.uppercase()}:${this.userId}"
 }
 

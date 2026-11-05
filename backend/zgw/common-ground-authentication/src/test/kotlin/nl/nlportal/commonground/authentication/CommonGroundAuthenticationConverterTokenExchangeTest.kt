@@ -15,9 +15,7 @@
  */
 package nl.nlportal.commonground.authentication
 
-import nl.nlportal.commonground.authentication.CommonGroundAuthenticationConverter.Companion.AUDIENCE_REQUIRED_MESSAGE
 import nl.nlportal.commonground.authentication.KeycloakConfig.KeycloakCredentials
-import nl.nlportal.commonground.authentication.KeycloakConfig.TokenExchangeVersion
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
@@ -36,7 +34,6 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
-@Suppress("DEPRECATION")
 internal class CommonGroundAuthenticationConverterTokenExchangeTest {
     private lateinit var mockServer: MockWebServer
     private lateinit var decoder: ReactiveJwtDecoder
@@ -54,55 +51,8 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
     }
 
     @Test
-    fun `v1 sends the audience and no subject_token_type`() {
-        val converter = converter(TokenExchangeVersion.V1, audience = "nl-portal-token-exchange")
-        mockServer.enqueue(tokenResponse())
-
-        val response = converter.tokenExchange(jwt()).block()
-
-        assertEquals("exchanged-token", response?.accessToken)
-
-        val request = mockServer.takeRequest()
-        assertEquals("POST", request.method)
-        assertEquals("/auth/realms/nlportal/protocol/openid-connect/token", request.requestUrl?.encodedPath)
-        assertTrue(
-            request.getHeader("Content-Type").orEmpty().startsWith("application/x-www-form-urlencoded"),
-            "expected a form encoded body, got ${request.getHeader("Content-Type")}",
-        )
-
-        val formData = request.formData()
-        assertEquals("nl-portal-m2m", formData["client_id"])
-        assertEquals("secret", formData["client_secret"])
-        assertEquals("urn:ietf:params:oauth:grant-type:token-exchange", formData["grant_type"])
-        assertEquals("token", formData["subject_token"])
-        assertEquals("urn:ietf:params:oauth:token-type:access_token", formData["requested_token_type"])
-        assertEquals("nl-portal-token-exchange", formData["audience"])
-        assertNull(formData["subject_token_type"])
-    }
-
-    @Test
-    fun `v1 keeps the parameter order of the implementation that shipped before the version switch`() {
-        val converter = converter(TokenExchangeVersion.V1, audience = "nl-portal-token-exchange")
-        mockServer.enqueue(tokenResponse())
-
-        converter.tokenExchange(jwt()).block()
-
-        assertEquals(
-            listOf(
-                "client_id",
-                "client_secret",
-                "grant_type",
-                "subject_token",
-                "requested_token_type",
-                "audience",
-            ),
-            mockServer.takeRequest().formKeys(),
-        )
-    }
-
-    @Test
-    fun `v2 sends subject_token_type and omits the audience when it is not configured`() {
-        val converter = converter(TokenExchangeVersion.V2, audience = "")
+    fun `sends subject_token_type and omits the audience when it is not configured`() {
+        val converter = converter(audience = "")
         mockServer.enqueue(tokenResponse())
 
         converter.tokenExchange(jwt()).block()
@@ -114,8 +64,8 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
     }
 
     @Test
-    fun `v2 sends the audience when one is configured`() {
-        val converter = converter(TokenExchangeVersion.V2, audience = "some-other-client")
+    fun `sends the audience when one is configured`() {
+        val converter = converter(audience = "some-other-client")
         mockServer.enqueue(tokenResponse())
 
         converter.tokenExchange(jwt()).block()
@@ -126,8 +76,8 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
     }
 
     @Test
-    fun `v2 omits a blank audience`() {
-        val converter = converter(TokenExchangeVersion.V2, audience = " ")
+    fun `omits a blank audience`() {
+        val converter = converter(audience = " ")
         mockServer.enqueue(tokenResponse())
 
         converter.tokenExchange(jwt()).block()
@@ -136,21 +86,8 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
     }
 
     @Test
-    fun `v1 without an audience fails before any request is made`() {
-        val converter = converter(TokenExchangeVersion.V1, audience = "")
-
-        val exception =
-            assertThrows(IllegalArgumentException::class.java) {
-                converter.tokenExchange(jwt()).block()
-            }
-
-        assertEquals(AUDIENCE_REQUIRED_MESSAGE, exception.message)
-        assertEquals(0, mockServer.requestCount)
-    }
-
-    @Test
     fun `an error response from keycloak fails without exposing any keycloak detail`() {
-        val converter = converter(TokenExchangeVersion.V2, audience = "stale-v1-audience")
+        val converter = converter(audience = "stale-audience")
         mockServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
@@ -170,7 +107,7 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
         listOf(
             "invalid_request",
             "Requested audience not available",
-            "stale-v1-audience",
+            "stale-audience",
             mockServer.hostName,
             mockServer.port.toString(),
             "400",
@@ -182,17 +119,13 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
         }
     }
 
-    private fun converter(
-        version: TokenExchangeVersion,
-        audience: String,
-    ): CommonGroundAuthenticationConverter =
+    private fun converter(audience: String): CommonGroundAuthenticationConverter =
         CommonGroundAuthenticationConverter(
             decoder,
             KeycloakConfig(
                 resource = "nl-portal-m2m",
                 audience = audience,
                 credentials = KeycloakCredentials("secret"),
-                tokenExchangeVersion = version,
             ),
         )
 
@@ -220,6 +153,4 @@ internal class CommonGroundAuthenticationConverterTokenExchangeTest {
             }
 
     private fun RecordedRequest.formData(): Map<String, String> = formPairs().toMap()
-
-    private fun RecordedRequest.formKeys(): List<String> = formPairs().map { it.first }
 }

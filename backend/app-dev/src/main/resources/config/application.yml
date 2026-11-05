@@ -59,7 +59,6 @@ nl-portal:
             enabled: false
     authentication:
         keycloak:
-            token-exchange-version: v2
             resource: nl-portal-m2m
             credentials:
                 secret: ookVRUAxmEWMcosfcGR5nxeoUC4Rgwbc

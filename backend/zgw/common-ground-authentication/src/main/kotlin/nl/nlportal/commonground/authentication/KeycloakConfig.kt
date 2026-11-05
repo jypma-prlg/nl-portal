@@ -24,18 +24,8 @@ data class KeycloakConfig
         var resource: String = "",
         var audience: String = "",
         var credentials: KeycloakCredentials = KeycloakCredentials(""),
-        @Suppress("DEPRECATION")
-        var tokenExchangeVersion: TokenExchangeVersion = TokenExchangeVersion.V1,
     ) {
         data class KeycloakCredentials(
             var secret: String = "",
         )
-
-        enum class TokenExchangeVersion {
-            @Deprecated(
-                "Legacy Keycloak token exchange. The default changes to V2 in 5.0 and V1 is removed in a later release.",
-            )
-            V1,
-            V2,
-        }
     }

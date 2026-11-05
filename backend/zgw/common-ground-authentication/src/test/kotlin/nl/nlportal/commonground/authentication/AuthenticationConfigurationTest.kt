@@ -32,36 +32,7 @@ internal class AuthenticationConfigurationTest {
             .withUserConfiguration(JwtDecoderConfiguration::class.java)
 
     @Test
-    fun `a v1 configuration without an audience fails to start`() {
-        contextRunner
-            .withPropertyValues(
-                "nl-portal.authentication.keycloak.token-exchange-version=v1",
-                "nl-portal.authentication.keycloak.resource=nl-portal-m2m",
-                "nl-portal.authentication.keycloak.audience=",
-            ).run { context ->
-                assertThat(context).hasFailed()
-                assertThat(context.startupFailure)
-                    .rootCause()
-                    .isInstanceOf(IllegalArgumentException::class.java)
-                    .hasMessage(CommonGroundAuthenticationConverter.AUDIENCE_REQUIRED_MESSAGE)
-            }
-    }
-
-    @Test
-    fun `a v1 configuration with an audience starts`() {
-        contextRunner
-            .withPropertyValues(
-                "nl-portal.authentication.keycloak.token-exchange-version=v1",
-                "nl-portal.authentication.keycloak.resource=nl-portal-m2m",
-                "nl-portal.authentication.keycloak.audience=nl-portal-token-exchange",
-            ).run { context ->
-                assertThat(context).hasNotFailed()
-                assertThat(context).hasSingleBean(PortalAuthenticationConverter::class.java)
-            }
-    }
-
-    @Test
-    fun `a context without a configured keycloak client starts, whatever the version`() {
+    fun `a context without a configured keycloak client starts`() {
         contextRunner.run { context ->
             assertThat(context).hasNotFailed()
             assertThat(context).hasSingleBean(PortalAuthenticationConverter::class.java)
@@ -69,12 +40,23 @@ internal class AuthenticationConfigurationTest {
     }
 
     @Test
-    fun `a v2 configuration without an audience starts`() {
+    fun `a configuration without an audience starts`() {
         contextRunner
             .withPropertyValues(
-                "nl-portal.authentication.keycloak.token-exchange-version=v2",
                 "nl-portal.authentication.keycloak.resource=nl-portal-m2m",
                 "nl-portal.authentication.keycloak.audience=",
+            ).run { context ->
+                assertThat(context).hasNotFailed()
+                assertThat(context).hasSingleBean(PortalAuthenticationConverter::class.java)
+            }
+    }
+
+    @Test
+    fun `a configuration with an audience starts`() {
+        contextRunner
+            .withPropertyValues(
+                "nl-portal.authentication.keycloak.resource=nl-portal-m2m",
+                "nl-portal.authentication.keycloak.audience=nl-portal-m2m",
             ).run { context ->
                 assertThat(context).hasNotFailed()
                 assertThat(context).hasSingleBean(PortalAuthenticationConverter::class.java)
