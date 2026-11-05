@@ -25,6 +25,13 @@ the motto 'create once, use 340 times', any (government) organization can use an
 This is the NL Portal **monorepo**: the backend, frontend, local development stack and documentation
 live together and release at a single, shared version.
 
+## Versionering en herkomst
+
+NL Portal is gebaseerd op de originele repository op versie 4.1.0 en heeft sindsdien een eigen
+versielijn. Alle `0.x`-versies zijn experimenteel; `1.0.0` is de eerste productie-release, vanaf
+dan gelden SemVer en een deprecation-periode voor breuken (zie
+[ADR 0012](./site/development/adr/0012-breaking-changes-tot-eerste-productie-release.md)).
+
 ## What's in here
 
 | Path              | Contents                                                                                          |
