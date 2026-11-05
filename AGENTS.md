@@ -71,6 +71,15 @@ pnpm -r build && pnpm lint && pnpm lint:css && pnpm typecheck && pnpm test && pn
 For a security- or dependency-relevant change, also run the applicable `mise run security:*` task
 (see below) before considering it done.
 
+### Git hooks and `pnpm`
+
+The Husky hooks under `frontend/.husky` (pre-commit, pre-push) need `pnpm`, which a plain shell
+often lacks on `PATH` even though `mise` provides it. A "pnpm: command not found" failure means
+run git through mise: `mise exec -- git commit ...` / `mise exec -- git push ...`. Never use
+`--no-verify`. If `mise exec` hangs (it may try to install every tool in `mise.toml`), put the
+installed tool on `PATH` instead: `PATH="$(mise where pnpm):$PATH" git commit ...`. Gradle needs
+`JAVA_HOME="$(mise where java)"`.
+
 ## Repo-indeling
 
 Geen root-`package.json`/`node_modules`. Node-tooling (Husky, lint-staged, commitlint,
