@@ -18,12 +18,10 @@ plugins {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-
     // Depends on every module that can contribute entry points so the fitness test can
     // scan the full backend classpath. This module ships no production code of its own.
     rootProject.subprojects
-        .filter { it.path != project.path && !it.path.startsWith(":gradle") && it.path != ":zgw:common-ground-authentication-test" }
+        .filter { it.path != project.path && !it.path.startsWith(":gradle") }
         .forEach { testImplementation(project(it.path)) }
 
     testImplementation(TestDependencies.springBootTest)
@@ -39,17 +37,13 @@ tasks.named<Test>("test") {
     val inventory = rootProject.projectDir.parentFile.resolve("docs/capabilities.yaml")
     inputs.file(inventory)
     systemProperty("capabilities.file", inventory.absolutePath)
-    // Every Gradle module with production code must be mapped to a layer (see ModuleLayers).
-    val productionModules =
-        rootProject.subprojects
-            // The test-support module shares a package with common-ground-authentication.
-            .filter { it.path != project.path && it.path != ":zgw:common-ground-authentication-test" }
-            // Aggregator projects without production code are not layered.
-            .filter { it.projectDir.resolve("src/main").exists() }
-            .map { it.path }
-            .sorted()
-    inputs.property("productionModules", productionModules)
-    systemProperty("architecture.modules", productionModules.joinToString(","))
+    // Every Gradle project except this one is handed to the test: it must either be mapped to a layer
+    // or be listed (with a reason) in ModuleLayers.excluded. Nothing is filtered out here, so a new
+    // module cannot silently escape the check.
+    val buildModules = rootProject.subprojects.filter { it.path != project.path }.sortedBy { it.path }
+    inputs.property("buildModulePaths", buildModules.map { it.path })
+    buildModules.forEach { inputs.files(fileTree(it.projectDir.resolve("src/main"))).withPropertyName("sources-${it.path}") }
+    systemProperty("architecture.modules", buildModules.joinToString("|") { "${it.path}=${it.projectDir.absolutePath}" })
     // Make fitness-test warnings visible in the Gradle output.
     testLogging.showStandardStreams = true
 }

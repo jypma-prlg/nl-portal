@@ -17,7 +17,9 @@ package nl.nlportal.openklant
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.function.Consumer
+import okhttp3.HttpUrl
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.RecordedRequest
 import org.springframework.test.web.reactive.server.WebTestClient
 
 object TestHelper {
@@ -53,6 +55,37 @@ object TestHelper {
             "results": []
         }
         """.trimIndent()
+
+    fun mockJsonResponse(body: String): MockResponse =
+        MockResponse()
+            .addHeader("Content-Type", "application/json; charset=utf-8")
+            .setResponseCode(200)
+            .setBody(body)
+
+    fun singlePartij(uuid: String): String =
+        """
+        {
+            "uuid": "$uuid",
+            "url": "http://localhost:8007/klantinteracties/api/v1/partijen/$uuid",
+            "soortPartij": "persoon",
+            "indicatieActief": true,
+            "partijIdentificatie": { "contactnaam": {} }
+        }
+        """.trimIndent()
+
+    fun singlePartijPage(uuid: String): String =
+        """
+        {
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [${singlePartij(uuid)}]
+        }
+        """.trimIndent()
+
+    /** The URL of a recorded request; fails with a readable message instead of a `!!` when the server did not record one. */
+    val RecordedRequest.url: HttpUrl
+        get() = checkNotNull(requestUrl) { "MockWebServer recorded no request URL for $requestLine" }
 
     object Partijen {
         val createPartijRequest =

@@ -18,24 +18,26 @@ package nl.nlportal.zgw.taak.service
 import kotlinx.coroutines.test.runTest
 import nl.nlportal.commonground.authentication.AuthenticationMachtigingsDienstService
 import nl.nlportal.commonground.authentication.JwtBuilder
+import nl.nlportal.core.util.Mapper
 import nl.nlportal.zgw.objectenapi.autoconfiguration.ObjectsApiClientConfig.ObjectsApiClientConfigProperties
 import nl.nlportal.zgw.objectenapi.client.ObjectsApiClient
+import nl.nlportal.zgw.taak.TestHelper.assertStatus
+import nl.nlportal.zgw.taak.TestHelper.mockJsonResponse
+import nl.nlportal.zgw.taak.TestHelper.resultPage
+import nl.nlportal.zgw.taak.TestHelper.url
 import nl.nlportal.zgw.taak.autoconfigure.TaakConfig.TaakConfigProperties
 import nl.nlportal.zgw.taak.domain.TaakStatus
+import okhttp3.HttpUrl
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.springframework.http.HttpStatus
-import org.springframework.web.server.ResponseStatusException
-import java.net.URLDecoder
 import java.util.UUID
 
 /**
@@ -91,17 +93,24 @@ class TaakServiceTest {
     @Test
     fun `getTakenV2 searches open taken of the user by default`() =
         runTest {
-            mockServer.enqueue(json(resultPage(taakJson())))
+            mockServer.enqueue(mockJsonResponse(resultPage(taakJson())))
 
             val page = service.getTakenV2(1, 10, burger())
 
             assertEquals(1, page.content.size)
-            val query = decodedQuery()
-            assertTrue(query.contains("identificatie__type__exact__bsn"))
-            assertTrue(query.contains("identificatie__value__exact__$BSN"))
-            assertTrue(query.contains("status__exact__open"))
-            assertTrue(query.contains("type=$OBJECT_TYPE_URL"))
-            assertTrue(query.contains("ordering=-record__startAt"))
+            val url = takeRequestUrl()
+            assertEquals(
+                setOf(
+                    "identificatie__type__exact__bsn",
+                    "identificatie__value__exact__$BSN",
+                    "status__exact__open",
+                    // the mocked machtigingsdienst knows no taak types, which the service still passes on as an empty list
+                    "eigenaar__in__",
+                ),
+                url.dataAttrs(),
+            )
+            assertEquals(OBJECT_TYPE_URL, url.queryParameter("type"))
+            assertEquals("-record__startAt", url.queryParameter("ordering"))
         }
 
     @Test
@@ -109,22 +118,28 @@ class TaakServiceTest {
         runTest {
             val zaakId = UUID.randomUUID()
             whenever(machtigingsDienstService.taakTypes(any())).thenReturn(listOf("gzac", "other"))
-            mockServer.enqueue(json(resultPage()))
+            mockServer.enqueue(mockJsonResponse(resultPage()))
 
             service.getTakenV2(1, 10, burger(), zaakId, TaakStatus.AFGEROND, "belasting")
 
-            val query = decodedQuery()
-            assertTrue(query.contains("status__exact__afgerond"))
-            assertTrue(query.contains("koppeling__registratie__exact__zaak"))
-            assertTrue(query.contains("koppeling__value__icontains__$zaakId"))
-            assertTrue(query.contains("titel__icontains__belasting"))
-            assertTrue(query.contains("eigenaar__in__gzac|other"))
+            assertEquals(
+                setOf(
+                    "identificatie__type__exact__bsn",
+                    "identificatie__value__exact__$BSN",
+                    "status__exact__afgerond",
+                    "koppeling__registratie__exact__zaak",
+                    "koppeling__value__icontains__$zaakId",
+                    "titel__icontains__belasting",
+                    "eigenaar__in__gzac|other",
+                ),
+                takeRequestUrl().dataAttrs(),
+            )
         }
 
     @Test
     fun `getTaken wraps the result with the number of returned taken`() =
         runTest {
-            mockServer.enqueue(json(resultPage(taakJson(), taakJson())))
+            mockServer.enqueue(mockJsonResponse(resultPage(taakJson(), taakJson())))
 
             val page = service.getTaken(2, 5, burger())
 
@@ -137,7 +152,7 @@ class TaakServiceTest {
     @Test
     fun `getTaakByIdV2 returns the taak for its owner`() =
         runTest {
-            mockServer.enqueue(json(taakJson()))
+            mockServer.enqueue(mockJsonResponse(taakJson()))
 
             val taak = service.getTaakByIdV2(UUID.fromString(TAAK_ID), burger())
 
@@ -148,28 +163,22 @@ class TaakServiceTest {
     @Test
     fun `getTaakByIdV2 denies access to a taak of another user`() =
         runTest {
-            mockServer.enqueue(json(taakJson()))
+            mockServer.enqueue(mockJsonResponse(taakJson()))
 
-            val exception =
-                assertThrows<ResponseStatusException> {
-                    service.getTaakByIdV2(UUID.fromString(TAAK_ID), burger("999999999"))
-                }
-
-            assertEquals(HttpStatus.UNAUTHORIZED, exception.statusCode)
+            assertStatus(HttpStatus.UNAUTHORIZED) {
+                service.getTaakByIdV2(UUID.fromString(TAAK_ID), burger("999999999"))
+            }
         }
 
     @Test
     fun `getTaakByIdV2 denies access when the taak type is not allowed`() =
         runTest {
             whenever(machtigingsDienstService.isAllowedTaakType(any(), any())).thenReturn(false)
-            mockServer.enqueue(json(taakJson()))
+            mockServer.enqueue(mockJsonResponse(taakJson()))
 
-            val exception =
-                assertThrows<ResponseStatusException> {
-                    service.getTaakByIdV2(UUID.fromString(TAAK_ID), burger())
-                }
-
-            assertEquals(HttpStatus.UNAUTHORIZED, exception.statusCode)
+            assertStatus(HttpStatus.UNAUTHORIZED) {
+                service.getTaakByIdV2(UUID.fromString(TAAK_ID), burger())
+            }
         }
 
     @Test
@@ -179,11 +188,10 @@ class TaakServiceTest {
             mockServer.enqueue(MockResponse().setResponseCode(200))
 
             val exception =
-                assertThrows<ResponseStatusException> {
+                assertStatus(HttpStatus.BAD_REQUEST) {
                     service.getTaakByIdV2(UUID.fromString(TAAK_ID), burger())
                 }
 
-            assertEquals(HttpStatus.BAD_REQUEST, exception.statusCode)
             assertEquals("Taak [$TAAK_ID] kan niet gevonden worden", exception.reason)
         }
 
@@ -192,19 +200,16 @@ class TaakServiceTest {
         runTest {
             mockServer.enqueue(MockResponse().setResponseCode(404))
 
-            val exception =
-                assertThrows<ResponseStatusException> {
-                    service.getTaakByIdV2(UUID.fromString(TAAK_ID), burger())
-                }
-
-            assertEquals(HttpStatus.NOT_FOUND, exception.statusCode)
+            assertStatus(HttpStatus.NOT_FOUND) {
+                service.getTaakByIdV2(UUID.fromString(TAAK_ID), burger())
+            }
         }
 
     @Test
     fun `submitTaak completes an open taak and stores the submission`() =
         runTest {
-            mockServer.enqueue(json(taakJson()))
-            mockServer.enqueue(json(taakJson(status = "afgerond")))
+            mockServer.enqueue(mockJsonResponse(taakJson()))
+            mockServer.enqueue(mockJsonResponse(taakJson(status = "afgerond")))
 
             val result = service.submitTaak(UUID.fromString(TAAK_ID), mapOf("voornaam" to "Piet"), burger())
 
@@ -212,23 +217,22 @@ class TaakServiceTest {
             mockServer.takeRequest() // GET
             val put = mockServer.takeRequest()
             assertEquals("PUT", put.method)
-            val body = put.body.readUtf8()
-            assertTrue(body.contains("\"afgerond\""))
-            assertTrue(body.contains("\"Piet\""))
-            assertTrue(body.contains("BSN:$BSN"))
+            val body = Mapper.get().readTree(put.body.readUtf8())
+            assertEquals("afgerond", body.at("/record/data/status").asString())
+            assertEquals(Mapper.get().readTree("""{"voornaam": "Piet"}"""), body.at("/record/data/portaalformulier/verzonden_data"))
+            assertEquals("BSN:$BSN", body.at("/record/correctedBy").asString())
         }
 
     @Test
     fun `submitTaakV2 rejects a taak that is not open`() =
         runTest {
-            mockServer.enqueue(json(taakJson(status = "afgerond")))
+            mockServer.enqueue(mockJsonResponse(taakJson(status = "afgerond")))
 
             val exception =
-                assertThrows<ResponseStatusException> {
+                assertStatus(HttpStatus.BAD_REQUEST) {
                     service.submitTaakV2(UUID.fromString(TAAK_ID), mapOf("a" to "b"), burger())
                 }
 
-            assertEquals(HttpStatus.BAD_REQUEST, exception.statusCode)
             assertEquals("Status is niet open, taak [$TAAK_ID] kan niet afgerond worden", exception.reason)
             // nothing was written
             assertEquals(1, mockServer.requestCount)
@@ -237,36 +241,21 @@ class TaakServiceTest {
     @Test
     fun `submitTaakV2 denies access to a taak of another user`() =
         runTest {
-            mockServer.enqueue(json(taakJson()))
+            mockServer.enqueue(mockJsonResponse(taakJson()))
 
-            val exception =
-                assertThrows<ResponseStatusException> {
-                    service.submitTaakV2(UUID.fromString(TAAK_ID), mapOf("a" to "b"), burger("999999999"))
-                }
-
-            assertEquals(HttpStatus.UNAUTHORIZED, exception.statusCode)
+            assertStatus(HttpStatus.UNAUTHORIZED) {
+                service.submitTaakV2(UUID.fromString(TAAK_ID), mapOf("a" to "b"), burger("999999999"))
+            }
             assertEquals(1, mockServer.requestCount)
         }
 
     private fun burger(bsn: String = BSN) = JwtBuilder().aanvragerBsn(bsn).buildBurgerAuthentication()
 
-    private fun decodedQuery(): String = URLDecoder.decode(mockServer.takeRequest().path!!, Charsets.UTF_8)
+    /** Consumes the next recorded request and returns its URL. */
+    private fun takeRequestUrl(): HttpUrl = mockServer.takeRequest().url
 
-    private fun json(body: String) =
-        MockResponse()
-            .addHeader("Content-Type", "application/json; charset=utf-8")
-            .setResponseCode(200)
-            .setBody(body)
-
-    private fun resultPage(vararg results: String) =
-        """
-        {
-            "count": ${results.size},
-            "next": null,
-            "previous": null,
-            "results": [${results.joinToString(",")}]
-        }
-        """.trimIndent()
+    /** The individual Objects API filters of the `data_attrs` parameter, without caring about their order. */
+    private fun HttpUrl.dataAttrs(): Set<String> = checkNotNull(queryParameter("data_attrs")) { "no data_attrs parameter in $this" }.split(",").toSet()
 
     private fun taakJson(status: String = "open") =
         """

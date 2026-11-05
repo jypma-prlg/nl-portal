@@ -19,6 +19,8 @@ import java.util.UUID
 import kotlinx.coroutines.test.runTest
 import nl.nlportal.commonground.authentication.JwtBuilder
 import nl.nlportal.openklant.TestHelper
+import nl.nlportal.openklant.TestHelper.mockJsonResponse
+import nl.nlportal.openklant.TestHelper.url
 import nl.nlportal.openklant.autoconfigure.OpenKlantModuleConfiguration
 import nl.nlportal.openklant.autoconfigure.OpenKlantModuleConfiguration.OpenKlantConfigurationProperties
 import nl.nlportal.openklant.client.OpenKlant2KlantinteractiesClient
@@ -26,7 +28,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
@@ -84,7 +86,7 @@ class OpenKlant2ServiceTest {
 
             // the klantcontacten are searched scoped to the authenticated user
             val searchRequest = mockServer.takeRequest()
-            assertTrue(searchRequest.path!!.contains("hadBetrokkene__wasPartij__partijIdentificator__objectId=$OWNER_BSN"))
+            assertEquals(OWNER_BSN, searchRequest.url.queryParameter("hadBetrokkene__wasPartij__partijIdentificator__objectId"))
         }
 
     @Test
@@ -121,11 +123,11 @@ class OpenKlant2ServiceTest {
 
             // the digitale adressen are searched scoped to the authenticated user
             val searchRequest = mockServer.takeRequest()
-            assertTrue(searchRequest.path!!.contains("verstrektDoorPartij__partijIdentificator__objectId=$OWNER_BSN"))
+            assertEquals(OWNER_BSN, searchRequest.url.queryParameter("verstrektDoorPartij__partijIdentificator__objectId"))
 
             val deleteRequest = mockServer.takeRequest()
             assertEquals("DELETE", deleteRequest.method)
-            assertTrue(deleteRequest.path!!.endsWith("/digitaleadressen/$DIGITALE_ADRES_ID"))
+            assertEquals(listOf("digitaleadressen", DIGITALE_ADRES_ID), deleteRequest.url.pathSegments.takeLast(2))
         }
 
     @Test
@@ -149,11 +151,28 @@ class OpenKlant2ServiceTest {
             assertEquals("GET", mockServer.takeRequest().method)
         }
 
-    private fun mockJsonResponse(body: String) =
-        MockResponse()
-            .addHeader("Content-Type", "application/json; charset=utf-8")
-            .setResponseCode(200)
-            .setBody(body)
+    @Test
+    fun `findDigitaleAdressen returns an empty list when the client call fails`() =
+        runTest {
+            val service = OpenKlant2Service(openKlant2Client, openklantModuleConfiguration.properties)
+            mockServer.enqueue(MockResponse().setResponseCode(500))
+
+            val result =
+                service.findDigitaleAdressen(
+                    JwtBuilder().aanvragerBsn(OWNER_BSN).buildBurgerAuthentication(),
+                )
+
+            assertEquals(emptyList<Any>(), result)
+        }
+
+    @Test
+    fun `findDigitalAdres returns null when the Digitale Adres can not be found`() =
+        runTest {
+            val service = OpenKlant2Service(openKlant2Client, openklantModuleConfiguration.properties)
+            mockServer.enqueue(MockResponse().setResponseCode(404))
+
+            assertNull(service.findDigitalAdres(UUID.fromString(DIGITALE_ADRES_ID)))
+        }
 
     companion object {
         private const val KLANTCONTACT_ID = "33549ba5-95f0-44d2-9c63-776ec126bc55"
