@@ -47,6 +47,7 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-por
 
 | Id | Module | Omschrijving |
 |---|---|---|
+| geen | | |
 
 ### Capabilities met status twijfel, kandidaat-verwijderen of deprecated
 

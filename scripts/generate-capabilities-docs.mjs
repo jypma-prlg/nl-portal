@@ -108,6 +108,7 @@ function renderDebt(inv) {
   const out = [GENERATED_NOTE, "", `## 11.4 Technische schuld en capabilities onder twijfel (inventaris ${inv.generated})`, ""];
   out.push("### Technische schuld", "", "| Id | Module | Omschrijving |", "|---|---|---|");
   for (const d of inv.technische_schuld) out.push(`| ${code(d.id)} | ${code(d.module)} | ${cell(d.omschrijving)} |`);
+  if (inv.technische_schuld.length === 0) out.push("| geen | | |");
 
   out.push(
     "",

@@ -2,14 +2,14 @@
 
 Uitgevoerd op: 2026-11-05, bij #132 (V1 verwijderd, standard token exchange is het enige pad). Eisen en context komen uit het onderzoek [ASVS 5.0.0 level 3 voor token-exchange](./asvs-5-l3-token-exchange.md); het kader (hoofdstuk V6 van ASVS 5.0.0, geen "v6") staat daar.
 
-Deze toets kijkt naar de **code en de standaardconfiguratie in deze repository** (`backend/zgw/common-ground-authentication`, `backend/app/src/main/resources/config/application.yml`, `docker-compose/`). De inrichting van een eigen Keycloak-realm of productieomgeving is niet beoordeeld.
+Deze toets kijkt naar de **code en de standaardconfiguratie in deze repository** (de app image zet alleen `jwk-set-uri`; de testconfiguraties onder `src/test` zetten wel een `issuer-uri`, maar dat geldt niet voor een draaiende omgeving) (`backend/zgw/common-ground-authentication`, `backend/app/src/main/resources/config/application.yml`, `docker-compose/`). De inrichting van een eigen Keycloak-realm of productieomgeving is niet beoordeeld.
 
 ## Resultaat in één oogopslag
 
 | Resultaat | Aantal |
 |---|---|
-| Voldaan (in code/standaardconfiguratie) | 8 |
-| Voldaan na inrichting (hangt af van de uitrol, door NL Portal gedocumenteerd) | 4 |
+| Voldaan (in code/standaardconfiguratie) | 7 |
+| Voldaan na inrichting (hangt af van de uitrol, door NL Portal gedocumenteerd) | 5 |
 | Niet voldaan | 15 |
 | Buiten NL Portal (Keycloak/IdP-inrichting, niet getoetst; 4 rijen, sommige met meerdere eisen) | 4 |
 | Besluit nodig (gedocumenteerde afwijking) | 2 |
@@ -31,7 +31,7 @@ Legenda: **Voldaan** = aantoonbaar in code of standaardconfiguratie. **Na inrich
 | Eis | Lvl | Resultaat | Onderbouwing |
 |---|---|---|---|
 | 9.1.1 | L1 | Voldaan | `jwk-set-uri`-decoder valideert de handtekening van het binnenkomende token; het uitgewisselde token gaat door dezelfde decoder (`CommonGroundAuthenticationConverter.convert`). |
-| 9.1.2 | L1 | Voldaan | `NimbusReactiveJwtDecoder` accepteert standaard alleen RS256; `alg: none` wordt geweigerd. Geen expliciete `jws-algorithms` gezet; Keycloak-realm moet RS256 blijven gebruiken. |
+| 9.1.2 | L1 | Na inrichting | `NimbusReactiveJwtDecoder` accepteert standaard alleen RS256; `alg: none` wordt geweigerd. Geen expliciete `jws-algorithms` gezet: de uitkomst leunt op een Spring-default en op een Keycloak-realm dat RS256 blijft gebruiken. |
 | 9.1.3 | L1 | Voldaan | Sleutelbron is vast (`JWKS_URI`); `jku`/`x5u`-headers worden niet gevolgd. |
 | 9.2.1 | L1 | Voldaan | `JwtTimestampValidator` is standaard actief (`exp`/`nbf`, 60 s skew). |
 | 9.2.2 | L2 | Niet voldaan | Geen controle op tokentype (`typ`/`azp`); een met dezelfde sleutel ondertekend ID-token wordt als Bearer geaccepteerd. |
