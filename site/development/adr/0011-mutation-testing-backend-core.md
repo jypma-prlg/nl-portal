@@ -7,7 +7,7 @@ Geaccepteerd.
 ## Context
 
 Hoge line coverage zegt niet of tests gedrag verifiëren (#93 control 4, opvolging #95). `core` heeft
-21 productiebestanden en 5 testklassen. Doel is een bruikbare quality gate die ook agent-geschreven
+21 productiebestanden en 4 testklassen. Doel is een bruikbare quality gate die ook agent-geschreven
 code stuurt naar tests die echt iets aantonen, zonder PR's te vertragen.
 
 ## Beslissing
@@ -29,10 +29,21 @@ code stuurt naar tests die echt iets aantonen, zonder PR's te vertragen.
   pitest (~80 s inclusief Gradle), ruim binnen de afgesproken grens van 3 minuten extra per PR. Gaat
   de PR-run structureel boven die grens uitkomen, schuif hem dan naar alleen nachtelijk en lokaal.
 - **Dependency-verification:** `backend/gradle/verification-metadata.xml` is aangevuld met de plugin
-  en transitieve pitest-artefacten. Het eerdere "hangen" van `--write-verification-metadata` is hier niet
-  reproduceerbaar (78 s); de oorzaak was waarschijnlijk `mise exec` dat andere tools wilde installeren.
+  en de transitieve pitest-artefacten.
+- **Terminal-uitvoer:** na `:core:pitest` print Gradle de overlevende mutanten per bestand en regel,
+  zodat een agent ze zonder het HTML-rapport kan lezen.
 
-## Consequences
+## Overwogen alternatieven
+
+- *`pitest-kotlin` (arcmutate):* filtert Kotlin-ruis het best, maar vereist een commerciële licentie.
+  Afgewezen tot de hoeveelheid equivalente mutanten dat rechtvaardigt.
+- *Alleen nachtelijk en lokaal:* snel genoeg niet nodig; een volledige run past ruim binnen de grens,
+  dus de PR-run (gewijzigde klassen) is gekozen omdat die feedback geeft vóór de merge.
+- *80% of 90% als gate voor heel `core`:* te veel equivalente mutanten (logging, null-checks,
+  `toString`) en uitnodiging tot tests die mutanten wegwerken in plaats van gedrag te bewijzen. Daarom
+  80% alleen voor nieuwe en gewijzigde klassen en een ratchet voor het totaal.
+
+## Consequenties
 
 - Wie een bestaande, slecht geteste `core`-klasse aanraakt, moet die klasse op 80% brengen of de PR
   blijft rood. Dat is bedoeld: het dwingt tests af waar code verandert.

@@ -5,6 +5,9 @@ on:
         paths:
             - "backend/core/**"
             - "backend/gradle/verification-metadata.xml"
+            - "backend/build.gradle.kts"
+            - "backend/settings.gradle.kts"
+            - "backend/gradle.properties"
     schedule:
         -   cron: "0 3 * * *"
     workflow_dispatch:
@@ -31,9 +34,13 @@ jobs:
             -   name: Pitest op gewijzigde klassen (PR, drempel 80%)
                 if: github.event_name == 'pull_request'
                 working-directory: backend
+                env:
+                    BASE_REF: ${{ github.base_ref }}
                 run: |
-                    changed=$(git diff --name-only --diff-filter=AM "origin/${{ github.base_ref }}...HEAD" -- 'core/src/main/kotlin/**/*.kt' \
-                        | sed -E 's#^core/src/main/kotlin/##; s#\.kt$##; s#/#.#g' | paste -sd, -)
+                    set -euo pipefail
+                    # Wildcard achter de klassenaam dekt ook binnenklassen, companions en top-level functies (FooKt).
+                    # Met R (hernoemd) erbij valt een verplaatste klasse niet buiten de gate.
+                    changed=$(git diff --name-only --diff-filter=AMR "origin/${BASE_REF}...HEAD" -- 'core/src/main/kotlin/**/*.kt'                         | sed -E 's#^core/src/main/kotlin/##; s#\.kt$#*#; s#/#.#g' | paste -sd, -)
                     if [ -z "$changed" ]; then echo "Geen gewijzigde core-klassen."; exit 0; fi
                     ./gradlew :core:pitest -PpitestTargetClasses="$changed" -PpitestThreshold=80
             -   name: Pitest op volledige core (nachtelijk/handmatig, ratchet)

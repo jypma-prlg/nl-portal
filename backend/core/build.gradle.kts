@@ -80,4 +80,32 @@ pitest {
     failWhenNoMutations.set(false)
 }
 
+// Terminal-samenvatting van overlevende mutanten per bestand en regel, naast het HTML-rapport.
+tasks.named("pitest") {
+    doLast {
+        val report =
+            layout.buildDirectory
+                .file("reports/pitest/mutations.xml")
+                .get()
+                .asFile
+        if (!report.exists()) return@doLast
+        val mutations =
+            javax.xml.parsers.DocumentBuilderFactory
+                .newInstance()
+                .newDocumentBuilder()
+                .parse(report)
+                .getElementsByTagName("mutation")
+        val survivors =
+            (0 until mutations.length)
+                .map { mutations.item(it) as org.w3c.dom.Element }
+                .filter { it.getAttribute("status") == "SURVIVED" || it.getAttribute("status") == "NO_COVERAGE" }
+                .map {
+                    fun text(tag: String) = it.getElementsByTagName(tag).item(0).textContent
+                    Triple(text("sourceFile"), text("lineNumber").toInt(), "${it.getAttribute("status")}: ${text("description")}")
+                }.sortedWith(compareBy({ it.first }, { it.second }))
+        println("Overlevende mutanten: ${survivors.size} (details: build/reports/pitest/index.html)")
+        survivors.forEach { (file, line, what) -> println("  $file:$line  $what") }
+    }
+}
+
 apply(from = "gradle/publishing.gradle.kts")
