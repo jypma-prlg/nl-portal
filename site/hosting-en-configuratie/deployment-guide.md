@@ -29,7 +29,7 @@ equivalent is nog niet ingericht; zie [issue #18](https://github.com/jypma-prlg/
 
 ### Backend: module-configuratie
 
-De functionele modules van de backend (onder andere Zaken API, Catalogi API, Documenten APIs, Open Object, OpenKlant 2, HaalCentraal BRP (`haalcentraal2`) en Handelsregister (`haalcentraal_hr`), Berichten, Taak, Prefill, DMN, OpenProduct, betalingen en virusscan) worden per module aangezet met een enable-vlag. Alle modules staan standaard uit.
+De functionele modules van de backend (onder andere Zaken API, Catalogi API, Documenten APIs, Open Object, OpenKlant 2, HaalCentraal BRP (`haalcentraal2`) en Handelsregister (`haalcentraal.hr`, als omgevingsvariabele `NLPORTAL_CONFIG_HAALCENTRAAL_HR_ENABLED`), Berichten, Taak, Prefill, DMN, OpenProduct, betalingen en virusscan) worden per module aangezet met een enable-vlag. Alle modules staan standaard uit. De gemachtigde-query van `haalcentraal2` (gemachtigde bedrijven uit het Handelsregister) is alleen beschikbaar als zowel `haalcentraal2` als `haalcentraal.hr` aan staat.
 
 Elke module heeft daarnaast eigen properties die met hetzelfde patroon worden gezet: `NLPORTAL_CONFIG_<MODULE>_PROPERTIES_<PROPERTY>`. Bijvoorbeeld voor de Zaken API:
 
