@@ -59,6 +59,11 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   Configuratie en thema per omgeving uit config-files, zonder configuration panel; rolling restart in
   plaats van hot reload; validatie (incl. contrast) in CI en bij opstart.
 
+- [`0017-gedeelde-multi-tenant-runtime-met-cellen.md`](../../development/adr/0017-gedeelde-multi-tenant-runtime-met-cellen.md) — **voorgesteld**.
+  Eén gedeelde multi-tenant runtime met logische tenantscheiding, ingedeeld in cellen (canarycel en
+  hoofdcel); tenant uit het hostdomein, issuer als binding, realm per tenant, tenantbestand/flag/secret store,
+  core-seam met architectuurchecks. Wijzigt bij acceptatie ADR 0016 punt 2 en 6.
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:

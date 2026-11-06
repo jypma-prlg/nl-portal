@@ -43,6 +43,20 @@ staat; voeg een nieuwe term toe zodra een module ernaar vernoemd wordt (zie de
 - **Thema** — het uiterlijk van één gemeente in NL Portal: logo, stijl, favicon en paginatitel, zodat de
   portal herkenbaar is als die van de gemeente. _Avoid_: skin, branding.
 
+- **Tenant** — één overheidsorganisatie (meestal een gemeente) met één portaal in NL Portal, gekenmerkt
+  door haar **OIN**. _Avoid_: klant (dat is de burger), gemeente (te beperkt), organisatie.
+- **OIN (Organisatie-identificatienummer)** — het landelijke nummer dat een overheidsorganisatie
+  identificeert; de sleutel van een tenant.
+- **Cel** — een groep tenants die dezelfde NL Portal-runtime delen, afgeschermd van andere cellen; ook
+  de eenheid waarin een release stapsgewijs wordt uitgerold. Een cel met één tenant is een eigen instantie
+  voor die tenant. _Avoid_: cluster, shard, pool.
+- **Tenantbestand** — de niet-geheime inrichting van één tenant in één omgeving: domeinen, koppelingen,
+  thema en cel, met verwijzingen naar geheimen. Onderdeel van de omgevingsconfiguratie van die tenant.
+- **Publieke ID-broker** — de gedeelde Keycloak per omgeving waarlangs burgers en ondernemers inloggen
+  (DigiD, eHerkenning, wallets).
+- **Private ID-broker** — de aparte Keycloak voor beheerders (federeert naar Entra ID); NL Portal
+  accepteert hiervan nooit tokens.
+
 Zie ook `site/architectuur/arc42/12-glossarium.md` voor architectuurspecifieke
 afkortingen (C1/C2/C3, ADR, SBOM, ...), en de `/codebase-design`-skill voor de architectuurvocabulaire
 (module, interface, seam, ...) die in de architectuurreview wordt gebruikt.

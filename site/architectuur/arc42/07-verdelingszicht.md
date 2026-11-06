@@ -35,7 +35,36 @@ arc42-document beschrijft die laag niet in detail, maar benoemt wel de aanname d
 database**: de backend is stateless en vereist geen persistentielaag. Elke overheidsorganisatie
 draait haar eigen instantie tegen haar eigen ZGW-landschap.
 
-## 7.4 Open vraag
+## 7.4 Voorgesteld doelbeeld: gedeelde runtime met cellen
+
+> **Voorgesteld, nog niet gebouwd of ingericht.** Dit beschrijft het doelbeeld uit
+> [ADR 0017](../../development/adr/0017-gedeelde-multi-tenant-runtime-met-cellen.md). Paragraaf 7.3 blijft het
+> geldende beeld totdat die ADR is geaccepteerd en uitgevoerd; er draait nog niets in productie.
+
+Pink biedt NL Portal als SaaS aan voor circa 50 gemeenten (tenants) binnen twee jaar. In plaats van een
+instantie per gemeente (7.3) draait één multi-tenant runtime, ingedeeld in **cellen**:
+
+- Een **cel** is dezelfde runtime (zelfde images en chart) met een eigen deployment voor een groep tenants.
+  Een cel laadt alleen de tenants en secrets van die cel, en beperkt zo de gevolgen van een fout of
+  kwetsbaarheid tot die cel.
+- Livegang met minimaal twee productiecellen: een **canarycel** (Pink-eigen tenant en één of twee
+  pilotgemeenten) en een **hoofdcel**. Een release gaat eerst naar de canarycel en daarna, na vaste
+  controles, naar de hoofdcel. Een tenant met hogere eisen of een eis tot fysieke scheiding krijgt een eigen
+  cel (een cel met één tenant).
+- Per cel minimaal twee replica's, een PodDisruptionBudget en spreiding over nodes of zones.
+- Verkeer loopt via de Kubernetes Gateway API (`HTTPRoute` per gemeentedomein, naar de juiste cel). De
+  host-allowlist en het certificaat per tenant horen op die edge. De runtime is alleen via de ingress te
+  bereiken; de actuator draait op een aparte managementpoort.
+- Per omgeving twee gedeelde Keycloaks: een **publieke ID-broker** (met een realm per tenant, beheerd als code
+  via ArgoCD) en een **private ID-broker**, waarvan de portal-runtime nooit tokens accepteert.
+- Configuratie komt per tenant uit een bestand in Git (ArgoCD); secrets via External Secrets Operator,
+  per tenant een eigen pad. Elke wijziging is een rolling restart van de eigen cel. Zie
+  [8.9](./08-dwarsdoorsnede-concepten.md#89-tenantscheiding-en-configuratiemodel-voorgesteld).
+
+Het blijft waar dat de backend stateless is en geen database heeft
+([ADR 0013](../../development/adr/0013-stateless-backend-zonder-database.md)).
+
+## 7.5 Open vraag
 
 Er is geen architectuurdocument gevonden dat de productie-topologie (hoeveel replica's, welke
 externe systemen zijn per-omgeving vs. gedeeld, hoe secrets worden aangeleverd) beschrijft binnen

@@ -82,3 +82,30 @@ periodiek wordt herladen; een andere OpenFeature-provider sluit je aan met een e
 - **Nu flag-gedreven**: alleen de toggle `messageCountEnabled` (`ops.frontend.message-count`). De
   overige toggles en de module-activatie volgen (#143).
 - **Grens**: credentials en andere secrets horen niet in een flag-systeem.
+
+## 8.9 Tenantscheiding en configuratiemodel (voorgesteld)
+
+> **Voorgesteld, nog niet gebouwd.** Uitgewerkt in
+> [ADR 0017](../../development/adr/0017-gedeelde-multi-tenant-runtime-met-cellen.md). Vandaag is NL Portal één
+> tenant per deployment en geldt het beeld uit 8.1 en 8.8 ongewijzigd; dit is het doelbeeld voor een gedeelde
+> runtime.
+
+- **Tenantresolutie.** Het hostdomein bepaalt de tenant (allowlist van domein naar OIN; een onbekend domein
+  geeft 404, nooit een standaardtenant). De tenant leeft in de Reactor Context, niet in een `ThreadLocal`.
+  Bij een geauthenticeerd request moet de issuer van het token bij dezelfde tenant horen, anders 403: de
+  issuer is de tenantbinding, er komt geen aparte tenant-claim bij.
+- **Identiteit.** Een realm per tenant op de publieke ID-broker, gegenereerd uit één template. De runtime
+  vertrouwt alleen issuers uit de tenantconfiguratie en nooit de private ID-broker (zie ook 8.1).
+- **Per-tenant clientregister.** Een onveranderlijk register `OIN naar client`, bij opstarten gebouwd uit het
+  tenantbestand en ingebouwd in de `zgw-client`-seam van [ADR 0002](../../development/adr/0002-zgw-client-consolidation.md).
+  Architectuurchecks (`backend/architecture-test`) bewaken dat services het register gebruiken en geen
+  losse clients, globale stores of nieuwe coroutine-scopes.
+- **Drie lagen configuratie.** Het *tenantbestand* (Git: domeinen, URL's, thema, verwijzingen naar secrets;
+  rolling restart), de *flag* (alleen aan/uit per module en tenant; live) en de *secret store* (de secrets
+  zelf, via ESO). Een module is bruikbaar als configuratie aanwezig is én de flag aanstaat. Zie
+  [Tenantbestand, flag en secret store](../../hosting-en-configuratie/tenantbestand-flag-en-secret-store.md).
+- **Geen hot reload, één uitzondering.** Wijzigingen in tenantconfiguratie en secrets gaan altijd via een
+  rolling restart van de eigen cel. De enige live wijziging is de flagd-polling van het flagbestand
+  (8.8), uitsluitend voor aan/uit-schakelaars; flags dragen geen configuratie en geen beveiligingsbesluiten.
+- **Logging.** De tenant (OIN) hoort in elke logregel (BIO 8.15.01, ASVS 16.2.1); de uitwerking van
+  observability per tenant is nog niet besloten.

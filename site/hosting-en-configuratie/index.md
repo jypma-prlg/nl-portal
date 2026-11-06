@@ -9,3 +9,4 @@ Voor ops en beheerders die NL Portal installeren en inrichten.
 - [Connectiviteit](./connectiviteit.md)
 - [Keycloak](./keycloak.md) — [token exchange](./keycloak-token-exchange.md)
 - [Document filtering](./document-filtering.md)
+- [Tenantbestand, flag en secret store](./tenantbestand-flag-en-secret-store.md) — voorgesteld: waar je wat instelt bij een gedeelde runtime

@@ -18,6 +18,13 @@ Geen ADR nodig voor: een bugfix, een naamgevingskeuze binnen één module, iets 
 [`site/architectuur/arc42`](../../architectuur/arc42/index.md) hoofdstuk 4 (oplossingsstrategie) staat beschreven zonder dat er een
 alternatief serieus is overwogen.
 
+## Voorgestelde ADR's
+
+- [ADR 0017: gedeelde multi-tenant runtime met cellen](./0017-gedeelde-multi-tenant-runtime-met-cellen.md)
+  (voorgesteld, ter review): gedeelde runtime met logische tenantscheiding, ingedeeld in cellen.
+- [ADR 0016: stateless configuratie en thema via bestanden](./0016-stateless-configuratie-en-thema-via-bestanden.md)
+  (voorgesteld).
+
 ## Status
 
 Nog geen beslissingen vastgelegd op het moment van schrijven (2026-10-20) — dit is de eerste keer
