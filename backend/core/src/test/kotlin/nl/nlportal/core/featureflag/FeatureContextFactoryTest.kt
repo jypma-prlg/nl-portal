@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.springframework.security.authentication.AnonymousAuthenticationToken
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
@@ -94,6 +96,32 @@ class FeatureContextFactoryTest {
 
         assertNull(context.targetingKey)
         assertEquals("gemeente-a", context.getValue("tenant").asString())
+    }
+
+    @Test
+    fun `a blank secret counts as no secret`() {
+        val context = FeatureContextFactory(FeatureFlagProperties.Context().apply { userIdSecret = "  " }).create(citizen)
+
+        assertNull(context.targetingKey)
+    }
+
+    @Test
+    fun `an anonymous or unauthenticated authentication yields no user attributes`() {
+        val anonymous = AnonymousAuthenticationToken("key", "anonymousUser", listOf(SimpleGrantedAuthority("ROLE_ANONYMOUS")))
+        val unauthenticated = CitizenAuthentication(citizen.token).apply { isAuthenticated = false }
+
+        listOf(anonymous, unauthenticated).forEach {
+            val context = factory.create(it)
+            assertNull(context.targetingKey)
+            assertNull(context.getValue("userType"))
+        }
+    }
+
+    @Test
+    fun `an authentication without a token yields no user id`() {
+        val withoutToken = UsernamePasswordAuthenticationToken.authenticated("c0ffee00", null, emptyList())
+
+        assertNull(factory.create(withoutToken).targetingKey)
     }
 
     @Test
