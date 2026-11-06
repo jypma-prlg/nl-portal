@@ -1,3 +1,5 @@
+@../AGENTS.md
+
 <!-- CODEGRAPH_START -->
 ## CodeGraph
 

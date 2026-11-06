@@ -44,6 +44,19 @@ description = "Mutation testing op backend/core (ADR 0011); HTML-rapport in back
 dir = "backend"
 run = "./gradlew :core:pitest"
 
+[tasks."backend:pitest-changed"]
+description = "Pitest op core-klassen die t.o.v. origin/main gewijzigd zijn, met de PR-drempel van 80% (zoals CI, ADR 0011)"
+dir = "backend"
+shell = "bash -c"
+run = '''
+set -euo pipefail
+git fetch -q origin main
+changed=$(git diff --name-only --diff-filter=AMR origin/main...HEAD -- 'core/src/main/kotlin/**/*.kt' \
+  | sed -E 's#^backend/core/src/main/kotlin/##; s#\.kt$#*#; s#/#.#g' | paste -sd, -)
+if [ -z "$changed" ]; then echo "Geen gewijzigde core-klassen."; exit 0; fi
+./gradlew :core:pitest -PpitestTargetClasses="$changed" -PpitestThreshold=80 --console=plain
+'''
+
 [tasks."backend:module-layer-changes"]
 description = "Toon nieuwe backend-modules en laagwijzigingen in ModuleLayers t.o.v. origin/main (zoals de PR-opmerking uit CI, #177)"
 dir = "backend"

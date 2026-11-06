@@ -36,7 +36,8 @@ Issues live as GitHub Issues on this repo (`gh issue ...`). See
 ### Triage labels
 
 Default canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`,
-`wontfix`). See [docs/agents/triage-labels.md](docs/agents/triage-labels.md).
+`wontfix`), plus `epic` for an umbrella issue split into sub-tickets: work its sub-tickets, never the
+epic itself. See [docs/agents/triage-labels.md](docs/agents/triage-labels.md).
 
 ### Domain docs
 
@@ -77,12 +78,17 @@ step that touches `GLOSSARY.md` or an ADR is a `domain-modeling` seam.
 ## Before you call it done
 
 ```shell
-# backend, from backend/
-./gradlew build -x integrationTest   # compiles, unit-tests, ktlint; integrationTest needs Docker
+# backend, from backend/ (Gradle needs Java from mise)
+mise exec -- ./gradlew build -x integrationTest --console=plain   # compiles, unit-tests, ktlint; integrationTest needs Docker
+mise run backend:pitest-changed                                  # only when backend/core changed: CI's 80% mutation gate
 
 # frontend, from frontend/
 pnpm -r build && pnpm lint && pnpm lint:css && pnpm typecheck && pnpm test && pnpm prettier
 ```
+
+Gradle hangs without output: stop stale daemons with `mise exec -- ./gradlew --stop` and rerun.
+Keep `--console=plain` and send long runs to a log file instead of piping through `grep`/`head`,
+which buffers until the end.
 
 For a security- or dependency-relevant change, also run the applicable `mise run security:*` task
 (see below) before considering it done.
@@ -102,14 +108,9 @@ pushed, move it: `git branch <new-branch> && git reset --hard origin/main && git
 
 ### Git hooks and `pnpm`
 
-`pnpm` staat op de `PATH` van de ontwikkelaar. Draai `git commit` en `git push` dus gewoon direct:
-de Husky-hooks onder `frontend/.husky` (pre-commit, pre-push) vinden `pnpm` zelf.
-
-Faalt een hook toch met "pnpm: command not found" (andere machine of shell zonder die `PATH`),
-draai dan git via mise: `mise exec -- git commit ...` / `mise exec -- git push ...`, of zet de tool
-op de `PATH`: `PATH="$(mise where pnpm):$PATH" git commit ...`. Gebruik nooit `--no-verify`.
-Gradle heeft `JAVA_HOME="$(mise where java)"` nodig; draai het als `mise exec -- ./gradlew <taak>`.
-Python is niet geïnstalleerd; gebruik `mise exec -- node` voor scripts.
+Draai `git commit` en `git push` direct: de Husky-hooks onder `frontend/.husky` draaien `pnpm` en
+Gradle zelf via `mise exec` wanneer mise aanwezig is, dus ook vanuit een shell zonder mise-activatie.
+Gebruik nooit `--no-verify`. Python is niet geïnstalleerd; gebruik `mise exec -- node` voor scripts.
 
 Documentatie, commitberichten en ADR's schrijf je in het Nederlands (domeintaal); gespreksoutput mag Engels zijn.
 
