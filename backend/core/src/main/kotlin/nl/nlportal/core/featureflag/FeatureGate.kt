@@ -16,12 +16,14 @@
 package nl.nlportal.core.featureflag
 
 import dev.openfeature.sdk.EvaluationContext
-import dev.openfeature.sdk.ImmutableContext
 
-/** Evaluates feature flags through OpenFeature. Never throws; evaluation errors yield the flag's default. */
+/**
+ * Evaluates feature flags through OpenFeature. Never throws; evaluation errors yield the flag's default.
+ * The [context] of the request is always passed explicitly; build it with [FeatureContextFactory].
+ */
 interface FeatureGate {
     fun isEnabled(
         flag: FeatureFlag,
-        context: EvaluationContext = ImmutableContext(),
+        context: EvaluationContext,
     ): Boolean
 }

@@ -55,6 +55,10 @@ class FeatureFlagAutoConfiguration {
     @ConditionalOnMissingBean(FeatureGate::class)
     fun featureGate(openFeatureApi: OpenFeatureAPI): FeatureGate = OpenFeatureFeatureGate(openFeatureApi.client)
 
+    @Bean
+    @ConditionalOnMissingBean(FeatureContextFactory::class)
+    fun featureContextFactory(properties: FeatureFlagProperties): FeatureContextFactory = FeatureContextFactory(properties.context)
+
     // The flagd file provider reads a file system path, so the bundled flag file is copied out of the classpath.
     private fun bundledFlagFile(): String {
         val file = Files.createTempFile("nl-portal-feature-flags", ".flagd.json")
