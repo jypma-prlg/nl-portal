@@ -42,7 +42,7 @@ class HaalCentraal2GraphQLConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(HaalCentraal2GemachtigdeQuery::class)
-    @ConditionalOnProperty(prefix = "nl-portal.config", name = ["haalcentraalhr.enabled"], havingValue = "true")
+    @ConditionalOnProperty(prefix = "nl-portal.config", name = ["haalcentraal.hr.enabled"], havingValue = "true")
     fun haalCentraal2GemachtigdeQuery(
         haalCentraal2Service: HaalCentraal2Service,
         handelsregisterService: HandelsregisterService,
