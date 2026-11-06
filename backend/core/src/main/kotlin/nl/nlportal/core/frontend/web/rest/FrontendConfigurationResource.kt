@@ -15,19 +15,24 @@
  */
 package nl.nlportal.core.frontend.web.rest
 
-import nl.nlportal.core.frontend.configuration.FrontendConfigurationProperties
+import nl.nlportal.core.featureflag.FeatureContextFactory
 import nl.nlportal.core.frontend.domain.FrontendData
 import nl.nlportal.core.frontend.service.FrontendConfigurationService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping(value = ["/api/public/frontend"])
 class FrontendConfigurationResource(
     private val frontendConfigurationService: FrontendConfigurationService,
+    private val featureContextFactory: FeatureContextFactory,
 ) {
     @GetMapping(value = [""])
-    fun features(): ResponseEntity<FrontendData> = ResponseEntity.ok().header("Content-Type", "application/json").body(frontendConfigurationService.getFrontendData())
+    fun features(): Mono<ResponseEntity<FrontendData>> =
+        featureContextFactory.current().map { context ->
+            ResponseEntity.ok().header("Content-Type", "application/json").body(frontendConfigurationService.getFrontendData(context))
+        }
 }

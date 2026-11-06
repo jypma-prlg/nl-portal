@@ -15,6 +15,7 @@
  */
 package nl.nlportal.portal.authentication.domain
 
+import nl.nlportal.core.featureflag.UserTypeAware
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
@@ -22,9 +23,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 open class PortalAuthentication(
     jwt: Jwt,
     authorities: Collection<GrantedAuthority>,
-    val userType: String,
+    override val userType: String,
     val userId: String,
-) : JwtAuthenticationToken(jwt, authorities) {
+) : JwtAuthenticationToken(jwt, authorities),
+    UserTypeAware {
     open fun getUserRepresentation() = "Portal"
 }
 

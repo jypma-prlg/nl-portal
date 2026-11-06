@@ -73,6 +73,10 @@ periodiek wordt herladen; een andere OpenFeature-provider sluit je aan met een e
 
 - **Typen**: ops (runtime-gedrag), permission (toegang; bij twijfel geweigerd), experiment en release
   (kortlevend). Flagsleutels hebben het formaat `<type>.<module>.<naam>`.
+- **Evaluatiecontext**: `FeatureContextFactory` bouwt per request een context (tenant, omgeving,
+  gebruikerstype en een opaque gebruikers-id: HMAC van het subject met een geheime sleutel per tenant)
+  uit de reactive security context. De context wordt expliciet aan elke evaluatie meegegeven, niet
+  thread-gebonden opgeslagen, en bevat nooit persoonsgegevens.
 - **Frontend**: de uitkomst voor de frontend komt via `GET /api/public/frontend`; de browser praat
   nooit met een flag-systeem.
 - **Nu flag-gedreven**: alleen de toggle `messageCountEnabled` (`ops.frontend.message-count`). De

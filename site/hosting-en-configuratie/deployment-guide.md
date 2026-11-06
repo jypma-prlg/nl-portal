@@ -99,6 +99,38 @@ flag voor toegang (permission) valt bij twijfel altijd terug op uit. Kubernetes 
 ConfigMap bij met een bestandswissel; of NL Portal die wijziging zonder herstart oppikt is nog niet in
 een echte clusteromgeving getest, controleer dat in je eigen omgeving.
 
+**Evaluatiecontext en targeting**
+
+Elke flag wordt per request geëvalueerd met een evaluatiecontext. Daarmee kun je in je flagbestand
+[targetingregels](https://flagd.dev/reference/flag-definitions/#targeting-rules) schrijven op deze
+attributen:
+
+| Attribuut | Inhoud |
+|---|---|
+| `tenant` | De tenant van deze installatie (`nl-portal.feature-flags.context.tenant`). |
+| `environment` | De omgeving (`nl-portal.feature-flags.context.environment`); ontbreekt als die niet is ingesteld. |
+| `userType` | Soort ingelogde gebruiker: `bsn`, `kvk` of `uid`; ontbreekt bij een anoniem request. |
+| `targetingKey` | Opaque gebruikers-id: een HMAC-SHA256 van het subject van de identity provider met de geheime sleutel van de tenant. Ontbreekt zonder sleutel of zonder ingelogde gebruiker. |
+
+De context bevat nooit persoonsgegevens zoals BSN, KVK-nummer of naam.
+
+| Property | Omgevingsvariabele | Betekenis |
+|---|---|---|
+| `nl-portal.feature-flags.context.tenant` | `NLPORTAL_FEATUREFLAGS_CONTEXT_TENANT` | Naam van de tenant (standaard `default`). |
+| `nl-portal.feature-flags.context.environment` | `NLPORTAL_FEATUREFLAGS_CONTEXT_ENVIRONMENT` | Naam van de omgeving, bijvoorbeeld `test` of `productie`. |
+| `nl-portal.feature-flags.context.user-id-secret` | `NLPORTAL_FEATUREFLAGS_CONTEXT_USERIDSECRET` | Geheime sleutel voor het opaque gebruikers-id. Zet deze alleen via een secret, nooit in versiebeheer of in een flag-systeem. |
+
+Een flag die alleen voor één tenant aan staat:
+
+```json
+"ops.frontend.message-count": {
+  "state": "ENABLED",
+  "variants": { "on": true, "off": false },
+  "defaultVariant": "off",
+  "targeting": { "if": [{ "==": [{ "var": "tenant" }, "gemeente-a"] }, "on", "off"] }
+}
+```
+
 **Beschikbare flags**
 
 | Flag | Type | Standaard | Effect |

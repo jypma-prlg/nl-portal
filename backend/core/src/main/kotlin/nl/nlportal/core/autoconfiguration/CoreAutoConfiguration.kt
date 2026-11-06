@@ -15,6 +15,7 @@
  */
 package nl.nlportal.core.autoconfiguration
 
+import nl.nlportal.core.featureflag.FeatureContextFactory
 import nl.nlportal.core.featureflag.FeatureGate
 import nl.nlportal.core.frontend.configuration.FrontendConfigurationProperties
 import nl.nlportal.core.frontend.configuration.FrontendModuleConfigurationProperties
@@ -55,7 +56,8 @@ class CoreAutoConfiguration {
     @ConditionalOnMissingBean(FrontendConfigurationResource::class)
     fun frontendConfigurationResource(
         frontendConfigurationService: FrontendConfigurationService,
-    ) = FrontendConfigurationResource(frontendConfigurationService)
+        featureContextFactory: FeatureContextFactory,
+    ) = FrontendConfigurationResource(frontendConfigurationService, featureContextFactory)
 
     @Bean
     @ConditionalOnProperty(prefix = "nl-portal.support", name = ["ping-endpoint.enabled"], havingValue = "true")

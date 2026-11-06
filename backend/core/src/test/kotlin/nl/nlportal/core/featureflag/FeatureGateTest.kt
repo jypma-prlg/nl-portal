@@ -16,6 +16,7 @@
 package nl.nlportal.core.featureflag
 
 import dev.openfeature.sdk.EvaluationContext
+import dev.openfeature.sdk.ImmutableContext
 import dev.openfeature.sdk.OpenFeatureAPI
 import dev.openfeature.sdk.ProviderEvaluation
 import dev.openfeature.sdk.providers.memory.Flag
@@ -53,45 +54,45 @@ class FeatureGateTest {
         api.setProviderAndWait(failingProvider)
         val gate = OpenFeatureFeatureGate(api.client)
 
-        assertTrue(gate.isEnabled(FeatureFlag("ops.frontend.example", ToggleType.OPS, default = true)))
-        assertFalse(gate.isEnabled(FeatureFlag("permission.frontend.example", ToggleType.PERMISSION)))
+        assertTrue(gate.isEnabled(FeatureFlag("ops.frontend.example", ToggleType.OPS, default = true), ImmutableContext()))
+        assertFalse(gate.isEnabled(FeatureFlag("permission.frontend.example", ToggleType.PERMISSION), ImmutableContext()))
     }
 
     @Test
     fun `an unknown release or experiment flag falls back to its default`() {
         val gate = gateWith(emptyMap())
 
-        assertTrue(gate.isEnabled(FeatureFlag("release.frontend.unknown", ToggleType.RELEASE, default = true)))
-        assertTrue(gate.isEnabled(FeatureFlag("experiment.frontend.unknown", ToggleType.EXPERIMENT, default = true)))
+        assertTrue(gate.isEnabled(FeatureFlag("release.frontend.unknown", ToggleType.RELEASE, default = true), ImmutableContext()))
+        assertTrue(gate.isEnabled(FeatureFlag("experiment.frontend.unknown", ToggleType.EXPERIMENT, default = true), ImmutableContext()))
     }
 
     @Test
     fun `an enabled flag evaluates to true`() {
         val gate = gateWith(mapOf("ops.frontend.example" to booleanFlag(true)))
 
-        assertTrue(gate.isEnabled(FeatureFlag("ops.frontend.example", ToggleType.OPS)))
+        assertTrue(gate.isEnabled(FeatureFlag("ops.frontend.example", ToggleType.OPS), ImmutableContext()))
     }
 
     @Test
     fun `a disabled flag evaluates to false`() {
         val gate = gateWith(mapOf("ops.frontend.example" to booleanFlag(false)))
 
-        assertFalse(gate.isEnabled(FeatureFlag("ops.frontend.example", ToggleType.OPS, default = true)))
+        assertFalse(gate.isEnabled(FeatureFlag("ops.frontend.example", ToggleType.OPS, default = true), ImmutableContext()))
     }
 
     @Test
     fun `an unknown ops flag falls back to its default`() {
         val gate = gateWith(emptyMap())
 
-        assertTrue(gate.isEnabled(FeatureFlag("ops.frontend.unknown", ToggleType.OPS, default = true)))
-        assertFalse(gate.isEnabled(FeatureFlag("ops.frontend.unknown", ToggleType.OPS, default = false)))
+        assertTrue(gate.isEnabled(FeatureFlag("ops.frontend.unknown", ToggleType.OPS, default = true), ImmutableContext()))
+        assertFalse(gate.isEnabled(FeatureFlag("ops.frontend.unknown", ToggleType.OPS, default = false), ImmutableContext()))
     }
 
     @Test
     fun `an unknown permission flag is denied`() {
         val gate = gateWith(emptyMap())
 
-        assertFalse(gate.isEnabled(FeatureFlag("permission.frontend.unknown", ToggleType.PERMISSION)))
+        assertFalse(gate.isEnabled(FeatureFlag("permission.frontend.unknown", ToggleType.PERMISSION), ImmutableContext()))
     }
 
     @Test

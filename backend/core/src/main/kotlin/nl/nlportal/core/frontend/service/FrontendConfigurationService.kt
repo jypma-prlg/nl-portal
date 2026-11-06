@@ -15,6 +15,7 @@
  */
 package nl.nlportal.core.frontend.service
 
+import dev.openfeature.sdk.EvaluationContext
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import nl.nlportal.core.featureflag.FeatureFlag
@@ -32,19 +33,19 @@ class FrontendConfigurationService(
     private val frontendModuleConfigurationProperties: FrontendModuleConfigurationProperties,
     private val featureGate: FeatureGate,
 ) {
-    fun getFrontendData(): FrontendData =
+    fun getFrontendData(context: EvaluationContext): FrontendData =
         FrontendData(
             modules = getModules(),
-            toggles = getToggles(),
+            toggles = getToggles(context),
             properties = frontendConfigurationProperties.properties,
             theme = frontendConfigurationProperties.theme,
         )
 
     // Only the message count toggle is flag-driven so far; the remaining toggles follow in #156.
-    private fun getToggles(): FrontendToggles {
+    private fun getToggles(context: EvaluationContext): FrontendToggles {
         val source = frontendConfigurationProperties.toggles
         return FrontendToggles().apply {
-            messageCountEnabled = featureGate.isEnabled(MESSAGE_COUNT)
+            messageCountEnabled = featureGate.isEnabled(MESSAGE_COUNT, context)
             casesPartialSearchEnabled = source.casesPartialSearchEnabled
             openProductEnabled = source.openProductEnabled
             casesResultExplanationEnabled = source.casesResultExplanationEnabled
