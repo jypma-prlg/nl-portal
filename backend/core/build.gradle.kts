@@ -51,6 +51,10 @@ dependencies {
     api(Dependencies.openFeatureSdk)
     implementation(Dependencies.openFeatureFlagd)
 
+    // PROTOTYPE #204: ReactorContext in suspend functions (tenancy)
+    implementation(Dependencies.kotlinCoroutines)
+    implementation(Dependencies.kotlinCoroutinesReactor)
+
     // Logging for Kotlin
     api(Dependencies.kotlinLogging)
     testImplementation(TestDependencies.springBootTest)

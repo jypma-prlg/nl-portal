@@ -25,6 +25,8 @@ dependencies {
         .forEach { testImplementation(project(it.path)) }
 
     testImplementation(TestDependencies.springBootTest)
+    testImplementation(Dependencies.kotlinCoroutines) // PROTOTYPE #204: fixtures voor de coroutine-regels
+    testImplementation(Dependencies.springWebFlux)
     testImplementation(TestDependencies.archUnitJunit5)
     testImplementation(TestDependencies.junitJupiterTest)
     testImplementation(TestDependencies.assertJCore)

@@ -1,0 +1,17 @@
+# PROTOTYPE (wayfinder #204): alleen voor TenantContextGraphQlTest
+extend type Query {
+    prototypeWhoAmI: String
+    prototypeWhoAmIAfterHop: String
+    prototypeWhoAmIMono: String
+    prototypeLostContext: String
+    prototypeZaak(id: UUID!): String
+    prototypeParent: PrototypeParent
+}
+
+type PrototypeParent {
+    tenant: String
+}
+
+extend type Mutation {
+    prototypeNoop: String
+}

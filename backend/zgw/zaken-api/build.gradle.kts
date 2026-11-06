@@ -42,6 +42,7 @@ dependencies {
     testImplementation(TestDependencies.springSecurityTest)
 
     testImplementation(project(":zgw:common-ground-authentication-test"))
+    testImplementation(project(":graphql")) // PROTOTYPE #204: basisschema (Query, scalars) voor de tenant-GraphQL-test
     testImplementation(TestDependencies.kotlinCoroutines)
     testImplementation(TestDependencies.mockitoKotlin)
     testImplementation(TestDependencies.okHttpMockWebserver)
