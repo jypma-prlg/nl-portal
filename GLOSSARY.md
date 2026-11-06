@@ -37,6 +37,11 @@ staat; voeg een nieuwe term toe zodra een module ernaar vernoemd wordt (zie de
   configuratie in plaats van uit de code. Vier typen: *ops* (runtime-gedrag), *permission* (toegang;
   bij twijfel geweigerd), *experiment* en *release* (kortlevend). NL Portal werkt ook zonder
   aparte flag-voorziening (zie issue #143).
+- **Omgevingsconfiguratie** — de set config-files die één deployment aan één gemeente bindt: thema,
+  koppelingen en teksten. Wijzigen betekent een nieuwe uitrol, geen aanpassing in een draaiende
+  omgeving. _Avoid_: configuration panel, instellingenbeheer.
+- **Thema** — het uiterlijk van één gemeente in NL Portal: logo, stijl, favicon en paginatitel, zodat de
+  portal herkenbaar is als die van de gemeente. _Avoid_: skin, branding.
 
 Zie ook `site/architectuur/arc42/12-glossarium.md` voor architectuurspecifieke
 afkortingen (C1/C2/C3, ADR, SBOM, ...), en de `/codebase-design`-skill voor de architectuurvocabulaire

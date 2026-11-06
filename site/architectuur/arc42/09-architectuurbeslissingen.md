@@ -55,6 +55,10 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   Bestanden uit NL Portal houden de Ritense-header (jaartal bevroren); nieuwe bestanden krijgen
   `Copyright <jaar> PinkRoccade Local Government B.V.`, alles onder EUPL 1.2.
 
+- [`0016-stateless-configuratie-en-thema-via-bestanden.md`](../../development/adr/0016-stateless-configuratie-en-thema-via-bestanden.md) — **voorgesteld**.
+  Configuratie en thema per omgeving uit config-files, zonder configuration panel; rolling restart in
+  plaats van hot reload; validatie (incl. contrast) in CI en bij opstart.
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:
