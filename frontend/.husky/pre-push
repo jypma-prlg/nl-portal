@@ -1,8 +1,11 @@
 #!/usr/bin/env sh
 set -e
 
+# Via mise krijgen pnpm en Gradle de tools uit mise.toml (o.a. JAVA_HOME), ook in een shell zonder mise-activatie.
+if command -v mise >/dev/null 2>&1; then run="mise exec --"; else run=""; fi
+
 echo "▶ Frontend: pnpm lint (includes copyright header check)"
-(cd frontend && pnpm lint)
+(cd frontend && $run pnpm lint)
 
 echo "▶ Backend: ./gradlew spotlessCheck"
-(cd backend && ./gradlew spotlessCheck)
+(cd backend && $run ./gradlew spotlessCheck)
