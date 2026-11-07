@@ -14,7 +14,9 @@ import { fileURLToPath } from "node:url";
 export const REGISTER_PATH = "site/compliance/normatieve-bronnen.md";
 
 // Een ID heeft minstens twee segmenten (N-<BRON>-<...>), zodat woorden als N-SNAPSHOT geen ID zijn; het eindigt nooit op een punt.
-const ID_PATTERN = /\bN-[A-Z][A-Z0-9]*(?:-[A-Z0-9]+(?:\.[0-9]+)*)+/g;
+const ID_SOURCE = String.raw`N-[A-Z][A-Z0-9]*(?:-[A-Z0-9]+(?:\.[0-9]+)*)+`;
+const ID_PATTERN = new RegExp(String.raw`\b${ID_SOURCE}`, "g");
+const ID_EXACT = new RegExp(`^${ID_SOURCE}$`);
 const SKIP_DIRS = new Set(["node_modules", "build", "dist", "cache", ".git", ".gradle", ".vitepress"]);
 
 const COVERING = new Set(["Afgedwongen", "Getoetst"]);
@@ -79,7 +81,7 @@ export function checkCompliance(root) {
   const sources = new Map();
   for (const [rawId, , version, consulted, how] of tableRows(markdown, "Register")) {
     const id = stripTicks(rawId);
-    if (!/^N-[A-Z][A-Z0-9]*(?:-[A-Z0-9]+(?:\.[0-9]+)*)+$/.test(id)) {
+    if (!ID_EXACT.test(id)) {
       problems.push(`${REGISTER_PATH}: "${id}" is geen geldig bron-ID`);
       continue;
     }

@@ -3,9 +3,7 @@ import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { checkCompliance } from "./check-compliance.mjs";
-
-const REGISTER_PATH = "site/compliance/normatieve-bronnen.md";
+import { checkCompliance, REGISTER_PATH } from "./check-compliance.mjs";
 
 function register({ sources, matrix }) {
   return [
