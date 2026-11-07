@@ -95,3 +95,13 @@ Gedeelde logica in [`scripts/escalate-findings.mjs`](https://github.com/jypma-pr
 Momenteel is er één maintainer, die zelf op elk escalatie-issue en de maandelijkse checklist
 handelt. Bij livegang in productie wordt dit onderdeel van het team-proces (rotatie/toewijzing) -
 dit document gaat daar nu nog niet op vooruitlopen.
+
+## 6. Bronversies nalopen
+
+Periodiek (bij de maandelijkse onderhoudscontrole uit §2, en altijd bij het begin van een nieuw
+securitytraject) controleren of de bronversies in het register
+[normatieve bronnen](../../compliance/normatieve-bronnen.md) nog actueel zijn: bestaat er een nieuwere
+ASVS-versie dan 5.0.0, is een gebruikte RFC vervangen of aangevuld (bijvoorbeeld RFC 8693), en is een
+niet zelf gelezen bron intussen wel gelezen? Werk dan versie en "geraadpleegd op" bij en toets de
+matrixrijen opnieuw. `mise run compliance:check` bewaakt de consistentie van het register, niet de
+actualiteit van de bronnen.

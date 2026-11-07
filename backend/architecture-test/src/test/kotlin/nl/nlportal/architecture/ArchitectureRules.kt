@@ -51,7 +51,7 @@ class ArchitectureRules(
             .dependOnClassesThat(inLayer(to))
             .allowEmptyShould(false)
             .because(
-                "laag ${from.name} (${from.label}) mag niet afhangen van laag ${to.name} (${to.label}). " +
+                "[N-CG-5LAGEN] laag ${from.name} (${from.label}) mag niet afhangen van laag ${to.name} (${to.label}). " +
                     "Verplaats de gedeelde code naar een laag die beide mogen gebruiken, of draai de afhankelijkheid om; " +
                     "pas niet de mapping of het filter aan om de fout te laten verdwijnen",
             )
@@ -63,7 +63,7 @@ class ArchitectureRules(
             .dependOnClassesThat(inLayer(Layer.APP))
             .allowEmptyShould(false)
             .because(
-                "alleen app/app-dev stelt de modules samen; laat gedeelde code niet van app afhangen " +
+                "[N-CG-5LAGEN] alleen app/app-dev stelt de modules samen; laat gedeelde code niet van app afhangen " +
                     "maar verplaats die naar een lagere laag",
             )
 
@@ -88,7 +88,7 @@ class ArchitectureRules(
             .beFreeOfCycles()
             .allowEmptyShould(false)
             .because(
-                "modules mogen elkaar niet wederzijds nodig hebben; breek de cyclus door gedeelde code " +
+                "[N-CG-5LAGEN] modules mogen elkaar niet wederzijds nodig hebben; breek de cyclus door gedeelde code " +
                     "naar een eigen module of een lagere laag te verplaatsen",
             )
     }
