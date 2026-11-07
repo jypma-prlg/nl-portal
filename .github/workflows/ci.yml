@@ -115,6 +115,19 @@ jobs:
             -   name: Check that the Java version is consistent
                 run: node scripts/check-java-version.mjs
 
+    compliance-register-consistent:
+        needs: changes
+        if: ${{ needs.changes.outputs.backend == 'true' || needs.changes.outputs.workflows == 'true' || needs.changes.outputs.scripts == 'true' || needs.changes.outputs.docs == 'true' }}
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            -   name: Set up Node.js
+                uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+                with:
+                    node-version: "24"
+            -   name: Check the register of normative sources (N-CG-5LAGEN, N-ASVS-5.0, ...)
+                run: node scripts/check-compliance.mjs
+
     capabilities-docs-fresh:
         needs: changes
         if: ${{ needs.changes.outputs.docs == 'true' || needs.changes.outputs.scripts == 'true' }}
@@ -140,7 +153,7 @@ jobs:
                 run: mise run docs:build
 
     ci-required:
-        needs: [changes, validate, test-scripts, java-version-consistent, capabilities-docs-fresh, docs-site]
+        needs: [changes, validate, test-scripts, java-version-consistent, capabilities-docs-fresh, compliance-register-consistent, docs-site]
         if: always()
         runs-on: ubuntu-latest
         steps:
@@ -150,12 +163,14 @@ jobs:
                     SCRIPTS_RESULT: ${{ needs.test-scripts.result }}
                     JAVA_VERSION_RESULT: ${{ needs.java-version-consistent.result }}
                     CAPABILITIES_RESULT: ${{ needs.capabilities-docs-fresh.result }}
+                    COMPLIANCE_RESULT: ${{ needs.compliance-register-consistent.result }}
                     DOCS_SITE_RESULT: ${{ needs.docs-site.result }}
                 run: |
                     echo "::notice::validate result = ${VALIDATE_RESULT}"
                     echo "::notice::test-scripts result = ${SCRIPTS_RESULT}"
                     echo "::notice::java-version-consistent result = ${JAVA_VERSION_RESULT}"
                     echo "::notice::capabilities-docs-fresh result = ${CAPABILITIES_RESULT}"
+                    echo "::notice::compliance-register-consistent result = ${COMPLIANCE_RESULT}"
                     echo "::notice::docs-site result = ${DOCS_SITE_RESULT}"
                     if [ "${VALIDATE_RESULT}" = "failure" ] || [ "${VALIDATE_RESULT}" = "cancelled" ]; then
                       exit 1
@@ -167,6 +182,9 @@ jobs:
                       exit 1
                     fi
                     if [ "${CAPABILITIES_RESULT}" = "failure" ] || [ "${CAPABILITIES_RESULT}" = "cancelled" ]; then
+                      exit 1
+                    fi
+                    if [ "${COMPLIANCE_RESULT}" = "failure" ] || [ "${COMPLIANCE_RESULT}" = "cancelled" ]; then
                       exit 1
                     fi
                     if [ "${DOCS_SITE_RESULT}" = "failure" ] || [ "${DOCS_SITE_RESULT}" = "cancelled" ]; then

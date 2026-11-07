@@ -18,7 +18,9 @@ Geraadpleegd op: 2026-11-05. Onderzoek voor #131, gebruikt door #132.
 
 ## 1. Bronnen en versie
 
-| Bron | Link | Opmerking |
+Het register [normatieve bronnen](../../compliance/normatieve-bronnen.md) (`N-ASVS-5.0`, `N-RFC-8693`, `N-KEYCLOAK-TOKEN-EXCHANGE`) is leidend voor ID, versie en datum; onderstaande tabel geeft de herkomst per hoofdstuk. Bronnen die niet zelf zijn gelezen zijn als zodanig gemarkeerd.
+
+| Bron | Link | Geraadpleegd op 2026-11-05; wijze van raadplegen |
 |---|---|---|
 | ASVS 5.0.0 V10 | https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x19-V10-OAuth-and-OIDC.md | Primaire bron, volledig gelezen |
 | ASVS 5.0.0 V9 | https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x18-V9-Self-contained-Tokens.md | Volledig gelezen |

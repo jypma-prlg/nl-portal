@@ -1,6 +1,6 @@
 # Toetsing Keycloak token exchange aan ASVS 5.0.0 level 3
 
-Uitgevoerd op: 2026-11-05, bij #132 (V1 verwijderd, standard token exchange is het enige pad). Eisen en context komen uit het onderzoek [ASVS 5.0.0 level 3 voor token-exchange](./asvs-5-l3-token-exchange.md); het kader (hoofdstuk V6 van ASVS 5.0.0, geen "v6") staat daar.
+Bron: `N-ASVS-5.0` in het [register van normatieve bronnen](../../compliance/normatieve-bronnen.md). Uitgevoerd op: 2026-11-05, bij #132 (V1 verwijderd, standard token exchange is het enige pad). Eisen en context komen uit het onderzoek [ASVS 5.0.0 level 3 voor token-exchange](./asvs-5-l3-token-exchange.md); het kader (hoofdstuk V6 van ASVS 5.0.0, geen "v6") staat daar.
 
 Deze toets kijkt naar de **code en de standaardconfiguratie in deze repository** (de app image zet alleen `jwk-set-uri`; de testconfiguraties onder `src/test` zetten wel een `issuer-uri`, maar dat geldt niet voor een draaiende omgeving) (`backend/zgw/common-ground-authentication`, `backend/app/src/main/resources/config/application.yml`, `docker-compose/`). De inrichting van een eigen Keycloak-realm of productieomgeving is niet beoordeeld.
 

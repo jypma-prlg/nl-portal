@@ -23,6 +23,10 @@ description = "Preview the docs site locally"
 dir = "site"
 run = "pnpm install && pnpm run dev"
 
+[tasks."compliance:check"]
+description = "Fail when a normative-source ID is unknown or a source has no check or deviation decision (site/compliance/normatieve-bronnen.md)"
+run = "node scripts/check-compliance.mjs"
+
 [tasks."likec4:validate"]
 description = "Validate the LikeC4 architecture model (site/likec4)"
 run = "npx --yes likec4@1.60.0 validate site/likec4"

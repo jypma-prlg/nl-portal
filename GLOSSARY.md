@@ -42,6 +42,9 @@ staat; voeg een nieuwe term toe zodra een module ernaar vernoemd wordt (zie de
   omgeving. _Avoid_: configuration panel, instellingenbeheer.
 - **Thema** — het uiterlijk van één gemeente in NL Portal: logo, stijl, favicon en paginatitel, zodat de
   portal herkenbaar is als die van de gemeente. _Avoid_: skin, branding.
+- **Normatieve bron** — een extern of intern document (bijvoorbeeld OWASP ASVS 5.0, een RFC of het
+  5-lagenmodel) waaraan NL Portal zich bewust toetst en waarvan per eis vastligt hoe die wordt afgedwongen
+  of waarom niet. _Avoid_: standaard, richtlijn.
 
 Zie ook `site/architectuur/arc42/12-glossarium.md` voor architectuurspecifieke
 afkortingen (C1/C2/C3, ADR, SBOM, ...), en de `/codebase-design`-skill voor de architectuurvocabulaire
