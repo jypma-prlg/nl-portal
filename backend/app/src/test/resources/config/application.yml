@@ -17,12 +17,6 @@ spring:
 
 nl-portal:
     security:
-        cors:
-            -   path: "/**"
-                config:
-                    allowedHeaders: "*"
-                    allowedOrigins: "*"
-                    allowedMethods: "*"
         endpoints:
             unsecured: /api/public/**
     authentication:
