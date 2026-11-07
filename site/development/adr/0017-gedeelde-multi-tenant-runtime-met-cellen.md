@@ -44,8 +44,12 @@ Randvoorwaarden:
   beheertoegang.
 - Het portaal draait altijd op een gemeentespecifiek domein (eigendom gemeente of Pink); het
   certificaatproces bestaat al.
-- Configuratie loopt alleen via Git/ArgoCD en OpenFeature. Het Configuration Panel vervalt. Wijzigingen
-  gaan altijd via een rolling restart.
+- Configuratie loopt alleen via Git (uitgerold door gitops-tooling) en OpenFeature. Het Configuration Panel
+  vervalt. Wijzigingen gaan altijd via een rolling restart.
+- **Context: ArgoCD.** De beoogde gitops-tool is ArgoCD, maar de Helm-charts blijven gitops-tool-agnostisch:
+  deze ADR schrijft geen Argo-specifieke configuratie voor in de charts. Argo is alleen de context waartegen
+  we verifiëren dat de generieke charts niet botsen met Argo-best practices (zie de verificatiestap onder
+  [Vóór livegang](#vóór-livegang-en-na-livegang)).
 - DigiD loopt via een eigen Pink DigiD-Keycloak-plugin (jar); sommige tenants gaan via een makelaar
   (Oosterhout: Signicat). De IdP-inrichting verschilt dus per tenant.
 - Ingress is de Kubernetes **Gateway API** (`HTTPRoute`), niet ingress-nginx.
@@ -105,8 +109,10 @@ Dit is een voorstel. Elk besluit noemt de verworpen alternatieven.
    instance-per-tenant is een cel met één tenant. Zelfde techniek, geen apart codepad.
 4. **Canary is een cel, geen percentage verkeer.** Een release gaat eerst naar de canarycel, blijft daar een
    vaste tijd draaien met automatische controles (foutpercentage, cross-tenant-tests) en gaat daarna naar
-   de hoofdcel. In ArgoCD is dat één Application per cel, in volgorde uitgerold; binnen een cel geldt de
-   standaard Kubernetes rolling update. Argo Rollouts is niet nodig.
+   de hoofdcel. Een cel is een Helm-release met eigen values (cel, replica's, tenantlijst); binnen een cel
+   geldt de standaard Kubernetes rolling update en is geen progressive-delivery-controller nodig. De
+   uitrolvolgorde canarycel naar hoofdcel en de wachttijd en health-controle ertussen zijn **eisen aan de
+   gitops-tooling**, niet aan de chart.
 5. **Hoge beschikbaarheid per cel:** minimaal 2 replica's, een PodDisruptionBudget (altijd minimaal 1
    beschikbaar) en anti-affinity over nodes of zones. Een cel met een hogere SLA krijgt meer replica's. Dit
    hoort bij de celdefinitie.
@@ -114,17 +120,14 @@ Dit is een voorstel. Elk besluit noemt de verworpen alternatieven.
    foute configuratie niet ready en blijven de oude pods draaien.
 
 Verworpen alternatieven: zie de tabel hierboven. Voor de canary-vorm: *percentage verkeer* (bijvoorbeeld met
-Argo Rollouts of weighted routes) is verworpen omdat tenantverkeer dan over versies verspringt en een
+een progressive-delivery-controller of weighted routes) is verworpen omdat tenantverkeer dan over versies verspringt en een
 tenant tijdens een release van versie wisselt; een cel geeft een vaste tenantgroep per versie.
 
-**Over ArgoCD-uitrol in volgorde.** ApplicationSet-*progressive syncs* (`RollingSync`) is daarvoor de
-kandidaat. Het is beta sinds Argo CD v3.3.0 en volgens de docs "generally considered stable, but there may be
-unhandled edge cases" (gelezen in de Argo CD-documentatie bij het schrijven van deze ADR). Beperkingen die
-relevant zijn: de gegenereerde Applications krijgen autosync uitgezet; voortgang hangt alleen af van de
-health van de Application; en een stap wacht niet een vaste tijd. *(redactie)* De "vaste tijd in de canary"
-moet dus uit een health- of hook-controle komen (bijvoorbeeld een `PostSync`-hook die de controles draait en
-pas daarna health meldt), niet uit RollingSync zelf. Een alternatief zonder progressive syncs is een
-app-of-apps met sync-waves. Welke van de twee we nemen, is een uitvoeringskeuze die bij de eerste cel wordt
+**Eisen aan de gitops-tooling voor de uitrolvolgorde.** De chart bevat geen uitrolvolgorde. De tooling moet:
+(1) cellen in een vaste volgorde uitrollen, canarycel eerst; (2) pas doorgaan naar de hoofdcel na een
+health-controle van de canarycel; (3) een vaste wachttijd en automatische controles (foutpercentage,
+cross-tenant-tests) tussen die twee stappen kunnen afdwingen; en (4) bij een mislukte controle stoppen zonder
+de hoofdcel aan te raken. Hoe dat gebeurt, is een uitvoeringskeuze van de tooling en wordt bij de eerste cel
 beproefd (open punt).
 
 ### 2. Tenantresolutie en identiteit per request
@@ -232,7 +235,7 @@ gebruikersdocumentatie (zie [Tenantbestand, flag en secret store](../../hosting-
 
 | Laag | Wat erin staat | Wat er nooit in staat | Wijzigt via |
 |---|---|---|---|
-| **Tenantbestand** (Git) | Domeinen, issuer, API-URL's, thema, cel, *verwijzingen* naar secrets op naam | Secrets, tokens | Pull request, ArgoCD, rolling restart van de cel |
+| **Tenantbestand** (Git) | Domeinen, issuer, API-URL's, thema, cel, *verwijzingen* naar secrets op naam | Secrets, tokens | Pull request, uitrol door de gitops-tooling, rolling restart van de cel |
 | **Flag** (OpenFeature/flagd) | Alleen aan/uit per module, gericht op de tenant (type *permission*) | URL's, credentials, tenantconfiguratie, beveiligingsbesluiten | Flagbestand; live (besluit 5) |
 | **Secret store** (via External Secrets Operator) | De secrets zelf: client secrets, API-sleutels, sleutelmateriaal | Niets anders | Rotatie in de store; synchronisatie leidt tot een rolling restart van de cel |
 
@@ -281,12 +284,14 @@ heeft de echte flagd-koppeling niet getest *(prototype)*.
 ### 5. Geen hot reload, met één uitzondering: flagd-polling
 
 **Regel:** elke wijziging in tenantconfiguratie of secrets leidt tot een rolling restart, nooit tot hot
-reload. Een wijziging in Git (ArgoCD) of een nieuwe ESO-waarde moet de pod-template laten veranderen.
+reload. Een wijziging in het tenantbestand of een nieuwe waarde in de secret store moet de pod-template laten
+veranderen.
 
-*(redactie)* Een Helm-checksum-annotatie ziet alleen wat Helm rendert. Een Secret dat ESO aanmaakt is voor
-Helm onzichtbaar. Voor ESO-gedreven rotatie is dus iets anders nodig (Stakater Reloader of een eigen
-mechanisme dat een annotatie wijzigt). #202 laat de keuze tussen Reloader en eigen checksum als
-uitvoeringsdetail; deze kanttekening hoort erbij.
+*(redactie)* Dit is een eis aan de chart, tool-agnostisch: voor wat Helm zelf rendert (het tenantbestand)
+volstaat een checksum-annotatie op de pod-template. Een Helm-checksum ziet alleen wat Helm rendert; een Secret
+dat ESO aanmaakt is voor Helm onzichtbaar. Voor ESO-gedreven rotatie is dus iets anders nodig (Stakater
+Reloader of een eigen mechanisme dat een annotatie wijzigt). #202 laat de keuze tussen Reloader en eigen
+checksum als uitvoeringsdetail; deze kanttekening hoort erbij. Beide werken met elke gitops-tool.
 
 **Uitzondering (besluit):** flagd pollt het flagbestand (standaard elke 5 s, ADR 0014) en past
 flagwijzigingen **live** toe. Dat is het doel van OpenFeature en gebeurt binnen deze voorwaarden:
@@ -301,15 +306,18 @@ zonder herstart opgeven. Het backend-onderzoek noemde dit expliciet als de keuze
 `/actuator/refresh` is *geen* onderdeel van de uitzondering: dat is hot reload van `@ConfigurationProperties`
 en verdwijnt.
 
-### 6. Realm-as-code via ArgoCD
+### 6. Realm-as-code via gitops
 
-**Besluit:** keycloak-config-cli (kcc) als ArgoCD-`PostSync`-Job per tenant, uitgerold met een
-`ApplicationSet` (git-file-generator over de tenantbestanden) en een Helm-chart rond één realm-template.
+**Besluit:** keycloak-config-cli (kcc) als gewone Kubernetes Job per tenant-realm (of als Helm-hook), in een
+Helm-chart rond één realm-template met per tenant een eigen values-bestand dat uit het tenantbestand komt.
+De chart bevat geen tool-specifieke annotaties. De volgorde (eerst de secrets, dan de Job) en het opnieuw
+draaien bij wijziging zijn eisen aan de gitops-tooling. Tool-specifieke hooks (bijvoorbeeld een Argo
+`PostSync`-hook) horen hooguit als optionele toelichting buiten de chart.
 
 | Optie *(onderzoek)* | Beoordeling |
 |---|---|
 | **keycloak-config-cli** (gekozen) | Past op het bestaande exportformaat, geen extra control-plane of state-backend, remote state ruimt verwijderde clients, IdP's en flows op |
-| Crossplane provider-keycloak | Beste ArgoCD-fit en continue drift-correctie; vraagt Crossplane, circa 1.000 tot 2.000 managed resources en `ignoreDifferences`. Heroverwegen als kcc Keycloak 26.8+ niet binnen enkele maanden ondersteunt of het platformteam Crossplane toch draait |
+| Crossplane provider-keycloak | Continue drift-correctie en elk Keycloak-object als Kubernetes-resource; vraagt een Crossplane-control-plane en circa 1.000 tot 2.000 managed resources, en is dus niet tool-agnostisch in de chart. Heroverwegen als kcc Keycloak 26.8+ niet binnen enkele maanden ondersteunt of het platformteam Crossplane toch draait |
 | Terraform/OpenTofu | Functioneel het rijkst; vraagt een state-backend en runner. Alleen bij een bestaande Terraform-straat |
 | `KeycloakRealmImport` (Operator) | Valt af: alleen aanmaken, niet bijwerken of verwijderen |
 
@@ -440,7 +448,7 @@ beheerde en gereviewde thema's, geen self-service zonder review *(onderzoek)*.
 ### Voor beheer en bewijs
 
 - Elke release raakt alle tenants van een cel; BIO 8.32.01 vraagt een risicoafweging en een rollback-plan per
-  wijziging, goedkeuring door een tweede persoon, en Git/ArgoCD is de administratie.
+  wijziging, goedkeuring door een tweede persoon, en Git met de gitops-uitrol is de administratie.
 - Een secret-rotatie of een tenantwijziging herstart alleen de eigen cel (het backend-onderzoek ging nog uit
   van een vlootbrede herstart; de celindeling beperkt dat).
 - Pink levert per tenant een overzicht van sleutels en certificaten (BIO 8.24.02) en één assurancerapport
@@ -462,7 +470,7 @@ Beknopt; het volledige overzicht met alle controls staat in het onderzoek `multi
 | ASVS 8.3.1 (L1), 4.1.3 (L2): tenant niet uit door gebruiker zetbare bron | Host na allowlist, ingress overschrijft headers, NetworkPolicy | Zie lezing bij besluit 2 |
 | BIO 8.15.01, ASVS 16.2.1 (L2): tenant in elke logregel | OIN in MDC/Reactor Context | Nog uit te werken (open punt) |
 | ASVS 16.3.2 (L2, L3 extra): alle autorisatiebeslissingen loggen | Niet besloten | Open punt |
-| BIO 8.32.01: wijzigingsbeheer met rollback-plan | Git/ArgoCD, PR-review, cel-voor-cel uitrol | PR-historie, ArgoCD-synchistorie |
+| BIO 8.32.01: wijzigingsbeheer met rollback-plan | Git, PR-review, cel-voor-cel gitops-uitrol | PR-historie, uitrolhistorie van de gitops-tool |
 | BIO 8.08.05, 8.31, 8.29.01: pentest per release, geen test in productie | Voorstel: acceptatie vóór de canarycel | Voorstel, ter toetsing |
 | ASVS 13.4.5, 13.4.2 (L2): geen open beheer-endpoints | Actuator op managementpoort, `refresh` en `restart` weg | Vóór livegang |
 
@@ -477,13 +485,22 @@ moet devops bevestigen. Voorstel: een HSM-backed store als eis vóór livegang; 
 voor het pseudonieme gebruikers-id, `private_key_jwt`) een gedocumenteerde afwijking met een plan na
 livegang.
 
-## ArgoCD-, Kubernetes- en ESO-inrichting
+## Helm-, Kubernetes- en ESO-inrichting
 
 Doelbeeld; niets hiervan is ingericht.
 
-- **ArgoCD.** Een `ApplicationSet` voor de tenant-realms (kcc-Jobs) en een Application per cel voor de
-  runtime, in volgorde (zie besluit 1.4). Sync-waves binnen een Application: eerst de `ExternalSecret`'s, dan
-  Jobs. Hooks draaien niet bij een selectieve sync.
+- **Helm en gitops (tool-agnostisch).** Een cel is een Helm-release met eigen values (cel, replica's,
+  tenantlijst); de realm-Jobs zijn gewone Kubernetes Jobs (of Helm-hooks) zonder tool-annotaties. Eisen aan
+  de gitops-tooling: uitrol in volgorde canarycel naar hoofdcel met wachttijd en health-controle (besluit
+  1.4), eerst de `ExternalSecret`'s en dan de Jobs, en een nieuwe run van de Jobs bij wijziging.
+- **Context: ArgoCD** *(redactie, uit de Argo CD-documentatie bij het schrijven van deze ADR gelezen)*. Argo
+  is de beoogde tool; de chart blijft generiek en krijgt geen Argo-configuratie. Relevant uit de docs:
+  ApplicationSet-*progressive syncs* (`RollingSync`) is beta sinds Argo CD v3.3.0 ("generally considered
+  stable, but there may be unhandled edge cases"), zet autosync uit voor de gegenereerde Applications, laat
+  voortgang alleen van de health afhangen en kent geen vaste wachttijd; hooks draaien niet bij een
+  selectieve sync. De wachttijd in de canary moet dus uit een health- of hook-controle komen. Dit hoort in
+  de tooling-inrichting (buiten de chart) en bij de verificatiestap onder
+  [Vóór livegang](#vóór-livegang-en-na-livegang).
 - **Kubernetes.** Per cel: een deployment van backend en frontend (zelfde image en chart), minimaal 2
   replica's, PodDisruptionBudget, anti-affinity. Een `NetworkPolicy` laat de runtime alleen via de ingress
   bereiken en blokkeert egress naar de private broker. De actuator draait op een aparte managementpoort
@@ -510,12 +527,16 @@ Dit is het overgangspad voor de eerste tenants; het scherpt aan zodra de impleme
    remote state, Keycloak-minor vastgezet; de kleine proef met de DigiD-plugin en Signicat.
 5. ESO-paden per tenant, `NetworkPolicy`'s (ingress-only, egress naar private broker geblokkeerd),
    Gateway API-routes per domein.
-6. De cellen (canary en hoofdcel), HA, ArgoCD-uitrol in volgorde met automatische controles; frontend-nginx
-   met allowlist en `default_server` 444.
-7. OIN in elke logregel; cross-tenant-tests in de pipeline met een rapport.
-8. Pentest en DAST op acceptatie met cross-tenant-scenario's (voorstel).
-9. De HSM-backed secret store, of een gedocumenteerde, geaccepteerde afwijking (te bevestigen door devops).
-10. Antwoorden op de open feiten die het ontwerp raken: Logius (mTLS), de Pink-plugin (sleutel per
+6. De cellen (canary en hoofdcel) als Helm-releases, HA, en gitops-uitrol in volgorde met wachttijd en
+   automatische controles; frontend-nginx met allowlist en `default_server` 444.
+7. **Verificatiestap ArgoCD:** controleer dat de generieke charts niet botsen met Argo-best practices:
+   geen Helm-hooks die Argo anders behandelt dan Helm, geen `lookup` of random-waarden in templates die
+   diff-ruis geven, en checksum-annotaties voor de rolling restart werken ook onder Argo. Dit wijzigt de
+   chart niet naar Argo toe; het is een toets op de generieke chart.
+8. OIN in elke logregel; cross-tenant-tests in de pipeline met een rapport.
+9. Pentest en DAST op acceptatie met cross-tenant-scenario's (voorstel).
+10. De HSM-backed secret store, of een gedocumenteerde, geaccepteerde afwijking (te bevestigen door devops).
+11. Antwoorden op de open feiten die het ontwerp raken: Logius (mTLS), de Pink-plugin (sleutel per
     aansluiting), PSP-`keyId`, Cyberbeveiligingswet.
 
 **Na livegang:**
@@ -568,8 +589,8 @@ Overige openstaande punten:
 - **Locatie van de tenantbestanden** *(redactie)*: in deze open-source repository of in een aparte
   config-repository? Tenantbestanden bevatten OIN's, domeinen en API-URL's van gemeenten; ADR 0016 spreekt
   van een "config-repository". Dit is niet besloten.
-- **ArgoCD-uitrol in volgorde**: `RollingSync` (beta) of app-of-apps met sync-waves, en hoe de vaste
-  wachttijd in de canary wordt afgedwongen.
+- **Gitops-uitrol in volgorde**: met welk mechanisme van de tooling de volgorde en de vaste wachttijd in de
+  canary worden afgedwongen (eis aan de tooling, niet aan de chart).
 - **Het aantal tenants per cel**, de grootte van de cellen en de belastingtests.
 - **Rate limiting en fair use per tenant** (noisy neighbour), **observability en audit per tenant** en het
   **tenant-onboardingproces**: nog niet gespecificeerd op de kaart.
@@ -599,4 +620,4 @@ Prototype (bron, niet overnemen): branch `prototype/tenantcontext-seam`, commit 
 
 Besluiten op de kaart: #201 (tenantresolutie), #202 (configuratiemodel), #203 (runtime-indeling), #204
 (prototype), de ticketcomments op #205. De Argo CD-documentatie over *Progressive Syncs* is bij het schrijven
-van deze ADR gelezen voor de statusaanduiding in besluit 1.
+van deze ADR gelezen, alleen voor de alinea "Context: ArgoCD".

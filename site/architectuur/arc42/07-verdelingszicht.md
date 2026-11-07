@@ -44,7 +44,9 @@ draait haar eigen instantie tegen haar eigen ZGW-landschap.
 Pink biedt NL Portal als SaaS aan voor circa 50 gemeenten (tenants) binnen twee jaar. In plaats van een
 instantie per gemeente (7.3) draait één multi-tenant runtime, ingedeeld in **cellen**:
 
-- Een **cel** is dezelfde runtime (zelfde images en chart) met een eigen deployment voor een groep tenants.
+- Een **cel** is dezelfde runtime (zelfde images en chart): een Helm-release met eigen values (cel,
+  replica's, tenantlijst) voor een groep tenants. De uitrolvolgorde canarycel naar hoofdcel, met wachttijd
+  en health-controle, is een eis aan de gitops-tooling en geen onderdeel van de chart.
   Een cel laadt alleen de tenants en secrets van die cel, en beperkt zo de gevolgen van een fout of
   kwetsbaarheid tot die cel.
 - Livegang met minimaal twee productiecellen: een **canarycel** (Pink-eigen tenant en één of twee
@@ -56,10 +58,14 @@ instantie per gemeente (7.3) draait één multi-tenant runtime, ingedeeld in **c
   host-allowlist en het certificaat per tenant horen op die edge. De runtime is alleen via de ingress te
   bereiken; de actuator draait op een aparte managementpoort.
 - Per omgeving twee gedeelde Keycloaks: een **publieke ID-broker** (met een realm per tenant, beheerd als code
-  via ArgoCD) en een **private ID-broker**, waarvan de portal-runtime nooit tokens accepteert.
-- Configuratie komt per tenant uit een bestand in Git (ArgoCD); secrets via External Secrets Operator,
+  via gitops) en een **private ID-broker**, waarvan de portal-runtime nooit tokens accepteert.
+- Configuratie komt per tenant uit een bestand in Git (uitgerold door gitops-tooling); secrets via External Secrets Operator,
   per tenant een eigen pad. Elke wijziging is een rolling restart van de eigen cel. Zie
   [8.9](./08-dwarsdoorsnede-concepten.md#89-tenantscheiding-en-configuratiemodel-voorgesteld).
+
+**Context: ArgoCD.** De beoogde gitops-tool is ArgoCD. De Helm-charts blijven gitops-tool-agnostisch; Argo is
+alleen de context waartegen we verifiëren dat de generieke charts niet botsen met Argo-best practices (zie
+ADR 0017, "Vóór livegang").
 
 Het blijft waar dat de backend stateless is en geen database heeft
 ([ADR 0013](../../development/adr/0013-stateless-backend-zonder-database.md)).

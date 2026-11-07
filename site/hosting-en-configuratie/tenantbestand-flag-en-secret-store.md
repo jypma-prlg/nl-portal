@@ -15,7 +15,7 @@ Het onderscheid is bewust: zo weet je altijd waar je een wijziging doet en wat d
 | **Wat staat erin** | Domeinen, token-issuer, URL's van koppelingen, thema, de cel waarin de tenant draait, en *verwijzingen* naar secrets (op naam) | Alleen aan of uit per module, per tenant | De secrets zelf: client secrets, API-sleutels, sleutelmateriaal |
 | **Wat staat er nooit in** | Secrets en tokens | URL's, credentials, tenantconfiguratie, beveiligingsbesluiten | Niets anders dan secrets |
 | **Waar leeft het** | Git, één bestand per tenant per omgeving | Het flagbestand (OpenFeature/flagd) | De secret store, ontsloten via External Secrets Operator |
-| **Hoe wijzig je het** | Pull request, daarna ArgoCD | Het flagbestand aanpassen | Roteren in de secret store |
+| **Hoe wijzig je het** | Pull request, daarna uitrol door de gitops-tooling | Het flagbestand aanpassen | Roteren in de secret store |
 | **Wanneer werkt het** | Na een rolling restart | Direct, zonder herstart | Na een rolling restart |
 
 Een wijziging in het tenantbestand of de secrets herstart alleen de cel van die tenant, nooit de hele
