@@ -3,8 +3,8 @@
 ## Status
 
 Geaccepteerd. Beide PR's zijn gemerged: de foutbeleid-refactor
-([PR #26](https://github.com/jypma-prlg/nl-portal/pull/26)) en de verwijdering van de
-gedeprecieerde `backend/product`-module ([PR #27](https://github.com/jypma-prlg/nl-portal/pull/27),
+([PR #26](https://github.com/pinkroccade/nl-portal/pull/26)) en de verwijdering van de
+gedeprecieerde `backend/product`-module ([PR #27](https://github.com/pinkroccade/nl-portal/pull/27),
 Beslissing punt 8). Zie de bijbehorende spec,
 [`0003-openproduct-failure-policy-spec.md`](./0003-openproduct-failure-policy-spec.md).
 

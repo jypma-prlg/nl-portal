@@ -5,7 +5,7 @@ We are strongly committed to responding to disclosed security-related issues. Se
 
 ## How to report?
 A security contact address for this project has not been published yet; tracked in
-[issue #15](https://github.com/jypma-prlg/nl-portal/issues/15). Until it is, please do not open a
+[issue #15](https://github.com/pinkroccade/nl-portal/issues/15). Until it is, please do not open a
 public issue for a vulnerability — check back on that issue for the designated contact.
 
 Please clearly explain how the vulnerability can be exploited, preferably with screenshots and a step-by-step explanation. If possible include the version of NL Portal you used. If it concerns a running instance, please note the url and state the exact date and time you used the vulnerability. This helps us with our analysis of your report.
@@ -36,7 +36,7 @@ We ask you to provide your name, email address and telephone number in order to 
 ## Bug bounty
 
 This project does not currently run a bug-bounty/reward program. Whether to start one is tracked
-in [issue #15](https://github.com/jypma-prlg/nl-portal/issues/15).
+in [issue #15](https://github.com/pinkroccade/nl-portal/issues/15).
 
 ## Compliance facts (SBOM, scans, lifecycle)
 

@@ -14,7 +14,7 @@ Alle code en informatie is opensource en kan gevonden worden in deze GitHub-repo
 | Onderdeel                                                                         | Beschrijving                                                                                                    |
 | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | Deze repository                                                                   | De monorepo: backend (`backend/`), frontend (`frontend/`), docker-compose demo (`docker-compose/`) en docs.    |
-| Helm Charts                                                                       | Nog niet ingericht voor pinkroccade; zie [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).       |
+| Helm Charts                                                                       | Nog niet ingericht voor pinkroccade; zie [issue #18](https://github.com/pinkroccade/nl-portal/issues/18).       |
 
 Voor de meeste implementaties gebruik je de gepubliceerde images (zie Route 1). Voor maatwerk dienen de app-directories (`backend/app`, `frontend/packages/app`) als startpunt.
 
@@ -63,7 +63,7 @@ Voor actieve ontwikkeling draai je alleen de ondersteunende services in compose 
 docker compose --profile zgw up -d
 ```
 
-Start daarna de backend (`./gradlew :app:bootRun` vanuit `backend/`; vereist een `.env.properties`, zie `backend/app/README.md`) en de frontend (`pnpm install && pnpm dev` vanuit `frontend/`). Zie [`GETTING_STARTED.md`](https://github.com/jypma-prlg/nl-portal/blob/main/GETTING_STARTED.md) en `docker-compose/README.md` voor de details.
+Start daarna de backend (`./gradlew :app:bootRun` vanuit `backend/`; vereist een `.env.properties`, zie `backend/app/README.md`) en de frontend (`pnpm install && pnpm dev` vanuit `frontend/`). Zie [`GETTING_STARTED.md`](https://github.com/pinkroccade/nl-portal/blob/main/GETTING_STARTED.md) en `docker-compose/README.md` voor de details.
 
 ### Configureren via het Configuration Panel
 

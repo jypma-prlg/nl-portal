@@ -62,7 +62,7 @@ hier te benoemen in plaats van alleen in een los review-document: het raakt dire
 werk waarvoor dit arc42-document is geschreven (nieuwe functionaliteit toevoegen).
 
 <!-- BEGIN GENERATED: capabilities -->
-_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._
+_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/pinkroccade/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._
 
 ## 5.5 Capabilities per module (inventaris 2026-11-04)
 

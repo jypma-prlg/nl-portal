@@ -2,8 +2,8 @@
 
 ## Status
 
-Geaccepteerd. Zie wayfinder-ticket [#39](https://github.com/jypma-prlg/nl-portal/issues/39) op map
-[#37](https://github.com/jypma-prlg/nl-portal/issues/37).
+Geaccepteerd. Zie wayfinder-ticket [#39](https://github.com/pinkroccade/nl-portal/issues/39) op map
+[#37](https://github.com/pinkroccade/nl-portal/issues/37).
 
 ## Context
 
