@@ -176,6 +176,7 @@ subprojects {
         configure<DependencyManagementExtension> {
             imports {
                 mavenBom("io.netty:netty-bom:${Versions.netty}")
+                mavenBom("io.grpc:grpc-bom:${Versions.grpc}")
                 // Whole-BOM, not per-artifact: jackson-annotations keeps its own 2.x
                 // line, so forcing only core/databind leaves annotations on Boot's
                 // older pin and databind hits NoClassDefFoundError on classes added

@@ -17,7 +17,7 @@ import org.gradle.kotlin.dsl.`kotlin-dsl`
 
 plugins {
     `kotlin-dsl`
-    id("com.diffplug.spotless") version "8.10.4"
+    id("com.diffplug.spotless") version "8.11.0"
 }
 
 repositories {
