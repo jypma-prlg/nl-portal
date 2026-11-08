@@ -89,6 +89,3 @@ mise.local.toml
 .codegraph/
 .mcp.json
 strix_runs/
-
-# Tijdelijke staat van de transfer-wizard (#19)
-.transfer/
