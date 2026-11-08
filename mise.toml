@@ -50,6 +50,18 @@ dir = "backend"
 shell = "bash -c"
 run = "./gradlew spotlessCheck --console=plain"
 
+[tasks."backend:check"]
+description = "Bouw, test en lint de backend in een Gradle-aanroep (./gradlew build; wat CI als backend-poort draait)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew build --console=plain"
+
+[tasks."backend:dependency-report"]
+description = "Genereer het HTML-dependencyrapport van de backend (release-artefact)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew htmlDependencyReport"
+
 [tasks."backend:arch-check"]
 description = "Draai de ArchUnit-architectuurtests van de backend"
 dir = "backend"
@@ -69,10 +81,10 @@ shell = "bash -c"
 run = "./gradlew :app:integrationTest"
 
 [tasks."backend:module-layer-changes"]
-description = "Toon nieuwe backend-modules en laagwijzigingen in ModuleLayers t.o.v. origin/main (zoals de PR-opmerking uit CI, #177)"
+description = "Toon nieuwe backend-modules en laagwijzigingen in ModuleLayers t.o.v. origin/main, of t.o.v. MODULE_LAYERS_BASE_REF als die gezet is (zoals de PR-opmerking uit CI, #177)"
 dir = "backend"
 shell = "bash -c"
-run = "./gradlew :architecture-test:moduleLayerChanges -q"
+run = 'if [ -n "${MODULE_LAYERS_BASE_REF:-}" ]; then ./gradlew :architecture-test:moduleLayerChanges -q -PmoduleLayersBaseRef="$MODULE_LAYERS_BASE_REF"; else ./gradlew :architecture-test:moduleLayerChanges -q; fi'
 
 [tasks."backend:pitest"]
 description = "Mutation testing op backend/core (ADR 0011); HTML-rapport in backend/core/build/reports/pitest"
@@ -89,6 +101,10 @@ description = "Installeer de frontend-dependencies volgens pnpm-lock.yaml"
 dir = "frontend"
 sources = ["pnpm-lock.yaml", "package.json", "packages/*/package.json"]
 run = "pnpm install --frozen-lockfile"
+
+[tasks."frontend:check"]
+description = "Bouw, lint, typecheck, test en prettier-controle van de frontend (wat CI als frontend-poort draait)"
+depends = ["frontend:build", "frontend:lint", "frontend:typecheck", "frontend:test", "frontend:prettier"]
 
 [tasks."frontend:build"]
 description = "Bouw alle frontend-packages"

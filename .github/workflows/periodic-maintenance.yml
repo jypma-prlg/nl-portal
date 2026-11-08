@@ -31,7 +31,6 @@ jobs:
                 with:
                     node-version: "24"
             -   name: Install frontend dependencies
-                working-directory: frontend
-                run: pnpm install
+                run: mise run frontend:install
             -   name: Run the monthly maintenance checklist
                 run: node scripts/periodic-maintenance.mjs

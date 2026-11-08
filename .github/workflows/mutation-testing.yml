@@ -33,20 +33,12 @@ jobs:
                 uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
             -   name: Pitest op gewijzigde klassen (PR, drempel 80%)
                 if: github.event_name == 'pull_request'
-                working-directory: backend
                 env:
                     BASE_REF: ${{ github.base_ref }}
-                run: |
-                    set -euo pipefail
-                    # Wildcard achter de klassenaam dekt ook binnenklassen, companions en top-level functies (FooKt).
-                    # Met R (hernoemd) erbij valt een verplaatste klasse niet buiten de gate.
-                    changed=$(git diff --name-only --diff-filter=AMR "origin/${BASE_REF}...HEAD" -- 'core/src/main/kotlin/**/*.kt'                         | sed -E 's#^core/src/main/kotlin/##; s#\.kt$#*#; s#/#.#g' | paste -sd, -)
-                    if [ -z "$changed" ]; then echo "Geen gewijzigde core-klassen."; exit 0; fi
-                    ./gradlew :core:pitest -PpitestTargetClasses="$changed" -PpitestThreshold=80
+                run: mise run backend:pitest-changed
             -   name: Pitest op volledige core (nachtelijk/handmatig, ratchet)
                 if: github.event_name != 'pull_request'
-                working-directory: backend
-                run: ./gradlew :core:pitest
+                run: mise run backend:pitest
             -   name: Upload rapport
                 if: always()
                 uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
