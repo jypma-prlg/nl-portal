@@ -40,5 +40,7 @@ geen persistente applicatieconfiguratie of gebruikersdata waarvoor een back-up n
 - Hostingeisen: een BFF-deployment vereist Redis (of een gelijkwaardige sessieopslag), zonder back-up.
   Redis-uitval betekent opnieuw inloggen, geen dataverlies.
 - Nieuwe vluchtige voorzieningen toetsen aan de drie voorwaarden in beslissing 2.
-- Het register van normatieve bronnen (#212) kan de AVG-dataminimalisatie en de bewaartermijnen per
-  eis traceerbaar maken; dit ADR verwijst daarnaar zodra dat register bestaat.
+- Normatieve bronnen uit het [register](../../compliance/normatieve-bronnen.md): `N-CG-5LAGEN` ligt aan
+  het verbod op persistente state en eigen brondata ten grondslag (laag 5). `N-ASVS-5.0` is de maatstaf
+  voor de beveiliging van de sessieopslag; sessiebeheer (V7) valt nog buiten de gelezen hoofdstukken van
+  het register.

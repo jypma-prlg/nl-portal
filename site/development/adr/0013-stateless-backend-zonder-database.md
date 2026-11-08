@@ -17,7 +17,7 @@ berichten en producten blijven in de ZGW-bronnen. Een lezer die ziet dat de data
 
 ## Beslissing
 
-1. De backend is **stateless** (zonder persistente state, zie ADR 0017): er is geen eigen database, geen JPA, geen Liquibase en geen
+1. De backend is **stateless**: er is geen eigen database, geen JPA, geen Liquibase en geen
    Postgres-driver. Module `data` is verwijderd.
 2. Een volgende functie die state nodig heeft, kiest bewust opnieuw: eerst bij de bronsystemen
    (ZGW, Open Object) en pas als dat niet kan met een nieuwe ADR die persistentie weer introduceert.
