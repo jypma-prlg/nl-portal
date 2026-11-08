@@ -1,0 +1,2 @@
+# Het transfer-script moet met LF-regeleinden uitgecheckt worden, ook op Windows met autocrlf.
+scripts/transfer/*.sh text eol=lf

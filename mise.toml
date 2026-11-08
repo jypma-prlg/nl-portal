@@ -183,3 +183,17 @@ description = "Regenerate capability docs and fail if that changes anything (CI 
 depends = ["docs:capabilities"]
 shell = "bash -c"
 run = "git diff --ignore-cr-at-eol --exit-code -- site/architectuur/arc42 site/likec4 && test -z \"$(git ls-files --others --exclude-standard -- site/architectuur/arc42 site/likec4)\" || { echo 'Capability-docs niet actueel: draai `mise run docs:capabilities` en commit het resultaat.'; exit 1; }"
+
+# Migratiehulp voor de repo-transfer (#19); verwijderd in het opruimticket na afronding.
+
+[tasks."transfer:voor"]
+description = "Transfer #19, fase 1: controle, momentopname en voorbereiding (verplaatst niets)"
+run = "bash scripts/transfer/transfer-wizard.sh voor"
+
+[tasks."transfer:uitvoeren"]
+description = "Transfer #19, fase 2: de GitHub-transfer naar pinkroccade uitvoeren"
+run = "bash scripts/transfer/transfer-wizard.sh uitvoeren"
+
+[tasks."transfer:na"]
+description = "Transfer #19, fase 3: inrichten, verwijzingen omzetten en acceptatiechecks na de transfer"
+run = "bash scripts/transfer/transfer-wizard.sh na"
