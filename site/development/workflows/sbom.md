@@ -10,8 +10,9 @@ release-only.
 De backend-release-pijplijn genereert al een CycloneDX-SBOM:
 `.github/workflows/_stage-be.yml` bouwt het project en draait dan `anchore/sbom-action`
 (`format: cyclonedx-json`) over `backend/`; het resultaat wordt als `sbom.cyclonedx.json`
-gepubliceerd naar `s3://nl-portal-dependency-reports/sbom/<versie>/backend.cdx.json` (zie
-`_publish-be-native.yml`).
+bij een release als asset aan de GitHub Release gehangen
+(`nl-portal-backend-<versie>.sbom.cyclonedx.json`, zie de stap "Attach SBOM and reports" in
+`build-and-publish-release.yml`).
 
 **Beperkingen van de huidige opzet:**
 
@@ -29,7 +30,7 @@ mise run sbom:all         # beide
 ```
 
 Output: `backend/sbom.cyclonedx.json` resp. `frontend/sbom.cyclonedx.json` (CycloneDX JSON,
-dezelfde vorm als de S3-upload uit de release-pijplijn).
+dezelfde vorm als het release-asset).
 
 ### Waarom backend een build nodig heeft en frontend niet
 
@@ -61,5 +62,5 @@ Een SBOM is een inventarisatie, geen scan op zich — koppel hem aan een van dez
 
 Niet in deze wijziging doorgevoerd (buiten scope van een documentatie-PR), maar de logische
 vervolgstap: `_stage-fe.yml` krijgt een `Generate SBOM`-stap die `mise run sbom:frontend` draait en
-uploadt naar S3, analoog aan hoe `_stage-be.yml`/`_publish-be-native.yml` dat nu al voor de backend
-doen — zodat elke release zowel een backend- als een frontend-SBOM publiceert.
+hangt aan de GitHub Release, analoog aan hoe `_stage-be.yml` en `create-release` dat nu al voor de backend
+doen (zie #221 voor de koppeling aan het image) — zodat elke release zowel een backend- als een frontend-SBOM publiceert.

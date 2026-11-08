@@ -52,7 +52,7 @@ lopen, niet als hardcoded string.
   `backend/cve-exclusions.xml`) — bekende kwetsbaarheden in dependencies.
 - **Renovate** (`.github/renovate.json`) — geautomatiseerde dependency-updates (zie deliverable 4).
 - **SBOM-generatie** bestaat al voor de backend-release (`anchore/sbom-action` in
-  `_stage-be.yml`/`_publish-be-native.yml`, CycloneDX-JSON naar S3) maar is backend- en
+  `_stage-be.yml`/`_publish-be-native.yml`, CycloneDX-JSON als GitHub-Release-asset) maar is backend- en
   release-only, en nergens gedocumenteerd als ontwikkelaarsworkflow (zie deliverable 5).
 
 ## 8.7 Copyright-headers

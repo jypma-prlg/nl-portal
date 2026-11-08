@@ -91,20 +91,11 @@ The run also rewrites the icon and splash-screen `<head>` links in `index.html` 
 entries in `public/manifest.json`, so review those two files in the diff alongside the images.
 Run it in both app packages so the shippable app and the dev app stay in sync.
 
-## Consuming snapshot builds
+## Consuming the libraries
 
-Every push to `main` publishes the libraries as **snapshot** tarballs to a public S3 bucket.
-(Tagged releases are published to the npm registry as `@nl-portal/*`; that is the primary channel
-and installs with plain `pnpm add @nl-portal/nl-portal-<pkg>`.) Snapshots are not on a registry, so
-install them by URL, pinning the exact build:
-
-```shell
-pnpm add https://nl-portal-frontend-snapshots.s3.eu-central-1.amazonaws.com/<version>-SNAPSHOT/nl-portal-nl-portal-user-interface.tgz
-```
-
-The `@nl-portal/` scope is stripped in the tarball filename (`nl-portal-nl-portal-<pkg>.tgz`, where
-`<pkg>` is `api`, `authentication`, `localization` or `user-interface`). The bucket is public-read;
-no credentials are needed. Each build publishes a unique version, so there is no floating `latest`.
+The libraries are not published to a registry for now: npm publication is switched off (repository variable
+`PUBLISH_LIBRARIES`, see the release workflows) until a scope of our own is arranged. Deploy the app through
+the published container image `ghcr.io/pinkroccade/nl-portal-frontend`.
 
 ## Configuration
 

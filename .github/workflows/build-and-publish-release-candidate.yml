@@ -54,7 +54,7 @@ jobs:
 
     image-be:
         needs: [prepare, stage-be]
-        if: github.repository == 'pinkroccade/nl-portal'
+        if: github.repository_owner == 'pinkroccade'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: backend
@@ -66,7 +66,7 @@ jobs:
 
     image-fe:
         needs: [prepare, stage-fe]
-        if: github.repository == 'pinkroccade/nl-portal'
+        if: github.repository_owner == 'pinkroccade'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: frontend
@@ -76,28 +76,10 @@ jobs:
                 ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.version }}
         secrets: inherit
 
-    publish-be-s3:
-        needs: [prepare, stage-be]
-        # Needs AWS_* secrets for Ritense's own S3 bucket; pinkroccade doesn't have these
-        # (tracked as a backlog issue).
-        if: github.repository == 'pinkroccade/nl-portal'
-        uses: ./.github/workflows/_publish-be-s3.yml
-        with:
-            version: ${{ needs.prepare.outputs.version }}
-        secrets: inherit
-
-    publish-fe-s3:
-        needs: [prepare, stage-fe]
-        # Needs AWS_* secrets for Ritense's own S3 bucket; pinkroccade doesn't have these
-        # (tracked as a backlog issue).
-        if: github.repository == 'pinkroccade/nl-portal'
-        uses: ./.github/workflows/_publish-fe-s3.yml
-        with:
-            version: ${{ needs.prepare.outputs.version }}
-        secrets: inherit
-
     publish-be-native:
         needs: [prepare, stage-be]
+        # Bibliotheken (Maven Central / npm) publiceren we alleen als de repo-variabele PUBLISH_LIBRARIES op true staat.
+        if: ${{ vars.PUBLISH_LIBRARIES == 'true' }}
         uses: ./.github/workflows/_publish-be-native.yml
         with:
             version: ${{ needs.prepare.outputs.version }}
@@ -106,6 +88,8 @@ jobs:
 
     publish-fe-npm:
         needs: [prepare, stage-fe]
+        # Bibliotheken (Maven Central / npm) publiceren we alleen als de repo-variabele PUBLISH_LIBRARIES op true staat.
+        if: ${{ vars.PUBLISH_LIBRARIES == 'true' }}
         uses: ./.github/workflows/_publish-fe-npm.yml
         with:
             version: ${{ needs.prepare.outputs.version }}
