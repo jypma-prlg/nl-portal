@@ -35,11 +35,15 @@ lopen, niet als hardcoded string.
 
 ## 8.5 Testen
 
-- **Backend**: `./gradlew build` draait unit- en integratietests; integratietests hebben geen
-  database nodig; alleen de `zgw:openklant`-tests starten via de Gradle docker-compose-plugin een
-  OpenKlant-container (Docker moet dan draaien). Zie `CONTRIBUTING.md`.
-- **Frontend**: `pnpm test` (vitest, workspace-breed via `vitest.workspace.ts`), `pnpm lint`,
-  `pnpm prettier`.
+- **Ingang**: `mise run test`, `mise run lint` en `mise run arch-check` vanaf de repo-root dekken
+  backend en frontend tegelijk; `mise tasks` toont de taken per kant. Zie `CONTRIBUTING.md`.
+- **Backend**: `mise run backend:test` draait de unit-tests, `mise run backend:integration-test` de
+  integratietests; die hebben geen database nodig; alleen de `zgw:openklant`-tests starten via de
+  Gradle docker-compose-plugin een OpenKlant-container (Docker moet dan draaien). De CI-poort
+  `mise run backend:check` draait beide via `./gradlew build`.
+- **Frontend**: `mise run frontend:test` (vitest, workspace-breed via `vitest.workspace.ts`) en
+  `mise run frontend:lint` (ESLint en Stylelint); de CI-poort `mise run frontend:check` voegt
+  build, typecheck en Prettier toe.
 - **Observatie uit de architectuurreview**: de ZGW-HTTP-clients hebben vandaag geen test-dubbel
   (geen tweede adapter), dus geen unit test die een foutscenario simuleert zonder een live ZGW-API.
   Dit is zowel een hoofdstuk-10-testbaarheidsrisico als hoofdstuk-11-technische-schuld.
