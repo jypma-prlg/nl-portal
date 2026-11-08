@@ -32,7 +32,9 @@ jobs:
                 uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
             -   name: License + dependency reports
                 if: ${{ inputs.generateReports }}
-                run: mise run security:check-license ::: backend:dependency-report
+                # Block scalar: onge-quote ": " in ":::" is ongeldige YAML (#370)
+                run: |
+                    mise run security:check-license ::: backend:dependency-report
             -   name: Build + stage
                 working-directory: backend
                 env:
