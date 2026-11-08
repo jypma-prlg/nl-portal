@@ -1,10 +1,10 @@
 [tools]
 # Keep in sync with frontend/package.json's "packageManager" field.
-pnpm = "11.28.8"
+pnpm = "11.28.11"
 # javaVersion in backend/gradle.properties is leading; `mise run java:check-version` (CI) fails on a mismatch.
 java = "temurin-25"
-syft = "1.55.0"
-grype = "0.121.0"
+syft = "1.57.0"
+grype = "0.121.2"
 gitleaks = "8.30.1"
 
 [tasks."docs:test"]
