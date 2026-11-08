@@ -35,16 +35,16 @@ Renovate's eigen Dependency Dashboard-issue, maar dan voor deze checks).
 
 | Check | mise-task | Wat het oplevert |
 |---|---|---|
-| Major-dependency-review | `deps:check` | Lijst beschikbare major-updates (zie [dependency-updates.md §2](./dependency-updates.md)) |
+| Major-dependency-review | `deps:outdated` | Lijst beschikbare major-updates (zie [dependency-updates.md §2](./dependency-updates.md)) |
 | SonarCloud-backlog-triage | `sonar:issues` | Open Bug-issues per project, gegroepeerd per regel |
 | License-rapport | `security:license-report` | `generateLicenseReport`, nooit falend |
-| License-allowlist-check | `security:check-license` | `checkLicense` - **momenteel kapot op `main`**, zie §4 |
+| License-allowlist-check | `security:check-license` | `checkLicense` - toetst de licenties aan de allowlist; faalt bij een niet-toegestane licentie |
 | CVE-uitzonderingen herbeoordelen | - | `backend/cve-exclusions.xml` + de `braces`-uitzondering in `frontend/pnpm-workspace.yaml`; de `braces`-advisory (GHSA-vfj7-8cjw-p6xm) wordt automatisch tegen GitHub's advisory-API gecheckt |
 
 Lokaal uitvoeren zonder op de 1e van de maand te wachten:
 
 ```bash
-mise run deps:check
+mise run deps:outdated
 mise run sonar:issues
 mise run security:license-report
 mise run security:check-license
@@ -80,11 +80,8 @@ Gedeelde logica in [`scripts/escalate-findings.mjs`](https://github.com/jypma-pr
   2026-10-22). Een gemiste bevinding komt dan bij de eerstvolgende push naar `main` alsnog naar
   boven - geen polling-loop toegevoegd om dit op te lossen, dat woog niet op tegen de complexiteit.
 
-## 4. Bekende openstaande items (eerste twee regels in het tracking-issue)
+## 4. Bekende openstaande items (eerste regel in het tracking-issue)
 
-- **`checkLicense` staat kapot op `main`**: "Some library licenses are not allowed." Niet
-  opgelost als onderdeel van dit document - alleen zichtbaar gemaakt via
-  `security:check-license` en elke maand opnieuw gerapporteerd totdat iemand het oppakt.
 - **`braces` GHSA-vfj7-8cjw-p6xm**: nog geen upstream-fix (laatst gecontroleerd 2026-10-22,
   `first_patched_version: null`). De uitzondering in `frontend/pnpm-workspace.yaml` blijft staan;
   `scripts/periodic-maintenance.mjs` checkt dit automatisch elke maand bij GitHub's advisory-API en
