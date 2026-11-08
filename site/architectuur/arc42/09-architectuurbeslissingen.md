@@ -47,6 +47,10 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   De backend heeft geen eigen database meer (geen JPA, Liquibase of Postgres); module `data` is
   verwijderd. State blijft in de bronsystemen.
 
+- [`0017-vluchtige-state-toegestaan.md`](../../development/adr/0017-vluchtige-state-toegestaan.md) — **geaccepteerd**.
+  Verfijnt ADR 0013: geen *persistente* state; vluchtige state (sessies, cache) mag. Redis als
+  sessieopslag is verplicht bij een BFF, als cache optioneel.
+
 - [`0014-feature-flags-via-openfeature.md`](../../development/adr/0014-feature-flags-via-openfeature.md) — **geaccepteerd**.
   Feature flags via OpenFeature met een flagd-bestand als standaardprovider; de productie-provider is
   nog niet gekozen (#147).

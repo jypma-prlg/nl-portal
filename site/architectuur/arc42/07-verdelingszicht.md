@@ -31,7 +31,7 @@ Ritense's `nl-portal/helm-charts` werd hier eerder voor gebruikt; pinkroccade's 
 nog niet ingericht, zie [epic #191](https://github.com/pinkroccade/nl-portal/issues/191). Dit
 arc42-document beschrijft die laag niet in detail, maar benoemt wel de aanname die eruit volgt:
 **NL Portal heeft geen eigen
-database**: de backend is stateless en vereist geen persistentielaag. Elke overheidsorganisatie
+database**: de backend is stateless en vereist geen persistentielaag. Een BFF vraagt wel Redis voor sessies, zonder back-up ([ADR 0017](../../development/adr/0017-vluchtige-state-toegestaan.md)). Elke overheidsorganisatie
 draait haar eigen instantie tegen haar eigen ZGW-landschap.
 
 ## 7.4 Open vraag
