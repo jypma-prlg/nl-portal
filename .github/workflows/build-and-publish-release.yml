@@ -97,16 +97,19 @@ jobs:
 
     promote-be:
         needs: [prepare, stage-be, gate]
+        # Bibliotheken (Maven Central / npm) publiceren we alleen als de repo-variabele PUBLISH_LIBRARIES op true staat.
+        if: ${{ vars.PUBLISH_LIBRARIES == 'true' }}
         uses: ./.github/workflows/_publish-be-native.yml
         with:
             version: ${{ needs.prepare.outputs.version }}
             deployer: sonatype
             probeCentral: true
-            uploadReports: true
         secrets: inherit
 
     publish-fe-npm:
         needs: [prepare, stage-fe, gate]
+        # Bibliotheken (Maven Central / npm) publiceren we alleen als de repo-variabele PUBLISH_LIBRARIES op true staat.
+        if: ${{ vars.PUBLISH_LIBRARIES == 'true' }}
         uses: ./.github/workflows/_publish-fe-npm.yml
         with:
             version: ${{ needs.prepare.outputs.version }}
@@ -115,7 +118,7 @@ jobs:
 
     image-be:
         needs: [prepare, stage-be, gate]
-        if: github.repository == 'pinkroccade/nl-portal'
+        if: github.repository_owner == 'pinkroccade'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: backend
@@ -129,7 +132,7 @@ jobs:
 
     image-fe:
         needs: [prepare, stage-fe, gate]
-        if: github.repository == 'pinkroccade/nl-portal'
+        if: github.repository_owner == 'pinkroccade'
         uses: ./.github/workflows/_build-app-image.yml
         with:
             stack: frontend
@@ -142,7 +145,9 @@ jobs:
         secrets: inherit
 
     create-release:
-        needs: [prepare, promote-be, publish-fe-npm, image-be, image-fe]
+        needs: [prepare, stage-be, promote-be, publish-fe-npm, image-be, image-fe]
+        # promote-be en publish-fe-npm mogen overgeslagen zijn (PUBLISH_LIBRARIES); mislukken mag niet.
+        if: ${{ !cancelled() && !failure() && github.repository_owner == 'pinkroccade' }}
         runs-on: ubuntu-latest
         permissions:
             contents: write
@@ -185,6 +190,29 @@ jobs:
                       node scripts/changelog-section.mjs "${VERSION}" > /tmp/release-notes.md
                       gh release create "${VERSION}" --title "${VERSION}" --notes-file /tmp/release-notes.md
                     fi
+            -   name: Download reports + SBOM
+                uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+                with:
+                    name: backend-reports
+                    path: reports
+            -   name: Attach SBOM and reports to the GitHub release
+                env:
+                    GH_TOKEN: ${{ steps.token.outputs.token }}
+                    VERSION: ${{ needs.prepare.outputs.version }}
+                working-directory: reports
+                run: |
+                    tar -xf backend-reports.tar
+                    mv sbom.cyclonedx.json "nl-portal-backend-${VERSION}.sbom.cyclonedx.json"
+                    assets=("nl-portal-backend-${VERSION}.sbom.cyclonedx.json")
+                    if [ -f build/reports/dependency-license/index.html ]; then
+                      mv build/reports/dependency-license/index.html "nl-portal-backend-${VERSION}.licenses.html"
+                      assets+=("nl-portal-backend-${VERSION}.licenses.html")
+                    fi
+                    if [ -d build/reports/project/dependencies ]; then
+                      tar -czf "nl-portal-backend-${VERSION}.dependency-reports.tgz" -C build/reports/project dependencies
+                      assets+=("nl-portal-backend-${VERSION}.dependency-reports.tgz")
+                    fi
+                    gh release upload "${VERSION}" "${assets[@]}" --clobber
             -   name: Delete the release candidate branch
                 env:
                     RC_BRANCH: ${{ github.ref_name }}

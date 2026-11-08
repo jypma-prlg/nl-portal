@@ -13,9 +13,6 @@ on:
             probeCentral:
                 type: boolean
                 default: false
-            uploadReports:
-                type: boolean
-                default: false
 
 permissions:
     contents: read
@@ -68,28 +65,3 @@ jobs:
                     JRELEASER_DEPLOY_MAVEN_NEXUS2_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
                     JRELEASER_DEPLOY_MAVEN_NEXUS2_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
                     JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            -   name: Download reports + SBOM
-                if: ${{ inputs.uploadReports }}
-                uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-                with:
-                    name: backend-reports
-                    path: backend
-            -   name: Archive reports + SBOM to S3
-                if: ${{ inputs.uploadReports }}
-                working-directory: backend
-                env:
-                    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_BACKEND_ACCESS_KEY_ID }}
-                    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_BACKEND_SECRET_ACCESS_KEY }}
-                    AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-                    VERSION: ${{ inputs.version }}
-                run: |
-                    tar -xf backend-reports.tar
-                    aws s3 cp sbom.cyclonedx.json "s3://nl-portal-dependency-reports/sbom/${VERSION}/backend.cdx.json"
-                    aws s3 rm "s3://nl-portal-dependency-reports/sbom/latest/backend.cdx.json" || true
-                    aws s3 cp sbom.cyclonedx.json "s3://nl-portal-dependency-reports/sbom/latest/backend.cdx.json"
-                    if [ -f build/reports/dependency-license/index.html ]; then
-                      aws s3 cp build/reports/dependency-license/index.html "s3://nl-portal-licenses/licenses/${VERSION}/index.html"
-                    fi
-                    if [ -d build/reports/project/dependencies ]; then
-                      aws s3 cp --recursive build/reports/project/dependencies "s3://nl-portal-dependency-reports/reports/${VERSION}"
-                    fi
