@@ -225,7 +225,7 @@ subprojects {
             register<MavenPublication>("default") {
                 groupId = "nl.nl-portal"
                 pom {
-                    url = "https://github.com/nl-portal/nl-portal-backend-libraries"
+                    url = "https://github.com/pinkroccade/nl-portal"
                     licenses {
                         license {
                             name = "Licensed under EUPL, Version 1.2 (the \"License\");"
@@ -233,9 +233,9 @@ subprojects {
                         }
                     }
                     scm {
-                        connection = "git@github.com:nl-portal/nl-portal-backend-libraries.git"
-                        developerConnection = "git@github.com:nl-portal/nl-portal-backend-libraries.git"
-                        url = "https://github.com/nl-portal/nl-portal-backend-libraries"
+                        connection = "git@github.com:pinkroccade/nl-portal.git"
+                        developerConnection = "git@github.com:pinkroccade/nl-portal.git"
+                        url = "https://github.com/pinkroccade/nl-portal"
                     }
                 }
                 from(components["java"])

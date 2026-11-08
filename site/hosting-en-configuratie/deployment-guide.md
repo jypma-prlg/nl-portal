@@ -25,7 +25,7 @@ Bij properties waarvan alleen het voorste deel een koppelteken heeft — zoals `
 
 Dit verwees eerder naar officiële Helm charts in Ritense's `helm-charts` repository, met charts voor
 de NL Portal backend, frontend en het Configuratiepaneel (backend en frontend). Pinkroccade's eigen
-equivalent is nog niet ingericht; zie [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
+equivalent is nog niet ingericht; zie [issue #18](https://github.com/pinkroccade/nl-portal/issues/18).
 
 ### Backend: module-configuratie
 

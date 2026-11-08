@@ -2,8 +2,8 @@
 
 ## Status
 
-Geaccepteerd. Zie wayfinder-ticket [#44](https://github.com/jypma-prlg/nl-portal/issues/44) op map
-[#37](https://github.com/jypma-prlg/nl-portal/issues/37) — de afsluitende synthese van die hele map.
+Geaccepteerd. Zie wayfinder-ticket [#44](https://github.com/pinkroccade/nl-portal/issues/44) op map
+[#37](https://github.com/pinkroccade/nl-portal/issues/37) — de afsluitende synthese van die hele map.
 Bouwt voort op [ADR 0005](./0005-build-test-gates.md) en [ADR 0006](./0006-unified-docs-site.md).
 
 ## Context
@@ -17,15 +17,15 @@ waar documentatie en interne kennis in dit project wonen:
 - ADR 0006: één VitePress-site volgens Diataxis vervangt `docs/` + `documentation/`, met vijf
   secties (Architectuur, Gebruik & inrichting, Hosting & configuratie, Development, en een
   footer-only Compliance-sectie); root-conventiebestanden verhuizen niet mee.
-- [Ticket #40](https://github.com/jypma-prlg/nl-portal/issues/40): verouderde Ritense-eigenaarschapsclaims
+- [Ticket #40](https://github.com/pinkroccade/nl-portal/issues/40): verouderde Ritense-eigenaarschapsclaims
   bijgewerkt naar pinkroccade.
-- [Ticket #41](https://github.com/jypma-prlg/nl-portal/issues/41): de interne compliance-index wordt
+- [Ticket #41](https://github.com/pinkroccade/nl-portal/issues/41): de interne compliance-index wordt
   een uitbreiding van `docs/workflows/security.md`'s per-control tabel — en landt daarmee, via de
   content-mapping hieronder, in de footer-only Compliance-sectie, niet als losse Development-pagina.
-- [Ticket #43](https://github.com/jypma-prlg/nl-portal/issues/43): de aihero.dev-skillset (27 skills,
+- [Ticket #43](https://github.com/pinkroccade/nl-portal/issues/43): de aihero.dev-skillset (27 skills,
   niet de eerder aangenomen 38) wordt volledig gevendoord onder `.claude/skills/`; het
   `improve-codebase-architecture`-gat in AGENTS.md is gedicht.
-- [Ticket #54](https://github.com/jypma-prlg/nl-portal/issues/54): de volledige content-mapping
+- [Ticket #54](https://github.com/pinkroccade/nl-portal/issues/54): de volledige content-mapping
   (bron → sectie → Diataxis-type) voor alle bestaande documentatiebronnen.
 
 Wat ontbrak was een bevestiging dat deze losse beslissingen samen nog steeds kloppen, én een
