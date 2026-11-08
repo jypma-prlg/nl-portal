@@ -140,7 +140,7 @@ pnpm-workspace) leeft onder `frontend/`. Backend-tooling (Gradle, Spotless/ktlin
 - [site/development/workflows/dependency-updates.md](site/development/workflows/dependency-updates.md) and
   [site/development/workflows/security.md](site/development/workflows/security.md) (Dutch) are the source of truth; see also
   [SECURITY.md](SECURITY.md) for vulnerability disclosure.
-- Use the `mise run security:*`, `sbom:*` and `deps:check*` tasks (`mise.toml`) for these jobs
+- Use the `mise run security:*`, `sbom:*` and `deps:outdated*` tasks (`mise.toml`) for these jobs
   instead of hand-rolling `gradle`/`syft`/`grype`/`pnpm` invocations — they're what CI runs too.
 - After any backend dependency bump, including the weekly Renovate PR, manually regenerate and
   commit `backend/gradle/verification-metadata.xml` via `mise run security:verify-dependencies` —

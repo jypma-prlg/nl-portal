@@ -1,0 +1,2 @@
+# Mise file tasks zijn bash-scripts: altijd LF, ook op Windows met autocrlf.
+mise-tasks/** text eol=lf

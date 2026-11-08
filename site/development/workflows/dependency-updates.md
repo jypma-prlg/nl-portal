@@ -29,7 +29,7 @@ Je hoeft hier niets voor te doen — een Renovate-PR volgt de normale reviewflow
 Omdat Renovate geen major-PR's opent, is er een periodieke, handmatige check nodig. Gebruik:
 
 ```bash
-mise run deps:check
+mise run deps:outdated
 ```
 
 Dit draait zowel de backend- als de frontend-check (zie hieronder) en print wat er beschikbaar is.
