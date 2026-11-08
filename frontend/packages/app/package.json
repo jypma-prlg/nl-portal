@@ -30,15 +30,15 @@
     "@nl-portal/nl-portal-user-interface": "workspace:*",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "react-intl": "^10.1.23",
-    "react-router": "^8.3.0"
+    "react-intl": "^10.2.2",
+    "react-router": "^8.5.1"
   },
   "devDependencies": {
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@typescript-eslint/eslint-plugin": "8.72.0",
     "@typescript-eslint/parser": "8.72.0",
-    "@vitejs/plugin-react": "^6.1.0",
+    "@vitejs/plugin-react": "^6.2.1",
     "eslint": "9.39.5",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "^2.32.0",
