@@ -46,6 +46,23 @@ NLPORTAL_CONFIG_ZAKENAPI_PROPERTIES_SECRET=<secret>
 
 Alle module properties, inclusief de optionele, zijn met inline documentatie te vinden in `docker-compose/imports/backend.env` in de monorepo.
 
+### Backend: CORS
+
+De backend staat standaard geen cross-origin verzoeken toe. Zonder configuratie stuurt hij geen CORS-headers (`Access-Control-Allow-Origin`) mee, waardoor de browser cross-origin antwoorden blokkeert. Dat is voldoende als de frontend en de backend via dezelfde host worden bediend, bijvoorbeeld achter een reverse proxy die beide onder één origin publiceert.
+
+Draait de frontend op een andere origin, dan sta je die expliciet toe per omgeving via `nl-portal.security.cors`:
+
+```properties
+NLPORTAL_SECURITY_CORS_0_PATH=/**
+NLPORTAL_SECURITY_CORS_0_CONFIG_ALLOWEDORIGINS=https://portal.example.nl
+NLPORTAL_SECURITY_CORS_0_CONFIG_ALLOWEDMETHODS=GET,POST,OPTIONS
+NLPORTAL_SECURITY_CORS_0_CONFIG_ALLOWEDHEADERS=*
+```
+
+Meerdere origins zet je komma-gescheiden in `ALLOWEDORIGINS`. Gebruik `*` voor origins alleen voor lokale ontwikkeling.
+
+**ASVS:** de aanpak volgt het streefniveau uit [security](../development/workflows/security.md) (ASVS Level 2): een deployment vertrouwt standaard geen enkele vreemde origin en origins staan alleen aan als je ze expliciet instelt. Een toetsing per ASVS-eis is nog niet uitgevoerd.
+
 ### Frontend features
 
 De frontend haalt zijn feature-toggles en -eigenschappen op via `GET /api/public/frontend`, gevuld vanuit `nl-portal.frontend` op de backend. Deze volgen dezelfde relaxed-binding naamconventie, bijvoorbeeld `NLPORTAL_FRONTEND_TOGGLES_OVERVIEWMAINTENANCEALERTENABLED=true`.
