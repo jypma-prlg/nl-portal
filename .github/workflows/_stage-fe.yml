@@ -27,9 +27,12 @@ jobs:
                 uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
                 with:
                     node-version: ${{ inputs.nodeVersion }}
+            -   name: Set up mise (pnpm uit mise.toml)
+                uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+                with:
+                    install_args: "pnpm"
             -   name: Install
-                working-directory: frontend
-                run: npm install -g pnpm@11 && pnpm install
+                run: mise run frontend:install
             -   name: Stamp version in place
                 working-directory: frontend
                 env:
@@ -37,12 +40,11 @@ jobs:
                 run: |
                     sed -i 's/"version": "0.0.0"/"version": "'"${VERSION}"'"/' packages/*/package.json
             -   name: Build
-                working-directory: frontend
-                run: pnpm -r build
-            -   name: Test
+                if: ${{ !inputs.runTests }}
+                run: mise run frontend:build
+            -   name: Build and test
                 if: ${{ inputs.runTests }}
-                working-directory: frontend
-                run: pnpm test
+                run: mise run frontend:test
             -   name: Package stage bundle
                 working-directory: frontend
                 run: tar -cf frontend-stage.tar packages/*/dist packages/app/build packages/*/package.json

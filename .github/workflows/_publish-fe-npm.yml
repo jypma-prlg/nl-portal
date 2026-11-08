@@ -28,9 +28,12 @@ jobs:
                 with:
                     node-version: ${{ inputs.nodeVersion }}
                     registry-url: 'https://registry.npmjs.org'
+            -   name: Set up mise (pnpm uit mise.toml)
+                uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+                with:
+                    install_args: "pnpm"
             -   name: Install
-                working-directory: frontend
-                run: npm install -g pnpm@11 && pnpm install
+                run: mise run frontend:install
             -   name: Download stage bundle
                 uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
                 with:
