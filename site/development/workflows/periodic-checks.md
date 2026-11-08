@@ -69,9 +69,23 @@ liggen.
 Gedeelde logica in [`scripts/escalate-findings.mjs`](https://github.com/pinkroccade/nl-portal/blob/main/scripts/escalate-findings.mjs)
 (unit-getest: zie `scripts/escalate-findings.test.mjs`):
 
-- **Dedupliceren**: vóór het aanmaken wordt gezocht naar een al-open issue met dezelfde
-  CVE-/GHSA-/Sonar-issue-key/gitleaks-fingerprint in de titel. Bestaat die al, dan gebeurt er
-  niets - zo spamt een aanhoudende wekelijkse bevinding niet elke week een nieuw issue.
+- **Dedupliceren**: een dependency-bevinding (dependency-check, grype) is hetzelfde als een
+  bestaand issue bij dezelfde CVE-/GHSA-id voor hetzelfde artefact **zonder versie**:
+  `grpc-netty-shaded-1.84.1.jar` en `grpc-netty-shaded-1.85.1.jar` tellen als één artefact, zodat
+  een versiebump geen nieuwe reeks issues oplevert. Voor SonarCloud en gitleaks blijft de
+  Sonar-issue-key of gitleaks-fingerprint in de titel de sleutel. Bestaat er een open issue met
+  dezelfde sleutel, dan gebeurt er niets - zo spamt een aanhoudende wekelijkse bevinding niet elke
+  week een nieuw issue.
+- **Gesloten issue: heropenen met comment**: is het issue met dezelfde sleutel in de afgelopen 90
+  dagen gesloten, dan wordt geen nieuw issue aangemaakt maar het bestaande heropend, met een
+  comment die de nieuw gemelde versie noemt. Bij meerdere treffers wint een als *completed*
+  gesloten issue van een *not planned* (bijvoorbeeld een gesloten duplicaat), daarna het meest
+  recent gesloten. Gekozen voor heropenen in plaats van alleen een comment: de scanner meldt de
+  bevinding nog, dus ze is niet opgelost, en na heropenen is de volgende run weer een no-op in
+  plaats van een wekelijks herhaalde comment. Een geaccepteerd risico leg je daarom vast als
+  suppressie in de scanner (dependency-check-suppressie of grype-ignore), niet door het issue te
+  sluiten. Een issue dat langer dan 90 dagen dicht is, telt niet meer mee; dan volgt een nieuw
+  issue.
 - **SonarCloud-drempel**: alleen issue-type Vulnerability op Blocker/Critical-niveau escaleert
   direct; Bug/Code Smell en lagere severities blijven in de maandelijkse `sonar:issues`-triage uit
   §2 - anders te veel ruis op elke push.
