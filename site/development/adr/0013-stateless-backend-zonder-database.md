@@ -3,6 +3,8 @@
 ## Status
 
 Geaccepteerd en uitgevoerd (#142). Voortbouwend op [ADR 0012](./0012-breaking-changes-tot-eerste-productie-release.md).
+Verfijnd door [ADR 0017](./0017-vluchtige-state-toegestaan.md): "stateless" betekent geen *persistente* state;
+vluchtige state (sessies, cache) is toegestaan.
 
 ## Context
 

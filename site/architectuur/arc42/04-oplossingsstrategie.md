@@ -10,7 +10,7 @@ op bij de datalaag (primair ZGW-bronnen). Dit volgt direct uit twee Common Groun
 (zie [`site/architectuur/applicatiearchitectuur.md`](../applicatiearchitectuur.md)):
 componenten in plaats van monolieten, en data gescheiden van business-logica. Consequentie: NL
 Portal is **stateless**: het heeft geen eigen database en bewaart geen kopie van brondata die
-elders leidend is.
+elders leidend is. Vluchtige state zoals sessies of een cache mag ([ADR 0017](../../development/adr/0017-vluchtige-state-toegestaan.md)).
 
 ## 4.2 Eén backend als enige ZGW-cliënt
 
