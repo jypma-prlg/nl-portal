@@ -39,7 +39,7 @@ horen in de Dependency-Check-/Renovate-dashboards, niet hier — dit hoofdstuk b
 risico's, geen puntoplossingen die door bestaande tooling al worden gesignaleerd.
 
 <!-- BEGIN GENERATED: technische-schuld -->
-_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._
+_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/pinkroccade/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._
 
 ## 11.4 Technische schuld en capabilities onder twijfel (inventaris 2026-11-04)
 

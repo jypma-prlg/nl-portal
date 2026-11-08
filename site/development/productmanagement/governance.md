@@ -8,7 +8,7 @@
 - Alle code is publiek beschikbaar op GitHub.
 - Wijzigingen verlopen issue-first en via een pull request naar `main`. Het actuele
   bijdrageproces staat in
-  [CONTRIBUTING.md](https://github.com/jypma-prlg/nl-portal/blob/main/CONTRIBUTING.md) — die is
+  [CONTRIBUTING.md](https://github.com/pinkroccade/nl-portal/blob/main/CONTRIBUTING.md) — die is
   leidend, niet deze pagina.
 - Releases volgen de geautomatiseerde procedure uit
   [ADR 0004](../adr/0004-changelog-release-proces.md).

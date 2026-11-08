@@ -42,7 +42,7 @@ const MODULE_ELEMENTS = {
 };
 
 const GENERATED_NOTE =
-  "_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. " +
+  "_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/pinkroccade/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. " +
   "Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._";
 
 const cell = (s) => String(s ?? "").replace(/\|/g, "\\|").replace(/\r?\n/g, " ");

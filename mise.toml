@@ -260,17 +260,3 @@ run = "node scripts/sonar-issues.mjs"
 [tasks."release:cut-rc"]
 description = "Bepaal de volgende SemVer-versie uit Conventional Commits sinds de laatste tag, werk version.txt + CHANGELOG.md bij en commit beide op een nieuwe rc/<versie>-branch (pusht niet; zie ADR 0004)"
 run = "node scripts/release-cut-rc.mjs"
-
-# Migratiehulp voor de repo-transfer (#19); verwijderd in het opruimticket na afronding.
-
-[tasks."transfer:voor"]
-description = "Transfer #19, fase 1: controle, momentopname en voorbereiding (verplaatst niets)"
-run = "bash scripts/transfer/transfer-wizard.sh voor"
-
-[tasks."transfer:uitvoeren"]
-description = "Transfer #19, fase 2: de GitHub-transfer naar pinkroccade uitvoeren"
-run = "bash scripts/transfer/transfer-wizard.sh uitvoeren"
-
-[tasks."transfer:na"]
-description = "Transfer #19, fase 3: inrichten, verwijzingen omzetten en acceptatiechecks na de transfer"
-run = "bash scripts/transfer/transfer-wizard.sh na"

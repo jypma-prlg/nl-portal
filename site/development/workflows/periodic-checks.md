@@ -11,16 +11,16 @@ escalatie bij een productie-relevante vondst.
 
 | Check | Cadans | Workflow |
 |---|---|---|
-| SAST (backend + frontend) | Elke push naar `main` + elke PR | [`sonarcloud.yml`](https://github.com/jypma-prlg/nl-portal/blob/main/.github/workflows/sonarcloud.yml) |
-| Secret-scanning | Elke push naar `main` + elke PR | [`secret-scan.yml`](https://github.com/jypma-prlg/nl-portal/blob/main/.github/workflows/secret-scan.yml) |
-| Backend dependency-kwetsbaarheden | Wekelijks, zo 18:00 UTC | [`dependency-check.yml`](https://github.com/jypma-prlg/nl-portal/blob/main/.github/workflows/dependency-check.yml) |
-| Frontend dependency-kwetsbaarheden | Wekelijks, zo 19:00 UTC | [`frontend-vulnerability-scan.yml`](https://github.com/jypma-prlg/nl-portal/blob/main/.github/workflows/frontend-vulnerability-scan.yml) |
+| SAST (backend + frontend) | Elke push naar `main` + elke PR | [`sonarcloud.yml`](https://github.com/pinkroccade/nl-portal/blob/main/.github/workflows/sonarcloud.yml) |
+| Secret-scanning | Elke push naar `main` + elke PR | [`secret-scan.yml`](https://github.com/pinkroccade/nl-portal/blob/main/.github/workflows/secret-scan.yml) |
+| Backend dependency-kwetsbaarheden | Wekelijks, zo 18:00 UTC | [`dependency-check.yml`](https://github.com/pinkroccade/nl-portal/blob/main/.github/workflows/dependency-check.yml) |
+| Frontend dependency-kwetsbaarheden | Wekelijks, zo 19:00 UTC | [`frontend-vulnerability-scan.yml`](https://github.com/pinkroccade/nl-portal/blob/main/.github/workflows/frontend-vulnerability-scan.yml) |
 | Dependency-updates (minor/patch) | Wekelijks, zo 18-23 UTC | Renovate (`.github/renovate.json`) |
 
 Dit is niets nieuws - zie [`security.md`](./security.md)'s "Repeat"-sectie. Deze tabel bestaat hier
 alleen om het complete beeld te laten zien naast de nieuwe laag hieronder.
 
-**Belangrijk, specifiek voor deze fork** (`jypma-prlg/nl-portal`): Renovate's config bestaat al
+**Belangrijk, specifiek voor deze fork** (`pinkroccade/nl-portal`): Renovate's config bestaat al
 langer, maar de Renovate GitHub App moet apart op *deze* fork geïnstalleerd zijn
 (github.com/apps/renovate) voordat er ook echt iets draait - een config-bestand alleen doet niets.
 Geverifieerd actief sinds 2026-10-22 (zie issue #31, "Dependency Dashboard").
@@ -66,7 +66,7 @@ liggen.
 | `sonarcloud.yml` (nieuwe `escalate`-job, alleen op push naar `main`) | SonarCloud API, `types=VULNERABILITY` | severity Blocker/Critical |
 | `secret-scan.yml` | gitleaks JSON-rapport (`--redact`, nooit de rauwe secret) | elke bevinding |
 
-Gedeelde logica in [`scripts/escalate-findings.mjs`](https://github.com/jypma-prlg/nl-portal/blob/main/scripts/escalate-findings.mjs)
+Gedeelde logica in [`scripts/escalate-findings.mjs`](https://github.com/pinkroccade/nl-portal/blob/main/scripts/escalate-findings.mjs)
 (unit-getest: zie `scripts/escalate-findings.test.mjs`):
 
 - **Dedupliceren**: vóór het aanmaken wordt gezocht naar een al-open issue met dezelfde

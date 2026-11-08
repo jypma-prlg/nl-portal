@@ -1,7 +1,7 @@
 # Release-notes-archief
 
 > **Bevroren archief (1.x.x–4.x.x).** Release-opmerkingen voor alles daarna staan in het
-> geautomatiseerde [CHANGELOG.md](https://github.com/jypma-prlg/nl-portal/blob/main/CHANGELOG.md) in de
+> geautomatiseerde [CHANGELOG.md](https://github.com/pinkroccade/nl-portal/blob/main/CHANGELOG.md) in de
 > repository-root (zie [ADR 0004](../adr/0004-changelog-release-proces.md)).
 
 Deze sectie bevat de release-opmerkingen voor de verschillende versies van NL-Portal. Deze release-opmerkingen bevatten informatie over wat er nieuw is, welke bugs zijn opgelost, breaking changes, gedepriciëerde code en bekende problemen in die releaseversie.

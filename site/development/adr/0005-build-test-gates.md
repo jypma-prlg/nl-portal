@@ -2,8 +2,8 @@
 
 ## Status
 
-Geaccepteerd. Zie wayfinder-ticket [#38](https://github.com/jypma-prlg/nl-portal/issues/38) op map
-[#37](https://github.com/jypma-prlg/nl-portal/issues/37).
+Geaccepteerd. Zie wayfinder-ticket [#38](https://github.com/pinkroccade/nl-portal/issues/38) op map
+[#37](https://github.com/pinkroccade/nl-portal/issues/37).
 
 ## Context
 
@@ -51,8 +51,8 @@ losstaande "waarheid" te claimen.
    bewijst, wat het doel "de meeste PR's automatisch afhandelen" ondermijnt. Dit wordt genoteerd als
    verplicht vervolgwerk (een CI-wijziging), niet als onderdeel van dit besluit.
 
-   **Addendum (2026-10-26, via wayfinder-ticket [#68](https://github.com/jypma-prlg/nl-portal/issues/68)
-   op map [#66](https://github.com/jypma-prlg/nl-portal/issues/66))**: het gat bleek groter dan hier
+   **Addendum (2026-10-26, via wayfinder-ticket [#68](https://github.com/pinkroccade/nl-portal/issues/68)
+   op map [#66](https://github.com/pinkroccade/nl-portal/issues/66))**: het gat bleek groter dan hier
    beschreven. `lint:css` en `typecheck` draaiden nergens in CI, zelfs niet post-merge in
    `_stage-fe.yml` — alleen `lint` (ESLint) draaide daar. Het besluit hierboven (vier tiers, de
    integratietest-uitzondering, het CI-gat signaleren) blijft ongewijzigd correct; alleen de omvang
