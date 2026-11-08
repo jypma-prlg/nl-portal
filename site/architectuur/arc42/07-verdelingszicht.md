@@ -17,10 +17,9 @@ Zie [`docker-compose/README.md`](https://github.com/pinkroccade/nl-portal/blob/m
 ## 7.2 Build en packaging
 
 - **Backend**: Gradle multi-module build → `nl-portal-backend`-image (`backend/Dockerfile`).
-  JReleaser (`backend/jreleaser.yml`) verzorgt de release-metadata.
-- **Frontend**: pnpm-workspace build → `nl-portal-frontend`-image (`frontend/Dockerfile`); de
-  `@nl-portal/*`-bibliotheken worden ook los gepubliceerd (npm) voor hergebruik buiten de shippable
-  app.
+- **Frontend**: pnpm-workspace build → `nl-portal-frontend`-image (`frontend/Dockerfile`).
+- **Bibliotheken**: de backendmodules en de `@nl-portal/*`-pakketten worden niet los gepubliceerd
+  (geen Maven Central of npm); alleen de twee images worden uitgeleverd.
 - **CI** (`.github/workflows/`): `ci.yml` (algemene build/test), `_stage-be.yml`/`_stage-fe.yml`
   (buildartefacten + reports/SBOM), `build-and-publish-*.yml` (snapshot/release-candidate/release),
   `sonarcloud.yml` (kwaliteitspoort), `dependency-check.yml` (beveiligingspoort — zie deliverable 6).

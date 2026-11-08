@@ -10,7 +10,7 @@ design tokens; the back-end systems it talks to are configured at runtime.
 
 ## Packages
 
-Reusable libraries, published as `@nl-portal/*`:
+Reusable workspace libraries, named `@nl-portal/*` (not published to a registry):
 
 - `api` - GraphQL client + generated hooks (Apollo Client).
 - `authentication` - OIDC authentication.
@@ -93,9 +93,8 @@ Run it in both app packages so the shippable app and the dev app stay in sync.
 
 ## Consuming the libraries
 
-The libraries are not published to a registry for now: npm publication is switched off (repository variable
-`PUBLISH_LIBRARIES`, see the release workflows) until a scope of our own is arranged. Deploy the app through
-the published container image `ghcr.io/pinkroccade/nl-portal-frontend`.
+The libraries are not published to a registry; the project ships only the application. Deploy it through the
+published container image `ghcr.io/pinkroccade/nl-portal-frontend`.
 
 ## Configuration
 

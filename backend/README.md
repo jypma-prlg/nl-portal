@@ -5,8 +5,7 @@
 The backend stack of the [NL Portal monorepo](../README.md). It is a single Kotlin/Spring Boot
 multi-module Gradle project containing:
 
-- the **backend libraries** - the backend-for-frontend (BFF) that the NL Portal frontend talks to,
-  published as `nl.nl-portal:*` Maven artifacts; and
+- the **backend libraries** - the backend-for-frontend (BFF) that the NL Portal frontend talks to; and
 - **`app/`** - the shippable backend application that assembles those modules into a runnable
   service and is packaged as the `nl-portal-backend` image (see [app/README.md](./app/README.md)).
 
@@ -57,9 +56,8 @@ in `buildSrc`.
 
 ## Consuming the libraries
 
-The library modules are not published to an external repository for now: Maven Central publication is
-switched off (repository variable `PUBLISH_LIBRARIES`, see the release workflows) until a namespace of our own
-is arranged. Deploy the app through the published container image `ghcr.io/pinkroccade/nl-portal-backend`.
+The library modules are not published to a Maven repository; the project ships only the application. Deploy
+it through the published container image `ghcr.io/pinkroccade/nl-portal-backend`.
 
 ## Known issues
 

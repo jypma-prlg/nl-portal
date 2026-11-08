@@ -112,5 +112,3 @@ tasks.named("pitest") {
         survivors.forEach { (file, line, what) -> println("  $file:$line  $what") }
     }
 }
-
-apply(from = "gradle/publishing.gradle.kts")
