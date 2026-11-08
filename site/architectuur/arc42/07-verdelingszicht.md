@@ -28,7 +28,7 @@ Zie [`docker-compose/README.md`](https://github.com/pinkroccade/nl-portal/blob/m
 
 Buiten deze repository: Helm-charts rollen de twee images (backend, frontend) uit op Kubernetes.
 Ritense's `nl-portal/helm-charts` werd hier eerder voor gebruikt; pinkroccade's eigen equivalent is
-nog niet ingericht, zie [issue #18](https://github.com/pinkroccade/nl-portal/issues/18). Dit
+nog niet ingericht, zie [epic #191](https://github.com/pinkroccade/nl-portal/issues/191). Dit
 arc42-document beschrijft die laag niet in detail, maar benoemt wel de aanname die eruit volgt:
 **NL Portal heeft geen eigen
 database**: de backend is stateless en vereist geen persistentielaag. Elke overheidsorganisatie
