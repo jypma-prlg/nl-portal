@@ -7,7 +7,7 @@ die niet:
 - [`site/architectuur`](../applicatiearchitectuur.md) beschrijft
   het **product** (scope, Common Ground-principes, authenticatie, integratiepatronen) voor een breed
   publiek. Niet gepubliceerd buiten deze repository; zie
-  [issue #18](https://github.com/pinkroccade/nl-portal/issues/18).
+  [issue #376](https://github.com/pinkroccade/nl-portal/issues/376).
 - `site/architectuur/arc42` (dit pad) beschrijft de **software-architectuur** voor ontwikkelaars en architecten:
   bouwblokken, runtime-gedrag, verdeling, dwarsdoorsnede-concepten, risico's en beslissingen.
 - [`site/likec4`](../c4-model.md) bevat het navigeerbare C4-diagrammodel waarnaar dit document verwijst

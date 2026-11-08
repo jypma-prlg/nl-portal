@@ -14,7 +14,7 @@ Alle code en informatie is opensource en kan gevonden worden in deze GitHub-repo
 | Onderdeel                                                                         | Beschrijving                                                                                                    |
 | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | Deze repository                                                                   | De monorepo: backend (`backend/`), frontend (`frontend/`), docker-compose demo (`docker-compose/`) en docs.    |
-| Helm Charts                                                                       | Nog niet ingericht voor pinkroccade; zie [issue #18](https://github.com/pinkroccade/nl-portal/issues/18).       |
+| Helm Charts                                                                       | Nog niet ingericht voor pinkroccade; zie [epic #191](https://github.com/pinkroccade/nl-portal/issues/191).       |
 
 Voor de meeste implementaties gebruik je de gepubliceerde images (zie Route 1). Voor maatwerk dienen de app-directories (`backend/app`, `frontend/packages/app`) als startpunt.
 

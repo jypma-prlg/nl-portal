@@ -78,4 +78,4 @@ De NL Portal backend haalt bij opstarten de configuratie op uit het Configuratio
 
 Voor Kubernetes-omgevingen bestonden er Helm charts (`nl-portal-configpanel-backend` en
 `nl-portal-configpanel-frontend`) in Ritense's `helm-charts` repository; pinkroccade's eigen
-equivalent is nog niet ingericht, zie [issue #18](https://github.com/pinkroccade/nl-portal/issues/18).
+equivalent is nog niet ingericht, zie [epic #191](https://github.com/pinkroccade/nl-portal/issues/191).
