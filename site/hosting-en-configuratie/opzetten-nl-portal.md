@@ -22,7 +22,7 @@ Voor de meeste implementaties gebruik je de gepubliceerde images (zie Route 1). 
 
 De snelste manier om de NL Portal te bekijken is via de kant-en-klare demo-omgeving in de `docker-compose/` map van de monorepo. Die bevat alles wat nodig is:
 
-* De prebuilt NL Portal backend en frontend images (`ghcr.io/nl-portal/nl-portal-backend` en `ghcr.io/nl-portal/nl-portal-frontend`).
+* De prebuilt NL Portal backend en frontend images (`ghcr.io/pinkroccade/nl-portal-backend` en `ghcr.io/pinkroccade/nl-portal-frontend`). Zolang er nog geen release is gepubliceerd, zijn alleen snapshot-tags beschikbaar; kies de tag met `NL_PORTAL_IMAGE_TAG` (zie `docker-compose/README.md`).
 * De benodigde ZGW componenten (Open Zaak, Open Object, OpenKlant, OpenProduct) en Haal Centraal mocks, opgedeeld in docker-compose profielen zodat je zelf kiest welke onderdelen je start.
 * Een voorgeconfigureerde Keycloak met [standard token exchange](./keycloak-token-exchange.md) (zie ook de [Keycloak configuratie](./keycloak.md) pagina).
 

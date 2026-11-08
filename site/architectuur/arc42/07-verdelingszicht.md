@@ -10,7 +10,7 @@ onafhankelijk hoe de NL Portal-app zelf draait:
 |---|---|
 | `sources` (default) | Geen app-container; backend via `./gradlew :app-dev:bootRun`, frontend via `pnpm dev` — snelste innerloop |
 | `local` | Backend + frontend gebouwd uit deze monorepo-sources, als container | 
-| `remote` | Gepubliceerde images van GHCR (`ghcr.io/nl-portal/nl-portal-backend`, `...-frontend`) |
+| `remote` | Gepubliceerde images van GHCR (`ghcr.io/pinkroccade/nl-portal-backend`, `...-frontend`); tag via `NL_PORTAL_IMAGE_TAG` |
 
 Zie [`docker-compose/README.md`](https://github.com/pinkroccade/nl-portal/blob/main/docker-compose/README.md) voor de volledige service-/poorttabel.
 

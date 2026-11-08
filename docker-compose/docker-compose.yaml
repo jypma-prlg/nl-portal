@@ -462,6 +462,8 @@ services:
 
     nl-portal-configuration-panel-backend:
         container_name: nl-portal-configuration-panel-backend
+        # Het configuratiepaneel is een apart product dat niet onder pinkroccade is overgedragen;
+        # er bestaat geen ghcr.io/pinkroccade-variant, dus dit image komt bewust nog van ghcr.io/nl-portal.
         image: ghcr.io/nl-portal/configuration-panel-backend
         profiles:
             - config
@@ -476,6 +478,7 @@ services:
         container_name: nl-portal-configuration-panel-frontend
         profiles:
             - config
+        # Zie de notitie bij nl-portal-configuration-panel-backend: nog geen pinkroccade-variant.
         image: ghcr.io/nl-portal/configuration-panel-frontend
         depends_on:
             - nl-portal-configuration-panel-backend
