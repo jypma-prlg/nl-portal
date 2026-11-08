@@ -2,7 +2,7 @@ services:
 
   # openklant 2
   openklant-2:
-      image: maykinmedia/open-klant:2.19.1
+      image: maykinmedia/open-klant:2.19.2
       container_name: openklant-2-test
       ports:
           - "9007:8000"
@@ -47,5 +47,5 @@ services:
           start_period: 5s
 
   redis:
-      image: redis:8.10.2
+      image: redis:8.10.3
       container_name: redis-test
