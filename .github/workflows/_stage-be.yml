@@ -40,7 +40,7 @@ jobs:
                 env:
                     VERSION: ${{ inputs.version }}
                     GRADLE_TASK: ${{ inputs.runTests && 'build' || 'assemble' }}
-                run: ./gradlew "${GRADLE_TASK}" publish -Pversion="${VERSION}" --stacktrace
+                run: ./gradlew "${GRADLE_TASK}" -Pversion="${VERSION}" --stacktrace
             -   name: Generate SBOM
                 if: ${{ inputs.generateReports }}
                 uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
@@ -54,10 +54,7 @@ jobs:
                     dependency-snapshot: false
             -   name: Package stage bundle
                 working-directory: backend
-                run: |
-                    find . -type d -path '*/build/sonatypeCentralStaging' > stage-paths.txt
-                    echo app/build/libs/app.jar >> stage-paths.txt
-                    tar -cf backend-stage.tar -T stage-paths.txt
+                run: tar -cf backend-stage.tar app/build/libs/app.jar
             -   name: Upload stage bundle
                 uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
                 with:

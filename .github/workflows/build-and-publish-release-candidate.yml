@@ -76,22 +76,3 @@ jobs:
                 ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.version }}
         secrets: inherit
 
-    publish-be-native:
-        needs: [prepare, stage-be]
-        # Bibliotheken (Maven Central / npm) publiceren we alleen als de repo-variabele PUBLISH_LIBRARIES op true staat.
-        if: ${{ vars.PUBLISH_LIBRARIES == 'true' }}
-        uses: ./.github/workflows/_publish-be-native.yml
-        with:
-            version: ${{ needs.prepare.outputs.version }}
-            deployer: sonatype-snapshots
-        secrets: inherit
-
-    publish-fe-npm:
-        needs: [prepare, stage-fe]
-        # Bibliotheken (Maven Central / npm) publiceren we alleen als de repo-variabele PUBLISH_LIBRARIES op true staat.
-        if: ${{ vars.PUBLISH_LIBRARIES == 'true' }}
-        uses: ./.github/workflows/_publish-fe-npm.yml
-        with:
-            version: ${{ needs.prepare.outputs.version }}
-            distTag: rc
-        secrets: inherit
