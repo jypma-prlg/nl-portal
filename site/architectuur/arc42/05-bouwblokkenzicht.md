@@ -74,19 +74,19 @@ ingangen (GraphQL-operaties, REST-endpoints, event-listeners) het bereikbaar is.
 |---|---|---|---|
 | [Portaalconfiguratie en health](#capability-portaal-configuratie) | `actief` | `backend/core` | 2 |
 | [Zaken inzien](#capability-zaken-inzien) | `actief` | `backend/zgw/zaken`, `backend/zgw/zaken-api`, `backend/zgw/catalogi-api` | 3 |
-| [Besluiten inzien](#capability-besluiten-inzien) | `twijfel` | `backend/zgw/besluiten` | 1 |
+| [Besluiten inzien](#capability-besluiten-inzien) | `twijfel` | `backend/zgw/besluiten` | 0 |
 | [Berichten ontvangen](#capability-berichten-ontvangen) | `actief` | `backend/zgw/berichten`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi` | 4 |
 | [Taken afhandelen](#capability-taken-afhandelen) | `actief` | `backend/zgw/taak`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi`, `backend/form` | 5 |
 | [Eigen zaken (case-definities)](#capability-eigen-zaken-case) | `verwijderd` | `backend/case` | 0 |
 | [Betalen (Ogone direct)](#capability-betalen-ogone-direct) | `actief` | `backend/payment-direct` | 3 |
-| [Persoonsgegevens (BRP)](#capability-persoonsgegevens-brp) | `actief` | `backend/haalcentraal2` | 2 |
+| [Persoonsgegevens (BRP)](#capability-persoonsgegevens-brp) | `actief` | `backend/haalcentraal2` | 1 |
 | [Machtigingen (gemachtigde)](#capability-machtigingen) | `actief` | `backend/haalcentraal2` | 1 |
 | [Bedrijfsgegevens (Handelsregister)](#capability-bedrijfsgegevens-hr) | `actief` | `backend/haalcentraal-hr` | 1 |
 | [Contactgegevens beheren](#capability-contactgegevens-beheren) | `actief` | `backend/zgw/openklant`, `backend/zgw/verificatie` | 4 |
-| [Klantcontacten inzien](#capability-klantcontacten-inzien) | `actief` | `backend/zgw/openklant` | 2 |
+| [Klantcontacten inzien](#capability-klantcontacten-inzien) | `actief` | `backend/zgw/openklant` | 1 |
 | [Klantprofiel (partij) beheren](#capability-partij-beheren) | `kandidaat-verwijderen` | `backend/zgw/openklant` | 4 |
 | [Verificatie contactgegevens (los)](#capability-verificatie) | `kandidaat-verwijderen` | `backend/zgw/verificatie` | 3 |
-| [Producten inzien](#capability-producten-inzien) | `in-ontwikkeling` | `backend/zgw/openproduct` | 6 |
+| [Producten inzien](#capability-producten-inzien) | `in-ontwikkeling` | `backend/zgw/openproduct` | 5 |
 | [Productthema's](#capability-product-themas) | `in-ontwikkeling` | `backend/zgw/openproduct` | 8 |
 | [Productacties en -beslissingen](#capability-productacties) | `in-ontwikkeling` | `backend/zgw/openproduct` | 5 |
 | [Productreferentiegegevens](#capability-product-referentiedata) | `twijfel` | `backend/zgw/openproduct` | 12 |
@@ -123,15 +123,11 @@ Burger/ondernemer ziet zijn lopende en afgeronde zaken met status, documenten en
 <a id="capability-besluiten-inzien"></a>
 ### Besluiten inzien (`besluiten-inzien`)
 
-Toont besluiten bij een zaak (via veld Zaak.besluiten) en biedt download van besluitdocumenten.
+Toont besluiten bij een zaak (via veld Zaak.besluiten).
 
 - **Status:** `twijfel`
-- **Bewijs:** Alleen veldresolvers + REST-download; /api/besluiten/... nergens in frontend gevonden, wel actief onderhouden (17 commits).
+- **Bewijs:** Alleen veldresolvers; geen eigen ingangen meer (REST-download van besluitdocumenten verwijderd, #105), wel actief onderhouden (17 commits).
 - **Modules:** `backend/zgw/besluiten`
-
-| Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
-|---|---|---|---|---|
-| rest | `GET /api/besluiten/{besluitId}/document/{documentId}/content` | nee | `kandidaat-verwijderen` | eerst bevestigen dat besluitdocumenten nergens getoond worden |
 
 <a id="capability-berichten-ontvangen"></a>
 ### Berichten ontvangen (`berichten-ontvangen`)
@@ -197,13 +193,12 @@ Burger betaalt direct via Ogone/Worldline; de PSP meldt de uitkomst via een post
 Toont de persoonsgegevens van de ingelogde burger uit Haal Centraal BRP.
 
 - **Status:** `actief`
-- **Bewijs:** getPersoonV2 gebruikt; getBewonersAantalV2 niet (wel als veld bewonersAantal), 24 commits.
+- **Bewijs:** getPersoonV2 gebruikt (bewonersAantal als veld), 24 commits.
 - **Modules:** `backend/haalcentraal2`
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
 |---|---|---|---|---|
 | graphql-query | `getPersoonV2` | ja | `actief` |  |
-| graphql-query | `getBewonersAantalV2` | nee | `kandidaat-verwijderen` | dubbel met veld bewonersAantal |
 
 <a id="capability-machtigingen"></a>
 ### Machtigingen (gemachtigde) (`machtigingen`)
@@ -253,13 +248,12 @@ Burger beheert e-mail/telefoon (digitale adressen) in OpenKlant 2, met verificat
 Toont eerdere contactmomenten van de burger met de gemeente.
 
 - **Status:** `actief`
-- **Bewijs:** getUserKlantContacten gebruikt; detail-operatie getUserKlantContact niet.
+- **Bewijs:** getUserKlantContacten gebruikt.
 - **Modules:** `backend/zgw/openklant`
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
 |---|---|---|---|---|
 | graphql-query | `getUserKlantContacten` | ja | `actief` |  |
-| graphql-query | `getUserKlantContact` | nee | `kandidaat-verwijderen` |  |
 
 <a id="capability-partij-beheren"></a>
 ### Klantprofiel (partij) beheren (`partij-beheren`)
@@ -298,7 +292,7 @@ Losse API om een verificatiecode aan te maken/controleren en de verificatieconfi
 Burger ziet zijn afgenomen producten (OpenProduct) met gekoppelde zaken, taken en documenten.
 
 - **Status:** `in-ontwikkeling`
-- **Bewijs:** getOpenProducten/getOpenProduct gebruikt, rest nog niet; 48 commits in 12m.
+- **Bewijs:** getOpenProducten/getOpenProduct gebruikt; 48 commits in 12m.
 - **Modules:** `backend/zgw/openproduct`
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
@@ -308,7 +302,6 @@ Burger ziet zijn afgenomen producten (OpenProduct) met gekoppelde zaken, taken e
 | graphql-query | `getOpenProductenByThema` | nee | `in-ontwikkeling` |  |
 | graphql-query | `getOpenProductTypes` | nee | `in-ontwikkeling` |  |
 | graphql-query | `getOpenProductType` | nee | `in-ontwikkeling` |  |
-| rest | `GET /api/product/{productId}/document/{documentId}/content` | nee | `kandidaat-verwijderen` |  |
 
 <a id="capability-product-themas"></a>
 ### Productthema's (`product-themas`)

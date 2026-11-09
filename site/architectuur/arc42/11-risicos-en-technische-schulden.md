@@ -53,7 +53,7 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/pinkroccade/nl-po
 
 | Capability | Status | Toelichting | Besluit / actie |
 |---|---|---|---|
-| `besluiten-inzien` | `twijfel` | Alleen veldresolvers + REST-download; /api/besluiten/... nergens in frontend gevonden, wel actief onderhouden (17 commits). |  |
+| `besluiten-inzien` | `twijfel` | Alleen veldresolvers; geen eigen ingangen meer (REST-download van besluitdocumenten verwijderd, #105), wel actief onderhouden (17 commits). |  |
 | `partij-beheren` | `kandidaat-verwijderen` | Geen van de 4 operaties in frontend; publieke GraphQL-ingangen kunnen weg (na check externe clients). |  |
 | `verificatie` | `kandidaat-verwijderen` | Geen frontend-gebruik; alleen de publieke GraphQL-ingangen gaan weg. De service blijft als interne afhankelijkheid van contactgegevens-beheren (DigitaleAdresMutation). |  |
 | `product-referentiedata` | `twijfel` | 12 lijst/detail-operaties, geen enkele in frontend gebruikt; lijkt 1-op-1 API-doorgifte zonder consument. | Herbeoordelen zodra de OpenProduct-frontend (producten-inzien, product-themas, productacties) af is. |
@@ -62,8 +62,4 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/pinkroccade/nl-po
 
 | Capability | Ingang | Status | Voorwaarde |
 |---|---|---|---|
-| `besluiten-inzien` | `GET /api/besluiten/{besluitId}/document/{documentId}/content` | `kandidaat-verwijderen` | eerst bevestigen dat besluitdocumenten nergens getoond worden |
-| `persoonsgegevens-brp` | `getBewonersAantalV2` | `kandidaat-verwijderen` | dubbel met veld bewonersAantal |
-| `klantcontacten-inzien` | `getUserKlantContact` | `kandidaat-verwijderen` |  |
-| `producten-inzien` | `GET /api/product/{productId}/document/{documentId}/content` | `kandidaat-verwijderen` |  |
 <!-- END GENERATED: technische-schuld -->

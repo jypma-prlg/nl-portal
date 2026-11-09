@@ -1921,8 +1921,6 @@ export type Query = {
   /**  Gets a single Bericht by Id */
   getBericht?: Maybe<Bericht>;
   getBerichten: BerichtenPage;
-  /**  Gets the number of people living in the same house of the adresseerbaarObjectIdentificatie */
-  getBewonersAantalV2?: Maybe<Scalars['Int']['output']>;
   getDecision: Array<Scalars['JSON']['output']>;
   getDirectPaymentStatus: DirectPaymentStatus;
   /**  Get the form definition for a task the authenticated user owns */
@@ -2008,8 +2006,6 @@ export type Query = {
   getUnopenedBerichtenCount: Scalars['Int']['output'];
   /**  Get DigitaleAdressen of authenticated user. */
   getUserDigitaleAdressen?: Maybe<Array<DigitaleAdresResponse>>;
-  /**  Get KlantContact by id of authenticated user. */
-  getUserKlantContact?: Maybe<OpenKlant2Klantcontact>;
   getUserKlantContacten: Array<OpenKlant2Klantcontact>;
   /**  Get Partij by Id for authenticated user. */
   getUserPartij?: Maybe<OpenKlant2Partij>;
@@ -2278,13 +2274,6 @@ export type QueryGetTakenV2Args = {
 
 export type QueryGetUserDigitaleAdressenArgs = {
   isStandaardAdres?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-
-export type QueryGetUserKlantContactArgs = {
-  identificatorId?: InputMaybe<Scalars['UUID']['input']>;
-  identificatorType?: InputMaybe<OnderwerpObjectIndentificatorType>;
-  klantContactId: Scalars['UUID']['input'];
 };
 
 

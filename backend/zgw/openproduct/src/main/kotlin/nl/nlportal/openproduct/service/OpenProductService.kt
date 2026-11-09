@@ -15,10 +15,8 @@
  */
 package nl.nlportal.openproduct.service
 
-import nl.nlportal.core.util.ModuleNotConfiguredException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
-import kotlinx.coroutines.flow.Flow
 import nl.nlportal.commonground.authentication.AuthenticationMachtigingsDienstService
 import nl.nlportal.commonground.authentication.BedrijfAuthentication
 import nl.nlportal.commonground.authentication.BurgerAuthentication
@@ -79,7 +77,6 @@ import nl.nlportal.zgw.taak.domain.TaakObjectV2
 import nl.nlportal.zgw.taak.domain.TaakV2
 import nl.nlportal.zgw.taak.graphql.TaakPageV2
 import nl.nlportal.zgw.taak.service.TaakService
-import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
@@ -993,50 +990,6 @@ class OpenProductService(
             pageSize = 999,
             extraSearchVariables = extraSearchVariables,
         ).results
-    }
-
-    suspend fun getProductDocumentContent(
-        authentication: CommonGroundAuthentication,
-        productId: UUID,
-        documentId: UUID,
-    ): Pair<Document, Flow<DataBuffer>> {
-        try {
-            // get product, if not authorized throws an unauthorized
-            val product =
-                getProduct(
-                    authentication = authentication,
-                    id = productId,
-                )
-
-            // if product is not found, return a 204
-            if (product == null) {
-                throw ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found")
-            }
-
-            val documentUrl =
-                product.documenten.firstOrNull { extractId(it.url!!) == documentId }
-                    ?: run {
-                        logger.debug {
-                            "Access denied to document $documentId on product $productId for user ${authentication.userId}"
-                        }
-                        throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied")
-                    }
-            val document =
-                documentenApiService.getDocument(
-                    documentUrl = documentUrl.url!!,
-                )
-            val content =
-                documentenApiService.getDocumentContentStreaming(
-                    informatieobejctUrl = documentUrl.url,
-                )
-            return document to content
-        } catch (e: Exception) {
-            logger.error(e) { "Error getting product document: " + e.message }
-            if (e is NullPointerException || e is ModuleNotConfiguredException) {
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-            }
-            throw e
-        }
     }
 
     /**

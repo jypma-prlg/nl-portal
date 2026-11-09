@@ -22,7 +22,6 @@ import nl.nlportal.documentenapi.service.DocumentenApiService
 import nl.nlportal.openproduct.client.OpenProductClient
 import nl.nlportal.openproduct.client.OpenProductDmnClient
 import nl.nlportal.openproduct.client.OpenProductTypeClient
-import nl.nlportal.openproduct.security.config.ProductDocumentResourceHttpSecurityConfigurer
 import nl.nlportal.openproduct.service.OpenProductDmnService
 import nl.nlportal.openproduct.service.OpenProductPrefillService
 import nl.nlportal.openproduct.service.OpenProductService
@@ -114,8 +113,4 @@ class OpenProductAutoConfiguration {
             objectsApiClient = objectsApiClient,
             openProductPrefillConfigurationProperties = openProductModuleConfiguration.properties.prefill,
         )
-
-    @Bean
-    @ConditionalOnMissingBean(ProductDocumentResourceHttpSecurityConfigurer::class)
-    fun productDocumentResourceHttpSecurityConfigurer(): HttpSecurityConfigurer = ProductDocumentResourceHttpSecurityConfigurer()
 }
