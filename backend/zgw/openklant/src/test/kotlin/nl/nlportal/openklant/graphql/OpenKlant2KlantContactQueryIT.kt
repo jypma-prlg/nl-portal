@@ -82,37 +82,4 @@ class OpenKlant2KlantContactQueryIT(
             assertNotNull(responseBody)
             assertEquals("E-mail", responseBody.get(0)?.get("kanaal")?.stringValue())
         }
-
-    @Test
-    @WithBurgerUser("296648875")
-    fun `should find KlantContact for authenticated user`() =
-        runTest {
-            val responseBody =
-                httpGraphQlTester
-                    .document(TestHelper.readFileAsString("/config/graphql/getUserKlantContact.gql"))
-                    .execute()
-                    .errors()
-                    .verify()
-                    .path("getUserKlantContact")
-                    .entity(JsonNode::class.java)
-                    .get()
-
-            assertNotNull(responseBody)
-            assertEquals("E-mail", responseBody.get("kanaal")?.stringValue())
-        }
-
-    @Test
-    @WithBurgerUser("999999999")
-    fun `should not find KlantContact of another user`() =
-        runTest {
-            httpGraphQlTester
-                .document(TestHelper.readFileAsString("/config/graphql/getUserKlantContact.gql"))
-                .execute()
-                .errors()
-                .satisfy { errors ->
-                    assertEquals(1, errors.size)
-                    assertTrue(errors[0].message!!.contains("Access denied to this klantcontact"))
-                }.path("getUserKlantContact")
-                .valueIsNull()
-        }
 }

@@ -38,13 +38,11 @@ capabilities:
 
   - id: besluiten-inzien
     naam: Besluiten inzien
-    beschrijving: Toont besluiten bij een zaak (via veld Zaak.besluiten) en biedt download van besluitdocumenten.
+    beschrijving: Toont besluiten bij een zaak (via veld Zaak.besluiten).
     status: twijfel
-    bewijs: Alleen veldresolvers + REST-download; /api/besluiten/... nergens in frontend gevonden, wel actief onderhouden (17 commits).
+    bewijs: Alleen veldresolvers; geen eigen ingangen meer (REST-download van besluitdocumenten verwijderd, #105), wel actief onderhouden (17 commits).
     modules: [backend/zgw/besluiten]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-11-04, commits_12m: 17, deprecated_markers: false}
-    ingangen:
-      - {type: rest, naam: "GET /api/besluiten/{besluitId}/document/{documentId}/content", frontend_gebruikt: false, status: kandidaat-verwijderen, voorwaarde: eerst bevestigen dat besluitdocumenten nergens getoond worden}
 
   - id: berichten-ontvangen
     naam: Berichten ontvangen
@@ -98,12 +96,11 @@ capabilities:
     naam: Persoonsgegevens (BRP)
     beschrijving: Toont de persoonsgegevens van de ingelogde burger uit Haal Centraal BRP.
     status: actief
-    bewijs: getPersoonV2 gebruikt; getBewonersAantalV2 niet (wel als veld bewonersAantal), 24 commits.
+    bewijs: getPersoonV2 gebruikt (bewonersAantal als veld), 24 commits.
     modules: [backend/haalcentraal2]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-08-31, commits_12m: 24, deprecated_markers: true}
     ingangen:
       - {type: graphql-query, naam: getPersoonV2, frontend_gebruikt: true}
-      - {type: graphql-query, naam: getBewonersAantalV2, frontend_gebruikt: false, status: kandidaat-verwijderen, voorwaarde: dubbel met veld bewonersAantal}
 
   - id: machtigingen
     naam: Machtigingen (gemachtigde)
@@ -142,12 +139,11 @@ capabilities:
     naam: Klantcontacten inzien
     beschrijving: Toont eerdere contactmomenten van de burger met de gemeente.
     status: actief
-    bewijs: getUserKlantContacten gebruikt; detail-operatie getUserKlantContact niet.
+    bewijs: getUserKlantContacten gebruikt.
     modules: [backend/zgw/openklant]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-10-27, commits_12m: 43, deprecated_markers: true}
     ingangen:
       - {type: graphql-query, naam: getUserKlantContacten, frontend_gebruikt: true}
-      - {type: graphql-query, naam: getUserKlantContact, frontend_gebruikt: false, status: kandidaat-verwijderen}
 
   - id: partij-beheren
     naam: Klantprofiel (partij) beheren
@@ -178,7 +174,7 @@ capabilities:
     naam: Producten inzien
     beschrijving: Burger ziet zijn afgenomen producten (OpenProduct) met gekoppelde zaken, taken en documenten.
     status: in-ontwikkeling
-    bewijs: getOpenProducten/getOpenProduct gebruikt, rest nog niet; 48 commits in 12m.
+    bewijs: getOpenProducten/getOpenProduct gebruikt; 48 commits in 12m.
     modules: [backend/zgw/openproduct]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-11-04, commits_12m: 48, deprecated_markers: false}
     ingangen:
@@ -187,7 +183,6 @@ capabilities:
       - {type: graphql-query, naam: getOpenProductenByThema, frontend_gebruikt: false}
       - {type: graphql-query, naam: getOpenProductTypes, frontend_gebruikt: false}
       - {type: graphql-query, naam: getOpenProductType, frontend_gebruikt: false}
-      - {type: rest, naam: "GET /api/product/{productId}/document/{documentId}/content", frontend_gebruikt: false, status: kandidaat-verwijderen}
 
   - id: product-themas
     naam: Productthema's

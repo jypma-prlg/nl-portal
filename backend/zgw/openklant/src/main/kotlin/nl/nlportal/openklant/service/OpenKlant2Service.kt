@@ -421,28 +421,6 @@ class OpenKlant2Service(
         }
     }
 
-    suspend fun findKlantContact(
-        authentication: CommonGroundAuthentication,
-        klantContactId: UUID,
-        identificatorType: OnderwerpObjectIndentificatorType? = null,
-        identificatorId: UUID? = null,
-    ): OpenKlant2Klantcontact? {
-        val userKlantContacten =
-            findKlantContacten(
-                authentication = authentication,
-                identificatorType = identificatorType,
-                identificatorId = identificatorId,
-            )
-
-        if (userKlantContacten.none { it.uuid == klantContactId.toString() }) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied to this klantcontact")
-        }
-
-        return openKlant2Client
-            .path<KlantContacten>()
-            .get(klantContactId)
-    }
-
     private fun createPartijIndicator(authentication: CommonGroundAuthentication): OpenKlant2Identificator =
         when (authentication) {
             is BurgerAuthentication -> {
