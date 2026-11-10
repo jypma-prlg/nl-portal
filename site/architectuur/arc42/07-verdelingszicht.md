@@ -10,17 +10,16 @@ onafhankelijk hoe de NL Portal-app zelf draait:
 |---|---|
 | `sources` (default) | Geen app-container; backend via `./gradlew :app-dev:bootRun`, frontend via `pnpm dev` — snelste innerloop |
 | `local` | Backend + frontend gebouwd uit deze monorepo-sources, als container | 
-| `remote` | Gepubliceerde images van GHCR (`ghcr.io/nl-portal/nl-portal-backend`, `...-frontend`) |
+| `remote` | Gepubliceerde images van GHCR (`ghcr.io/pinkroccade/nl-portal-backend`, `...-frontend`); tag via `NL_PORTAL_IMAGE_TAG` |
 
-Zie [`docker-compose/README.md`](https://github.com/jypma-prlg/nl-portal/blob/main/docker-compose/README.md) voor de volledige service-/poorttabel.
+Zie [`docker-compose/README.md`](https://github.com/pinkroccade/nl-portal/blob/main/docker-compose/README.md) voor de volledige service-/poorttabel.
 
 ## 7.2 Build en packaging
 
 - **Backend**: Gradle multi-module build → `nl-portal-backend`-image (`backend/Dockerfile`).
-  JReleaser (`backend/jreleaser.yml`) verzorgt de release-metadata.
-- **Frontend**: pnpm-workspace build → `nl-portal-frontend`-image (`frontend/Dockerfile`); de
-  `@nl-portal/*`-bibliotheken worden ook los gepubliceerd (npm) voor hergebruik buiten de shippable
-  app.
+- **Frontend**: pnpm-workspace build → `nl-portal-frontend`-image (`frontend/Dockerfile`).
+- **Bibliotheken**: de backendmodules en de `@nl-portal/*`-pakketten worden niet los gepubliceerd
+  (geen Maven Central of npm); alleen de twee images worden uitgeleverd.
 - **CI** (`.github/workflows/`): `ci.yml` (algemene build/test), `_stage-be.yml`/`_stage-fe.yml`
   (buildartefacten + reports/SBOM), `build-and-publish-*.yml` (snapshot/release-candidate/release),
   `sonarcloud.yml` (kwaliteitspoort), `dependency-check.yml` (beveiligingspoort — zie deliverable 6).
@@ -29,10 +28,10 @@ Zie [`docker-compose/README.md`](https://github.com/jypma-prlg/nl-portal/blob/ma
 
 Buiten deze repository: Helm-charts rollen de twee images (backend, frontend) uit op Kubernetes.
 Ritense's `nl-portal/helm-charts` werd hier eerder voor gebruikt; pinkroccade's eigen equivalent is
-nog niet ingericht, zie [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18). Dit
+nog niet ingericht, zie [epic #191](https://github.com/pinkroccade/nl-portal/issues/191). Dit
 arc42-document beschrijft die laag niet in detail, maar benoemt wel de aanname die eruit volgt:
 **NL Portal heeft geen eigen
-database**: de backend is stateless en vereist geen persistentielaag. Elke overheidsorganisatie
+database**: de backend is stateless en vereist geen persistentielaag. Een BFF vraagt wel Redis voor sessies, zonder back-up ([ADR 0017](../../development/adr/0017-vluchtige-state-toegestaan.md)). Elke overheidsorganisatie
 draait haar eigen instantie tegen haar eigen ZGW-landschap.
 
 ## 7.4 Open vraag

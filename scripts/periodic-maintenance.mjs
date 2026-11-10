@@ -28,7 +28,7 @@ export function buildMaintenanceComment({
   return [
     `## ${date}`,
     "",
-    "### Major-dependency-updates (`mise run deps:check`)",
+    "### Major-dependency-updates (`mise run deps:outdated`)",
     "```",
     depsCheckOutput || "(geen output)",
     "```",
@@ -110,7 +110,7 @@ function runReportOnly(command, args, options) {
 async function main() {
   execFileSync("gh", ["label", "create", "maintenance", "--color", "0366d6", "--force"], { stdio: "ignore" });
 
-  const deps = runReportOnly("mise", ["run", "deps:check"]);
+  const deps = runReportOnly("mise", ["run", "deps:outdated"]);
   const sonar = runReportOnly("mise", ["run", "sonar:issues"]);
   const licenseReport = runReportOnly("mise", ["run", "security:license-report"]);
   const checkLicense = runReportOnly("mise", ["run", "security:check-license"]);

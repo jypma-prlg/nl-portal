@@ -30,11 +30,11 @@ model {
   }
   capability besluitenInzien 'Besluiten inzien' {
     #twijfel
-    description 'Toont besluiten bij een zaak (via veld Zaak.besluiten) en biedt download van besluitdocumenten.'
+    description 'Toont besluiten bij een zaak (via veld Zaak.besluiten).'
     metadata {
       status 'twijfel'
       modules 'backend/zgw/besluiten'
-      ingangen '1'
+      ingangen '0'
     }
   }
   capability berichtenOntvangen 'Berichten ontvangen' {
@@ -79,7 +79,7 @@ model {
     metadata {
       status 'actief'
       modules 'backend/haalcentraal2'
-      ingangen '2'
+      ingangen '1'
     }
   }
   capability machtigingen 'Machtigingen (gemachtigde)' {
@@ -115,7 +115,7 @@ model {
     metadata {
       status 'actief'
       modules 'backend/zgw/openklant'
-      ingangen '2'
+      ingangen '1'
     }
   }
   capability partijBeheren 'Klantprofiel (partij) beheren' {
@@ -142,7 +142,7 @@ model {
     metadata {
       status 'in-ontwikkeling'
       modules 'backend/zgw/openproduct'
-      ingangen '6'
+      ingangen '5'
     }
   }
   capability productThemas 'Productthema\'s' {

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Strix-beveiligingsscan lokaal (quick, alleen de diff t.o.v. main); vereist strix-CLI, Docker en STRIX_LLM/LLM_API_KEY"
+set -euo pipefail
+
+command -v strix >/dev/null || { echo "strix CLI niet gevonden - installeer eerst: https://docs.strix.ai/quickstart (bijv. pipx install strix-agent)" >&2; exit 1; }
+: "${STRIX_LLM:?Zet STRIX_LLM}"
+: "${LLM_API_KEY:?Zet LLM_API_KEY}"
+strix --target ./ --scan-mode quick --scope-mode diff --fail-on high

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#MISE description="Pitest op core-klassen die t.o.v. origin/$BASE_REF (standaard main) gewijzigd zijn, met de PR-drempel van 80% (zoals CI, ADR 0011)"
+#MISE dir="{{config_root}}/backend"
+set -euo pipefail
+
+base="${BASE_REF:-main}"
+git fetch -q origin "$base"
+changed=$(git diff --name-only --diff-filter=AMR "origin/$base"...HEAD -- 'core/src/main/kotlin/**/*.kt' \
+  | sed -E 's#^backend/core/src/main/kotlin/##; s#\.kt$#*#; s#/#.#g' | paste -sd, -)
+if [ -z "$changed" ]; then echo "Geen gewijzigde core-klassen."; exit 0; fi
+./gradlew :core:pitest -PpitestTargetClasses="$changed" -PpitestThreshold=80 --console=plain

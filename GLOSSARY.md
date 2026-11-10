@@ -42,6 +42,12 @@ staat; voeg een nieuwe term toe zodra een module ernaar vernoemd wordt (zie de
   omgeving. _Avoid_: configuration panel, instellingenbeheer.
 - **Thema** — het uiterlijk van één gemeente in NL Portal: logo, stijl, favicon en paginatitel, zodat de
   portal herkenbaar is als die van de gemeente. _Avoid_: skin, branding.
+- **Persistente state** — gegevens die bewaard blijven na een herstart en waarvoor een back-up of herstel
+  nodig is: applicatieconfiguratie en gebruikersdata. _Avoid_: state (zonder bijvoeglijk
+  naamwoord).
+- **Vluchtige state** — gegevens die verloren mogen gaan zonder dataverlies, zoals een sessie of cache;
+  uitval betekent hooguit opnieuw inloggen of een tragere respons. Geen back-up of herstel nodig.
+  _Avoid_: state (zonder bijvoeglijk naamwoord).
 - **Normatieve bron** — een extern of intern document (bijvoorbeeld OWASP ASVS 5.0, een RFC of het
   5-lagenmodel) waaraan NL Portal zich bewust toetst en waarvan per eis vastligt hoe die wordt afgedwongen
   of waarom niet. _Avoid_: standaard, richtlijn.

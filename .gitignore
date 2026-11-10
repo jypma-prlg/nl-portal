@@ -27,12 +27,7 @@ node_modules/
 coverage/
 .nyc_output/
 
-# --- Publishing & release staging -------------------------------------------
-# JReleaser + Sonatype staging land under build/ (already ignored); these
-# catch any tool that writes them at another level.
-**/sonatypeCentralStaging/
-**/staging-deploy/
-**/jreleaser/
+# --- SBOM -------------------------------------------------------------------
 *.sbom
 sbom.cyclonedx.json
 
@@ -89,6 +84,3 @@ mise.local.toml
 .codegraph/
 .mcp.json
 strix_runs/
-
-# Tijdelijke staat van de transfer-wizard (#19)
-.transfer/

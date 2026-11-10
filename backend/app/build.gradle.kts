@@ -65,14 +65,6 @@ tasks.named<Jar>("jar") {
     enabled = false
 }
 
-tasks.withType<PublishToMavenRepository>().configureEach {
-    enabled = false
-}
-
-tasks.withType<PublishToMavenLocal>().configureEach {
-    enabled = false
-}
-
 // Local development config for a from-source run. `.env.properties` is the ONLY
 // config source (gitignored; copy it from .env.properties.example). It is
 // independent of docker-compose/imports/backend.env, which configures the

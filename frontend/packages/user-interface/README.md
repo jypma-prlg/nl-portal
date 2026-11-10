@@ -1,10 +1,8 @@
 # @nl-portal/nl-portal-user-interface
 
-[![NPM](https://img.shields.io/npm/v/@nl-portal/nl-portal-user-interface.svg)](https://www.npmjs.com/package/@nl-portal/nl-portal-user-interface)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
 
-```bash
-npm install --save @nl-portal/nl-portal-user-interface
-```
+This is a workspace package of the frontend monorepo and is not published to a registry. The apps depend
+on it as `"@nl-portal/nl-portal-user-interface": "workspace:*"`.

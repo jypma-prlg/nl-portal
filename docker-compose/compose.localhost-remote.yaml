@@ -6,13 +6,15 @@ services:
             - "3000:8081"
 
     nl-portal-backend:
-        image: ghcr.io/nl-portal/nl-portal-backend:4.0
+        # Eigen images van pinkroccade. Er is nog geen release-tag (alleen snapshots), dus de tag
+        # is verplicht via NL_PORTAL_IMAGE_TAG; zie docker-compose/README.md.
+        image: ghcr.io/pinkroccade/nl-portal-backend:${NL_PORTAL_IMAGE_TAG:?zet NL_PORTAL_IMAGE_TAG op een tag uit ghcr.io/pinkroccade/nl-portal-backend en -frontend (zie docker-compose/README.md)}
         container_name: nl-portal-backend
         network_mode: "service:localhost"
         env_file: imports/backend.env
 
     nl-portal-frontend:
-        image: ghcr.io/nl-portal/nl-portal-frontend:4.0
+        image: ghcr.io/pinkroccade/nl-portal-frontend:${NL_PORTAL_IMAGE_TAG:?zet NL_PORTAL_IMAGE_TAG op een tag uit ghcr.io/pinkroccade/nl-portal-backend en -frontend (zie docker-compose/README.md)}
         container_name: nl-portal-frontend
         network_mode: "service:localhost"
         env_file: imports/frontend.env

@@ -2,13 +2,6 @@ type Query {
     # Get DigitaleAdressen of authenticated user.
     getUserDigitaleAdressen(isStandaardAdres: Boolean): [DigitaleAdresResponse!]
 
-    # Get KlantContact by id of authenticated user.
-    getUserKlantContact(
-        klantContactId: UUID!
-        identificatorType: OnderwerpObjectIndentificatorType
-        identificatorId: UUID
-    ): OpenKlant2Klantcontact
-
     #
     #         Get KlantContacten of authenticated user and optional filter on .
     #         identificatorType, like zaak or product

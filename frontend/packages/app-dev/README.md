@@ -4,8 +4,7 @@ A developer-only sandbox clone of [`packages/app`](../app). It carries work-in-p
 (currently the producten / thema pages) so developers can iterate without destabilizing the shippable
 `nl-portal-app`.
 
-It is **developer-only and never published**: excluded from the npm publish list, and
-never built into the frontend image.
+It is **developer-only** and never built into the frontend image.
 
 ## Running
 

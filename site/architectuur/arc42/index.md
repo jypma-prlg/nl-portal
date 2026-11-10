@@ -7,12 +7,12 @@ die niet:
 - [`site/architectuur`](../applicatiearchitectuur.md) beschrijft
   het **product** (scope, Common Ground-principes, authenticatie, integratiepatronen) voor een breed
   publiek. Niet gepubliceerd buiten deze repository; zie
-  [issue #18](https://github.com/jypma-prlg/nl-portal/issues/18).
+  [issue #376](https://github.com/pinkroccade/nl-portal/issues/376).
 - `site/architectuur/arc42` (dit pad) beschrijft de **software-architectuur** voor ontwikkelaars en architecten:
   bouwblokken, runtime-gedrag, verdeling, dwarsdoorsnede-concepten, risico's en beslissingen.
 - [`site/likec4`](../c4-model.md) bevat het navigeerbare C4-diagrammodel waarnaar dit document verwijst
   in plaats van losse afbeeldingen te dupliceren.
-- [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-portal/blob/main/docs/capabilities.yaml) is de **bron** voor de capability-inventaris. Hoofdstuk 5.5
+- [`docs/capabilities.yaml`](https://github.com/pinkroccade/nl-portal/blob/main/docs/capabilities.yaml) is de **bron** voor de capability-inventaris. Hoofdstuk 5.5
   en 11.4 en `site/likec4/capabilities.generated.c4` worden daaruit gegenereerd met
   `mise run docs:capabilities`; wijzig de YAML, niet de gegenereerde blokken. CI faalt als ze niet
   actueel zijn.

@@ -60,7 +60,6 @@ zgw_besluiten --> zgw_catalogi_api #green : bewaakt
 zgw_besluiten --> zgw_common_ground_authentication #green : bewaakt
 zgw_besluiten --> zgw_documenten_api #green : bewaakt
 zgw_besluiten --> zgw_idtoken_authentication #green : bewaakt
-zgw_besluiten --> zgw_zaken_api #green : bewaakt
 zgw_catalogi_api --> core #grey
 zgw_catalogi_api --> zgw_idtoken_authentication #green : bewaakt
 zgw_common_ground_authentication --> core #grey

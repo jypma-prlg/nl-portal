@@ -20,7 +20,7 @@ Read these before anything else; every other section is reference.
 3. **Hooks pass.** Run `git commit` and `git push` directly and let the Husky hooks pass; fix the
    cause when one fails, never `--no-verify` (see "Git hooks and `pnpm`").
 4. **Mise for tasks.** Run scripts and repeatable tasks as `mise run <task>`; add a task when none
-   exists. The build and test commands under "Before you call it done" are the exception.
+   exists. `mise tasks` lists what exists.
 5. **Done means green.** Build and tests pass per "Before you call it done"; a security- or
    dependency-relevant change also passes the matching `mise run security:*` task.
 6. **PR title is a Conventional Commit** and non-trivial work starts from an issue (see
@@ -77,18 +77,22 @@ step that touches `GLOSSARY.md` or an ADR is a `domain-modeling` seam.
 
 ## Before you call it done
 
-```shell
-# backend, from backend/ (Gradle needs Java from mise)
-mise exec -- ./gradlew build -x integrationTest --console=plain   # compiles, unit-tests, ktlint; integrationTest needs Docker
-mise run backend:pitest-changed                                  # only when backend/core changed: CI's 80% mutation gate
+From the repo root:
 
-# frontend, from frontend/
-pnpm -r build && pnpm lint && pnpm lint:css && pnpm typecheck && pnpm test && pnpm prettier
+```shell
+mise run build                    # compile and assemble backend and frontend
+mise run test                     # unit tests of backend, frontend and scripts, ArchUnit included; no integration tests (those need Docker)
+mise run lint                     # ktlint/Spotless, ESLint, Stylelint, typecheck, Prettier
+mise run backend:pitest-changed   # only when backend/core changed: CI's 80% mutation gate
 ```
 
-Gradle hangs without output: stop stale daemons with `mise exec -- ./gradlew --stop` and rerun.
-Keep `--console=plain` and send long runs to a log file instead of piping through `grep`/`head`,
-which buffers until the end.
+Narrow a loop with a domain task (`backend:test`, `frontend:lint`, `arch-check` for only the ArchUnit
+rules, ...); `mise tasks` lists them all. Integration tests run with
+`mise run backend:integration-test` when Docker is there.
+
+Gradle hangs without output: stop stale daemons with `mise exec -- ./gradlew --stop` from `backend/`
+and rerun.
+Send long runs to a log file instead of piping through `grep`/`head`, which buffers until the end.
 
 For a security- or dependency-relevant change, also run the applicable `mise run security:*` task
 (see below) before considering it done.
@@ -140,7 +144,7 @@ pnpm-workspace) leeft onder `frontend/`. Backend-tooling (Gradle, Spotless/ktlin
 - [site/development/workflows/dependency-updates.md](site/development/workflows/dependency-updates.md) and
   [site/development/workflows/security.md](site/development/workflows/security.md) (Dutch) are the source of truth; see also
   [SECURITY.md](SECURITY.md) for vulnerability disclosure.
-- Use the `mise run security:*`, `sbom:*` and `deps:check*` tasks (`mise.toml`) for these jobs
+- Use the `mise run security:*`, `sbom:*` and `deps:outdated*` tasks (`mise.toml`) for these jobs
   instead of hand-rolling `gradle`/`syft`/`grype`/`pnpm` invocations — they're what CI runs too.
 - After any backend dependency bump, including the weekly Renovate PR, manually regenerate and
   commit `backend/gradle/verification-metadata.xml` via `mise run security:verify-dependencies` —

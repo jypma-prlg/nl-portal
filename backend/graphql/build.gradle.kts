@@ -36,5 +36,3 @@ dependencies {
     // Logging for Kotlin
     api(Dependencies.kotlinLogging)
 }
-
-apply(from = "gradle/publishing.gradle.kts")
