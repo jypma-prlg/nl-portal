@@ -18,7 +18,7 @@ Via het Configuration Panel kun je alle backend modules in- en uitschakelen en c
 | Besluiten API | Besluiten bij zaken |
 | Open Object | Objectregistratie voor taken en berichten |
 | OpenKlant 2 | Klantgegevens en contactmomenten |
-| HaalCentraal BRP v2 | Persoonsgegevens uit de BRP |
+| HaalCentraal BRP | Persoonsgegevens uit de BRP |
 | KVK | Bedrijfsgegevens uit het Handelsregister |
 | Taak | Externe taken via Open Object |
 | Berichten | Berichtenfunctionaliteit |

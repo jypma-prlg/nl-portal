@@ -33,7 +33,7 @@ import org.springframework.web.reactive.function.client.WebClient
 class HaalCentraalBrpAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(HaalCentraalBrpBewoningClient::class)
-    fun haalCentraalBewoning2Client(
+    fun haalCentraalBrpBewoningClient(
         haalCentraalBrpModuleConfiguration: HaalCentraalBrpModuleConfiguration,
         @Autowired(required = false) clientSslContextResolver: ClientSslContextResolver? = null,
         webClientBuilder: WebClient.Builder,
