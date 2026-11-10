@@ -91,7 +91,7 @@ object PlantUmlRenderer {
             }
         out.appendLine("legend right")
         out.appendLine("  grijs: toegestaan, rood gestreept: verboden, oranje gestippeld: niet bewaakt, groen: bewaakt")
-        out.appendLine("  tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal)")
+        out.appendLine("  tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal, anoniem)")
         out.appendLine("  vulkleur: risico van de multitenancy-migratie (rood hoog, geel middel, groen laag)")
         out.appendLine("endlegend")
         out.appendLine("@enduml")

@@ -60,7 +60,7 @@ class PlantUmlRendererTest {
             zgw_zaken ..> payment_direct #orange : gat
             legend right
               grijs: toegestaan, rood gestreept: verboden, oranje gestippeld: niet bewaakt, groen: bewaakt
-              tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal)
+              tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal, anoniem)
               vulkleur: risico van de multitenancy-migratie (rood hoog, geel middel, groen laag)
             endlegend
             @enduml

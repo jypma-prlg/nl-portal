@@ -26,6 +26,7 @@ enum class TenancySignal(
     CONFIG_SINGLETON("config", "configuratie is een singleton buiten de autoconfig"),
     OWN_WEBCLIENT("webclient", "bouwt zelf een WebClient"),
     GLOBAL_STATE("globaal", "gebruikt JVM-globale toestand"),
+    ANONYMOUS_ENDPOINT("anoniem", "heeft een anoniem endpoint onder /api/public; tenant komt alleen uit het host-domein"),
 }
 
 object TenancySignals {
@@ -68,6 +69,7 @@ object TenancySignals {
         if (source.directDependenciesFromSelf.any { it.targetClass.name in globalStateTypes }) {
             found += TenancySignal.GLOBAL_STATE
         }
+        if (hasPublicEndpoint(source)) found += TenancySignal.ANONYMOUS_ENDPOINT
         if (!isConfigurationSide(source) &&
             source.directDependenciesFromSelf.any { isConfigurationProperties(it.targetClass) }
         ) {
@@ -75,6 +77,18 @@ object TenancySignals {
         }
         return found
     }
+
+    private const val MAPPING_PACKAGE = "org.springframework.web.bind.annotation."
+
+    /** A REST path below /api/public, on the class or on one of its methods: these are anonymous. */
+    private fun hasPublicEndpoint(javaClass: JavaClass): Boolean =
+        (javaClass.annotations + javaClass.methods.flatMap { it.annotations }).any { annotation ->
+            val type = annotation.rawType.name
+            type.startsWith(MAPPING_PACKAGE) && type.endsWith("Mapping") &&
+                listOf("value", "path").any { key ->
+                    (annotation.get(key).orElse(null) as? Array<*>).orEmpty().any { it.toString().startsWith("/api/public") }
+                }
+        }
 
     private fun isConfigurationProperties(javaClass: JavaClass): Boolean =
         javaClass.isAnnotatedWith(CONFIGURATION_PROPERTIES) ||

@@ -1,0 +1,32 @@
+@startuml
+title Frontend: packages en regeldekking
+left to right direction
+[api\nomvang S, risico laag] as api #CFE8CF
+[app\nomvang M, risico middel] as app #FBE3A6
+[app-dev\nomvang S, risico laag] as app_dev #CFE8CF
+[authentication\nomvang M, risico middel] as authentication #FBE3A6
+[localization\nomvang S, risico laag] as localization #CFE8CF
+[user-interface\nomvang M, risico middel] as user_interface #FBE3A6
+note as frontend_rules
+  **Frontend-regels**
+  package-boundaries: een package importeert een ander alleen via zijn publieke API, nooit via een intern pad (actief)
+  import/no-cycle: geen cyclische imports tussen packages (voorgesteld, niet actief)
+end note
+api ..> authentication #orange : gat (1)
+app ..> api #orange : gat (1)
+app ..> authentication #orange : gat (2)
+app ..> localization #orange : gat (5)
+app ..> user_interface #orange : gat (7)
+app_dev ..> api #orange : gat (3)
+app_dev ..> authentication #orange : gat (2)
+app_dev ..> localization #orange : gat (7)
+app_dev ..> user_interface #orange : gat (11)
+user_interface ..> api #orange : gat (55)
+user_interface ..> authentication #orange : gat (5)
+user_interface ..> localization #orange : gat (18)
+legend right
+  oranje gestippeld: de richting van deze import wordt door geen regel bewaakt; het getal is het aantal imports
+  rood gestippeld: onderdeel van een cyclus, ook niet bewaakt
+  vulkleur: risico van de multitenancy-migratie (rood hoog, geel middel, groen laag)
+endlegend
+@enduml

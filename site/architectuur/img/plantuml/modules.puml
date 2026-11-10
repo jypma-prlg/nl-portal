@@ -2,7 +2,7 @@
 title Modules, lagen en regeldekking
 left to right direction
 package "kern" {
-  [:core\n<size:10>omvang L, risico hoog, tenancy: config, globaal</size>] as core #F4B6B6
+  [:core\n<size:10>omvang L, risico hoog, tenancy: config, globaal, anoniem</size>] as core #F4B6B6
   [tenancy-seam\n<size:10>TenantContext, TenantRegistry: nog niet gebouwd</size>] as tenancy_seam #white
 }
 package "gedeelde infrastructuur" {
@@ -13,7 +13,7 @@ package "functionaliteit" {
   [:form\n<size:10>omvang S, risico laag, tenancy: config</size>] as form #CFE8CF
   [:haalcentraal-hr\n<size:10>omvang S, risico middel, tenancy: config, webclient</size>] as haalcentraal_hr #FBE3A6
   [:haalcentraal2\n<size:10>omvang M, risico middel, tenancy: config</size>] as haalcentraal2 #FBE3A6
-  [:payment-direct\n<size:10>omvang L, risico hoog, tenancy: config, webclient, globaal</size>] as payment_direct #F4B6B6
+  [:payment-direct\n<size:10>omvang L, risico hoog, tenancy: config, webclient, globaal, anoniem</size>] as payment_direct #F4B6B6
   [:zgw:berichten\n<size:10>omvang S, risico middel, tenancy: config</size>] as zgw_berichten #FBE3A6
   [:zgw:besluiten\n<size:10>omvang S, risico middel, tenancy: config</size>] as zgw_besluiten #FBE3A6
   [:zgw:catalogi-api\n<size:10>omvang S, risico laag, tenancy: config, webclient</size>] as zgw_catalogi_api #CFE8CF
@@ -104,7 +104,7 @@ zgw_zaken_api --> zgw_idtoken_authentication #green : bewaakt
 zgw_zaken_api --> zgw_objectenapi #green : bewaakt
 legend right
   grijs: toegestaan, rood gestreept: verboden, oranje gestippeld: niet bewaakt, groen: bewaakt
-  tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal)
+  tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal, anoniem)
   vulkleur: risico van de multitenancy-migratie (rood hoog, geel middel, groen laag)
 endlegend
 @enduml

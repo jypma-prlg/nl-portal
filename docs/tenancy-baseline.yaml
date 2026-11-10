@@ -6,6 +6,7 @@
 #   omvang:  S = één klasse of autoconfig, M = autoconfig + client + service, L = nieuw mechanisme of beveiligingskritisch
 #   risico:  laag | middel | hoog
 #   signalen: config = @ConfigurationProperties-singleton buiten de autoconfig, webclient = bouwt zelf een WebClient,
+#             anoniem = REST-endpoint onder /api/public (geen token, dus tenant alleen uit het host-domein),
 #             globaal = JVM-globale toestand. Elk bekend signaal heeft een reden of een plan.
 # Fitness-test: backend/architecture-test (TenancyBaselineFitnessTest, draait mee in `check`):
 #   - signaal in code maar niet hier  -> falen (los het op of voeg het met reden toe)
@@ -22,6 +23,7 @@ modules:
     signalen:
       config: Frontend-, security- en featureflag-configuratie is één singleton; moet per tenant uit het register.
       globaal: OpenFeatureAPI is globaal; bedoeld, de tenant zit in de evaluatiecontext (FeatureContextFactory moet die uit de TenantContext halen).
+      anoniem: GET /api/public/frontend en /api/public/ping zijn anoniem; de tenant komt hier alleen uit het host-domein (ping heeft geen tenant nodig).
   ":graphql":
     omvang: S
     risico: laag
@@ -129,6 +131,7 @@ modules:
       config: DirectPaymentModuleConfiguration is een singleton.
       webclient: Client bouwt zelf een WebClient.
       globaal: InMemorySecretKeyStore.INSTANCE is JVM-breed.
+      anoniem: POST /api/public/payment/direct/postsale is anoniem (HMAC); heeft tenantrouting nodig via host van webhookUrl en tenant van de keyId.
   ":haalcentraal2":
     omvang: M
     risico: middel

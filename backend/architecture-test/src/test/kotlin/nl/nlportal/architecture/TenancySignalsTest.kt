@@ -51,6 +51,16 @@ class TenancySignalsTest {
     }
 
     @Test
+    fun `a REST controller below api public is flagged as an anonymous endpoint`() {
+        assertThat(signalsOf("anonymous")).containsEntry(":m", setOf(TenancySignal.ANONYMOUS_ENDPOINT))
+    }
+
+    @Test
+    fun `an anonymous path on a method is flagged too`() {
+        assertThat(signalsOf("authenticated")).containsEntry(":m", setOf(TenancySignal.ANONYMOUS_ENDPOINT))
+    }
+
+    @Test
     fun `a module without signals is not listed`() {
         assertThat(signalsOf("clean")).isEmpty()
     }
