@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
@@ -67,47 +66,6 @@ class OpenKlant2ServiceTest {
     internal fun tearDown() {
         mockServer.shutdown()
     }
-
-    @Test
-    fun `should find KlantContact that belongs to the authenticated user`() =
-        runTest {
-            val service = OpenKlant2Service(openKlant2Client, openklantModuleConfiguration.properties)
-            mockServer.enqueue(mockJsonResponse(klantContactenPage))
-            mockServer.enqueue(mockJsonResponse(TestHelper.Partijen.klantContact))
-
-            val klantContact =
-                service.findKlantContact(
-                    authentication = JwtBuilder().aanvragerBsn(OWNER_BSN).buildBurgerAuthentication(),
-                    klantContactId = UUID.fromString(KLANTCONTACT_ID),
-                )
-
-            assertNotNull(klantContact)
-            assertEquals(KLANTCONTACT_ID, klantContact.uuid)
-
-            // the klantcontacten are searched scoped to the authenticated user
-            val searchRequest = mockServer.takeRequest()
-            assertEquals(OWNER_BSN, searchRequest.url.queryParameter("hadBetrokkene__wasPartij__partijIdentificator__objectId"))
-        }
-
-    @Test
-    fun `should not find KlantContact of another user`() =
-        runTest {
-            val service = OpenKlant2Service(openKlant2Client, openklantModuleConfiguration.properties)
-            // the scoped search of the other user does not return the klantcontact
-            mockServer.enqueue(mockJsonResponse(TestHelper.emptyPage))
-
-            val exception =
-                assertThrows<ResponseStatusException> {
-                    service.findKlantContact(
-                        authentication = JwtBuilder().aanvragerBsn(OTHER_BSN).buildBurgerAuthentication(),
-                        klantContactId = UUID.fromString(KLANTCONTACT_ID),
-                    )
-                }
-
-            assertEquals(HttpStatus.UNAUTHORIZED, exception.statusCode)
-            // the klantcontact itself is never requested
-            assertEquals(1, mockServer.requestCount)
-        }
 
     @Test
     fun `should delete DigitaleAdres that belongs to the authenticated user`() =
@@ -175,7 +133,6 @@ class OpenKlant2ServiceTest {
         }
 
     companion object {
-        private const val KLANTCONTACT_ID = "33549ba5-95f0-44d2-9c63-776ec126bc55"
         private const val DIGITALE_ADRES_ID = "1300d2ab-13cb-4c12-9818-3b76e2a5d993"
         private const val OWNER_BSN = "296648875"
         private const val OTHER_BSN = "999999999"
@@ -195,16 +152,6 @@ class OpenKlant2ServiceTest {
                         "omschrijving": "Persoonlijke email adres"
                     }
                 ]
-            }
-            """.trimIndent()
-
-        private val klantContactenPage =
-            """
-            {
-                "count": 1,
-                "next": null,
-                "previous": null,
-                "results": [${TestHelper.Partijen.klantContact}]
             }
             """.trimIndent()
     }

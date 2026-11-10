@@ -1,2 +1,2 @@
-# Het transfer-script moet met LF-regeleinden uitgecheckt worden, ook op Windows met autocrlf.
-scripts/transfer/*.sh text eol=lf
+# Mise file tasks zijn bash-scripts: altijd LF, ook op Windows met autocrlf.
+mise-tasks/** text eol=lf

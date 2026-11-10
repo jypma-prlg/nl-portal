@@ -18,9 +18,6 @@ import io.spring.gradle.dependencymanagement.org.codehaus.plexus.interpolation.o
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import java.net.URI
-import kotlin.io.encoding.Base64.Default.decode
-
-val sonatypeCentralStagingDir: String = project.property("sonatypeCentralStagingDir").toString()
 
 plugins {
     java
@@ -58,9 +55,6 @@ plugins {
     id("com.github.jk1.dependency-license-report")
 
     id("org.sonarqube")
-
-    `maven-publish`
-    signing
 }
 
 // Copyright headers (ADR 0015): a file that already carries the Ritense header keeps it (year frozen), every
@@ -134,16 +128,6 @@ subprojects {
 
     apply(plugin = "java")
 
-    apply(plugin = "maven-publish")
-
-    var signingConfigSet = false
-    if (System.getenv("SIGNING_KEY") != null &&
-        System.getenv("SIGNING_KEY_PASSWORD") != null
-    ) {
-        signingConfigSet = true
-        apply(plugin = "signing")
-    }
-
     configure<com.diffplug.gradle.spotless.SpotlessExtension> {
         kotlin {
             ktlint()
@@ -162,8 +146,6 @@ subprojects {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(providers.gradleProperty("javaVersion").get()))
         }
-        withSourcesJar()
-        withJavadocJar()
     }
 
     if (!(project.path.contains("gradle"))) {
@@ -176,6 +158,7 @@ subprojects {
         configure<DependencyManagementExtension> {
             imports {
                 mavenBom("io.netty:netty-bom:${Versions.netty}")
+                mavenBom("io.grpc:grpc-bom:${Versions.grpc}")
                 // Whole-BOM, not per-artifact: jackson-annotations keeps its own 2.x
                 // line, so forcing only core/databind leaves annotations on Boot's
                 // older pin and databind hits NoClassDefFoundError on classes added
@@ -204,42 +187,6 @@ subprojects {
         compilerOptions {
             freeCompilerArgs.add("-Xjsr305=strict")
             freeCompilerArgs.add("-Xemit-jvm-type-annotations")
-        }
-    }
-
-    publishing {
-        repositories {
-            maven {
-                name = "Sonatype"
-                url =
-                    uri(
-                        project.layout.buildDirectory
-                            .dir(sonatypeCentralStagingDir)
-                            .get()
-                            .asFile.path,
-                    )
-            }
-        }
-
-        publications {
-            register<MavenPublication>("default") {
-                groupId = "nl.nl-portal"
-                pom {
-                    url = "https://github.com/nl-portal/nl-portal-backend-libraries"
-                    licenses {
-                        license {
-                            name = "Licensed under EUPL, Version 1.2 (the \"License\");"
-                            url = "https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12"
-                        }
-                    }
-                    scm {
-                        connection = "git@github.com:nl-portal/nl-portal-backend-libraries.git"
-                        developerConnection = "git@github.com:nl-portal/nl-portal-backend-libraries.git"
-                        url = "https://github.com/nl-portal/nl-portal-backend-libraries"
-                    }
-                }
-                from(components["java"])
-            }
         }
     }
 
@@ -288,14 +235,5 @@ tasks.named<HtmlDependencyReportTask>("htmlDependencyReport") {
 }
 
 tasks.bootJar {
-    enabled = false
-}
-
-fun getSigningKey(signingKeyBase64: String): ByteArray = decode(signingKeyBase64.subSequence(0, signingKeyBase64.length))
-
-tasks.withType<PublishToMavenRepository> {
-    enabled = false
-}
-tasks.withType<PublishToMavenLocal> {
     enabled = false
 }

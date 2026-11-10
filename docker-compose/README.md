@@ -89,15 +89,18 @@ RUN_MODE=local docker compose --profile zgw --profile haalcentraal up -d --build
 ```
 
 #### Remote (published images)
-`RUN_MODE=remote` pulls the released monorepo images `ghcr.io/nl-portal/nl-portal-backend:4.0` and
-`ghcr.io/nl-portal/nl-portal-frontend:4.0` instead of building — useful for evaluating
-the product without a local build:
+`RUN_MODE=remote` pulls the published images `ghcr.io/pinkroccade/nl-portal-backend` and
+`ghcr.io/pinkroccade/nl-portal-frontend` instead of building — useful for evaluating
+the product without a local build. The tag is required and comes from `NL_PORTAL_IMAGE_TAG`:
 ```shell
-RUN_MODE=remote docker compose --profile zgw --profile haalcentraal up -d
+RUN_MODE=remote NL_PORTAL_IMAGE_TAG=<tag> docker compose --profile zgw --profile haalcentraal up -d
 ```
-> Note: `4.0` (the current minor line) can be replaced with any available tag from GHCR
-> (`ghcr.io/nl-portal/nl-portal-backend` and `ghcr.io/nl-portal/nl-portal-frontend`),
-> including snapshot tags, provided the `imports/` fixtures and configuration in this
+> Note: no release has been published under `ghcr.io/pinkroccade` yet, so only snapshot tags
+> (`<version>-main-<timestamp>-<sha>-SNAPSHOT`, one per push to `main`) exist; pick one from the
+> package pages of `nl-portal-backend` and `nl-portal-frontend` in the pinkroccade organisation.
+> Once releases exist, a version (`1.2.3`), minor (`1.2`) or major (`1`) tag works too. The older
+> `ghcr.io/nl-portal/*` images are Ritense's and no longer receive updates from this repository.
+> Either way, make sure the `imports/` fixtures and configuration in this
 > stack are compatible with the chosen tag.
 
 #### From sources (active development, fast inner loop)
@@ -133,10 +136,11 @@ shippable app); changing a library rebuilds it and the app hot-reloads. Full con
 > It is the `local`/`remote` modes that do, and `RUN_MODE=remote docker compose ...` inline is
 > POSIX-shell syntax that does **not** work in PowerShell or CMD (the variable is silently ignored and
 > the stack falls back to the `sources` default, so no app is started). Set it separately instead:
-> - **PowerShell:** `$env:RUN_MODE="remote"; docker compose --profile zgw up -d`
-> - **CMD:** `set "RUN_MODE=remote" && docker compose --profile zgw up -d`
-> - **Any shell:** add `RUN_MODE=remote` to a `.env` file in this directory (Compose reads it
->   automatically). This persists across runs, so remove it to go back to the `sources` default.
+> - **PowerShell:** `$env:RUN_MODE="remote"; $env:NL_PORTAL_IMAGE_TAG="<tag>"; docker compose --profile zgw up -d`
+> - **CMD:** `set "RUN_MODE=remote" && set "NL_PORTAL_IMAGE_TAG=<tag>" && docker compose --profile zgw up -d`
+> - **Any shell:** add `RUN_MODE=remote` (and `NL_PORTAL_IMAGE_TAG=<tag>`) to a `.env` file in this
+>   directory (Compose reads it automatically). This persists across runs, so remove it to go back
+>   to the `sources` default.
 
 ### Starting up supporting services only
 To run only the supporting services (e.g. when running the application from your IDE),

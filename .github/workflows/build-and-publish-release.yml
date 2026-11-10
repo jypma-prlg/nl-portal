@@ -19,7 +19,6 @@ jobs:
             version: ${{ steps.v.outputs.version }}
             minor: ${{ steps.v.outputs.minor }}
             major: ${{ steps.v.outputs.major }}
-            feDistTag: ${{ steps.npmtag.outputs.feDistTag }}
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
                 with:
@@ -55,20 +54,6 @@ jobs:
                       echo "::error::${branch} tip ${tip} is not an ancestor of the rc commit ${GITHUB_SHA}; the line cannot fast-forward. Resolve before releasing."
                       exit 1
                     fi
-            -   name: Resolve npm dist-tag - latest only if newest
-                id: npmtag
-                env:
-                    VERSION: ${{ steps.v.outputs.version }}
-                    MAJOR: ${{ steps.v.outputs.major }}
-                run: |
-                    highest=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
-                    if [ -z "${highest}" ] || [ "$(printf '%s\n%s\n' "${highest}" "${VERSION}" | sort -V | tail -1)" = "${VERSION}" ]; then
-                      tag=latest
-                    else
-                      tag="v${MAJOR}"
-                    fi
-                    echo "feDistTag=${tag}" >> "$GITHUB_OUTPUT"
-                    echo "::notice::npm dist-tag = ${tag} (highest existing release tag: ${highest:-none})."
 
     stage-be:
         needs: prepare
@@ -94,27 +79,6 @@ jobs:
                 env:
                     VERSION: ${{ needs.prepare.outputs.version }}
                 run: echo "::notice::Release ${VERSION} approved - proceeding to publish."
-
-    promote-be:
-        needs: [prepare, stage-be, gate]
-        # Bibliotheken (Maven Central / npm) publiceren we alleen als de repo-variabele PUBLISH_LIBRARIES op true staat.
-        if: ${{ vars.PUBLISH_LIBRARIES == 'true' }}
-        uses: ./.github/workflows/_publish-be-native.yml
-        with:
-            version: ${{ needs.prepare.outputs.version }}
-            deployer: sonatype
-            probeCentral: true
-        secrets: inherit
-
-    publish-fe-npm:
-        needs: [prepare, stage-fe, gate]
-        # Bibliotheken (Maven Central / npm) publiceren we alleen als de repo-variabele PUBLISH_LIBRARIES op true staat.
-        if: ${{ vars.PUBLISH_LIBRARIES == 'true' }}
-        uses: ./.github/workflows/_publish-fe-npm.yml
-        with:
-            version: ${{ needs.prepare.outputs.version }}
-            distTag: ${{ needs.prepare.outputs.feDistTag }}
-        secrets: inherit
 
     image-be:
         needs: [prepare, stage-be, gate]
@@ -145,9 +109,8 @@ jobs:
         secrets: inherit
 
     create-release:
-        needs: [prepare, stage-be, promote-be, publish-fe-npm, image-be, image-fe]
-        # promote-be en publish-fe-npm mogen overgeslagen zijn (PUBLISH_LIBRARIES); mislukken mag niet.
-        if: ${{ !cancelled() && !failure() && github.repository_owner == 'pinkroccade' }}
+        needs: [prepare, stage-be, image-be, image-fe]
+        if: github.repository_owner == 'pinkroccade'
         runs-on: ubuntu-latest
         permissions:
             contents: write

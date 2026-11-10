@@ -44,7 +44,7 @@ services:
             POSTGRES_PASSWORD: keycloak
 
     nl-portal-openzaak:
-        image: openzaak/open-zaak:1.31.0
+        image: openzaak/open-zaak:1.31.1
         container_name: nl-portal-openzaak
         platform: linux/amd64
         profiles:
@@ -78,7 +78,7 @@ services:
             - ./imports/openzaak/private-media:/app/private-media
 
     nl-portal-openzaak-import:
-        image: openzaak/open-zaak:1.31.0
+        image: openzaak/open-zaak:1.31.1
         container_name: nl-portal-openzaak-import
         platform: linux/amd64
         profiles:
@@ -109,7 +109,7 @@ services:
             - POSTGRES_DB=openzaak
 
     nl-portal-openklant-2:
-        image: maykinmedia/open-klant:2.19.1
+        image: maykinmedia/open-klant:2.19.2
         container_name: nl-portal-openklant-2
         profiles:
             - zgw
@@ -139,7 +139,7 @@ services:
             - ./imports/openklant-2/fixtures:/app/src/openklant/fixtures
 
     nl-portal-openklant-2-import:
-        image: maykinmedia/open-klant:2.19.1
+        image: maykinmedia/open-klant:2.19.2
         container_name: nl-portal-openklant-2-import
         profiles:
             - zgw
@@ -462,6 +462,8 @@ services:
 
     nl-portal-configuration-panel-backend:
         container_name: nl-portal-configuration-panel-backend
+        # Het configuratiepaneel is een apart product dat niet onder pinkroccade is overgedragen;
+        # er bestaat geen ghcr.io/pinkroccade-variant, dus dit image komt bewust nog van ghcr.io/nl-portal.
         image: ghcr.io/nl-portal/configuration-panel-backend
         profiles:
             - config
@@ -476,6 +478,7 @@ services:
         container_name: nl-portal-configuration-panel-frontend
         profiles:
             - config
+        # Zie de notitie bij nl-portal-configuration-panel-backend: nog geen pinkroccade-variant.
         image: ghcr.io/nl-portal/configuration-panel-frontend
         depends_on:
             - nl-portal-configuration-panel-backend

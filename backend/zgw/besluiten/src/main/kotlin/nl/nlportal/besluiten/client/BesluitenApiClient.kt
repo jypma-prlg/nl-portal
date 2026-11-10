@@ -77,14 +77,6 @@ class BesluitenApiClient(
             .results
     }
 
-    suspend fun getBesluit(besluitId: UUID): Besluit =
-        webClient
-            .get()
-            .uri("/besluiten/api/v1/besluiten/$besluitId")
-            .retrieve()
-            .handleStatus()
-            .awaitBody<Besluit>()
-
     suspend fun getBesluitAuditTrails(besluitId: UUID): List<BesluitAuditTrail> =
         webClient
             .get()
@@ -122,14 +114,6 @@ class BesluitenApiClient(
             .handleStatus()
             .awaitBody<List<BesluitDocument>>()
     }
-
-    suspend fun getBesluitDocument(documentId: UUID): BesluitDocument =
-        webClient
-            .get()
-            .uri("/besluiten/api/v1/besluitinformatieobjecten/$documentId")
-            .retrieve()
-            .handleStatus()
-            .awaitBody<BesluitDocument>()
 
     private fun getToken(): String =
         IdTokenGenerator().generateToken(

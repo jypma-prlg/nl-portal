@@ -43,7 +43,7 @@ betekent*. Voor NL Portal:
 (`@fastify/busboy`, `@graphql-tools/utils`, `brace-expansion`, ...) — **geen van alle zichtbaar
 vóór deze PR**, omdat `dependency-check.yml` uitsluitend `backend` scant. Dit is precies het gat
 dat `frontend-vulnerability-scan.yml` dicht. Behandel dit als een directe actie, los van deze
-documentatie-PR: draai `mise run deps:check-frontend` en update de getroffen packages.
+documentatie-PR: draai `mise run deps:outdated-frontend` en update de getroffen packages.
 
 **Tweede concrete bevinding** (`mise run security:backend-vuln-scan`, 2026-10-20): de backend
 bevatte op dat moment een **Critical**-kwetsbaarheid in `bcprov-jdk18on` (Bouncy Castle,

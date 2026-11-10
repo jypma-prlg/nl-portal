@@ -86,6 +86,13 @@ full workflow, `bootRun` configuration (`.env.properties`), GraphQL codegen and 
 - [backend/app/README.md](./backend/app/README.md#local-development-bootrun): `bootRun` config
 - [frontend/README.md](./frontend/README.md): the `pnpm dev` / `pnpm app:dev` scheme and GraphQL codegen
 
+## Build, test and lint
+
+Repeatable tasks run through [mise](https://mise.jdx.dev/) from the repo root: `mise run build`,
+`mise run test`, `mise run lint` and `mise run arch-check` cover backend and frontend at once.
+`mise tasks` lists every task, including the per-side ones such as `backend:test`. See
+[CONTRIBUTING.md](./CONTRIBUTING.md#building-and-testing-locally).
+
 ## More detail
 
 - Backend build, tests, layout: [backend/README.md](./backend/README.md)

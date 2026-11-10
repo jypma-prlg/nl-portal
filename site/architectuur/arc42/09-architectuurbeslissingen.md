@@ -67,3 +67,7 @@ Nog niet als ADR vastgelegd:
    `berichten`, `verificatie`, `besluiten`, `openproduct` — buiten de scope van ADR 0002):
    `MockWebServer` is het precedent dat ADR 0002 volgt voor de vier modules die het wél meeneemt;
    relevant zodra die overige modules aan de beurt zijn.
+
+- [`0017-vluchtige-state-toegestaan.md`](../../development/adr/0017-vluchtige-state-toegestaan.md) — **geaccepteerd**.
+  Verfijnt ADR 0013: geen *persistente* state; vluchtige state (sessies, cache) mag. Redis als
+  sessieopslag is verplicht bij een BFF, als cache optioneel.

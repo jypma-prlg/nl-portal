@@ -99,8 +99,12 @@ jobs:
                 uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
                 with:
                     node-version: "24"
+            -   name: Set up mise
+                uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+                with:
+                    install: false
             -   name: Run scripts tests
-                run: node --test "scripts/**/*.test.mjs"
+                run: mise run scripts:test
 
     java-version-consistent:
         needs: changes
@@ -112,8 +116,12 @@ jobs:
                 uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
                 with:
                     node-version: "24"
+            -   name: Set up mise
+                uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+                with:
+                    install: false
             -   name: Check that the Java version is consistent
-                run: node scripts/check-java-version.mjs
+                run: mise run java:check-version
 
     compliance-register-consistent:
         needs: changes
@@ -125,8 +133,12 @@ jobs:
                 uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
                 with:
                     node-version: "24"
+            -   name: Set up mise
+                uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+                with:
+                    install: false
             -   name: Check the register of normative sources (N-CG-5LAGEN, N-ASVS-5.0, ...)
-                run: node scripts/check-compliance.mjs
+                run: mise run compliance:check
 
     capabilities-docs-fresh:
         needs: changes
@@ -135,7 +147,7 @@ jobs:
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
             -   name: Set up mise
-                uses: jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
+                uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
             -   name: Regenerate capability docs and fail on diff
                 run: mise run docs:capabilities-check
             -   name: Validate LikeC4 model incl. generated capabilities
@@ -148,7 +160,7 @@ jobs:
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
             -   name: Set up mise
-                uses: jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
+                uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
             -   name: Build docs site (navigation tests, dead-link and anchor check)
                 run: mise run docs:build
 

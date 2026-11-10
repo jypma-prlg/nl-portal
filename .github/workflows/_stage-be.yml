@@ -24,20 +24,23 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-            -   name: Set up JDK
-                uses: ./.github/actions/setup-backend-jdk
+            -   name: Set up mise (java uit mise.toml)
+                uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+                with:
+                    install_args: "java"
             -   name: Set up Gradle
-                uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+                uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
             -   name: License + dependency reports
                 if: ${{ inputs.generateReports }}
-                working-directory: backend
-                run: ./gradlew checkLicense htmlDependencyReport
+                # Block scalar: onge-quote ": " in ":::" is ongeldige YAML (#370)
+                run: |
+                    mise run security:check-license ::: backend:dependency-report
             -   name: Build + stage
                 working-directory: backend
                 env:
                     VERSION: ${{ inputs.version }}
                     GRADLE_TASK: ${{ inputs.runTests && 'build' || 'assemble' }}
-                run: ./gradlew "${GRADLE_TASK}" publish -Pversion="${VERSION}" --stacktrace
+                run: ./gradlew "${GRADLE_TASK}" -Pversion="${VERSION}" --stacktrace
             -   name: Generate SBOM
                 if: ${{ inputs.generateReports }}
                 uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
@@ -51,10 +54,7 @@ jobs:
                     dependency-snapshot: false
             -   name: Package stage bundle
                 working-directory: backend
-                run: |
-                    find . -type d -path '*/build/sonatypeCentralStaging' > stage-paths.txt
-                    echo app/build/libs/app.jar >> stage-paths.txt
-                    tar -cf backend-stage.tar -T stage-paths.txt
+                run: tar -cf backend-stage.tar app/build/libs/app.jar
             -   name: Upload stage bundle
                 uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
                 with:

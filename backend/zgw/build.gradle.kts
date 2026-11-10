@@ -34,8 +34,3 @@ val jar: Jar by tasks
 val bootJar: org.springframework.boot.gradle.tasks.bundling.BootJar by tasks
 bootJar.enabled = false
 jar.enabled = true
-
-project.tasks.findByName("publishDefaultPublicationToSonatypeRepository")?.enabled = false
-project.tasks.findByName("publishDefaultPublicationToMavenLocal")?.enabled = false
-
-apply(from = "gradle/publishing.gradle.kts")

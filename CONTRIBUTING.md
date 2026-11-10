@@ -97,13 +97,21 @@ valid Conventional Commit.
 
 ## Building and testing locally
 
-- **Backend**: from `backend/`, `./gradlew build` (no database is needed; only the `zgw:openklant`
-  integration tests start an OpenKlant container through the docker-compose plugin, so Docker must be
-  running for those).
-- **Frontend**: from `frontend/`, `pnpm install` then `pnpm -r build`, `pnpm test`, `pnpm lint` and
-  `pnpm prettier`.
+Tasks run through [mise](https://mise.jdx.dev/) from the repo root; it also installs the pinned Java
+and pnpm. The aggregates cover backend and frontend at once:
 
-See `backend/README.md`, `frontend/README.md` and `docker-compose/README.md` for details.
+- `mise run build` compiles and assembles everything.
+- `mise run test` runs the unit tests of backend, frontend and scripts.
+- `mise run lint` runs ktlint/Spotless, ESLint, Stylelint, the typecheck and Prettier.
+- `mise run arch-check` checks the ArchUnit layer rules.
+
+Integration tests run with `mise run backend:integration-test`. No database is needed; only the
+`zgw:openklant` integration tests start an OpenKlant container through the docker-compose plugin, so
+Docker must be running for those. The PR gate in CI runs `mise run backend:check` (the full
+`./gradlew build`, integration tests included) and `mise run frontend:check`.
+
+`mise tasks` lists every task with its description. See `backend/README.md`, `frontend/README.md` and
+`docker-compose/README.md` for details.
 
 ## Copyright headers
 
@@ -120,11 +128,11 @@ carries the EUPL 1.2 header, in one of two forms
 Both templates live in `backend/licenses/`. Never remove a Ritense header by hand:
 the tooling would then put the PinkRoccade header on that file. Enforcement:
 
-- Backend: `./gradlew spotlessCheck` (CI-blocking, part of `check` / `build`).
-  Apply locally with `./gradlew spotlessApply`; that also brings the PinkRoccade
-  year up to date in files that differ from `origin/main` (another base:
-  `-PcopyrightRatchetFrom=<ref>`).
-- Frontend: `cd frontend && pnpm lint` (CI-blocking in `_stage-fe.yml`, husky
+- Backend: `mise run backend:lint` (`./gradlew spotlessCheck`; CI-blocking, part
+  of `check` / `build`). Apply locally with `./gradlew spotlessApply` from
+  `backend/`; that also brings the PinkRoccade year up to date in files that
+  differ from `origin/main` (another base: `-PcopyrightRatchetFrom=<ref>`).
+- Frontend: `mise run frontend:lint` (CI-blocking via `mise run frontend:check` in `_validate-build.yml`, husky
   pre-commit via lint-staged, husky pre-push via `.husky/pre-push`). Apply /
   auto-repair locally with `pnpm lint:fix`. Lint-staged brings the PinkRoccade
   year of committed files up to date via `eslint.copyright-year.config.mjs`.

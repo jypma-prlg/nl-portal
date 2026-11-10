@@ -11,16 +11,16 @@ escalatie bij een productie-relevante vondst.
 
 | Check | Cadans | Workflow |
 |---|---|---|
-| SAST (backend + frontend) | Elke push naar `main` + elke PR | [`sonarcloud.yml`](https://github.com/jypma-prlg/nl-portal/blob/main/.github/workflows/sonarcloud.yml) |
-| Secret-scanning | Elke push naar `main` + elke PR | [`secret-scan.yml`](https://github.com/jypma-prlg/nl-portal/blob/main/.github/workflows/secret-scan.yml) |
-| Backend dependency-kwetsbaarheden | Wekelijks, zo 18:00 UTC | [`dependency-check.yml`](https://github.com/jypma-prlg/nl-portal/blob/main/.github/workflows/dependency-check.yml) |
-| Frontend dependency-kwetsbaarheden | Wekelijks, zo 19:00 UTC | [`frontend-vulnerability-scan.yml`](https://github.com/jypma-prlg/nl-portal/blob/main/.github/workflows/frontend-vulnerability-scan.yml) |
+| SAST (backend + frontend) | Elke push naar `main` + elke PR | [`sonarcloud.yml`](https://github.com/pinkroccade/nl-portal/blob/main/.github/workflows/sonarcloud.yml) |
+| Secret-scanning | Elke push naar `main` + elke PR | [`secret-scan.yml`](https://github.com/pinkroccade/nl-portal/blob/main/.github/workflows/secret-scan.yml) |
+| Backend dependency-kwetsbaarheden | Wekelijks, zo 18:00 UTC | [`dependency-check.yml`](https://github.com/pinkroccade/nl-portal/blob/main/.github/workflows/dependency-check.yml) |
+| Frontend dependency-kwetsbaarheden | Wekelijks, zo 19:00 UTC | [`frontend-vulnerability-scan.yml`](https://github.com/pinkroccade/nl-portal/blob/main/.github/workflows/frontend-vulnerability-scan.yml) |
 | Dependency-updates (minor/patch) | Wekelijks, zo 18-23 UTC | Renovate (`.github/renovate.json`) |
 
 Dit is niets nieuws - zie [`security.md`](./security.md)'s "Repeat"-sectie. Deze tabel bestaat hier
 alleen om het complete beeld te laten zien naast de nieuwe laag hieronder.
 
-**Belangrijk, specifiek voor deze fork** (`jypma-prlg/nl-portal`): Renovate's config bestaat al
+**Belangrijk, specifiek voor deze fork** (`pinkroccade/nl-portal`): Renovate's config bestaat al
 langer, maar de Renovate GitHub App moet apart op *deze* fork geïnstalleerd zijn
 (github.com/apps/renovate) voordat er ook echt iets draait - een config-bestand alleen doet niets.
 Geverifieerd actief sinds 2026-10-22 (zie issue #31, "Dependency Dashboard").
@@ -35,16 +35,16 @@ Renovate's eigen Dependency Dashboard-issue, maar dan voor deze checks).
 
 | Check | mise-task | Wat het oplevert |
 |---|---|---|
-| Major-dependency-review | `deps:check` | Lijst beschikbare major-updates (zie [dependency-updates.md §2](./dependency-updates.md)) |
+| Major-dependency-review | `deps:outdated` | Lijst beschikbare major-updates (zie [dependency-updates.md §2](./dependency-updates.md)) |
 | SonarCloud-backlog-triage | `sonar:issues` | Open Bug-issues per project, gegroepeerd per regel |
 | License-rapport | `security:license-report` | `generateLicenseReport`, nooit falend |
-| License-allowlist-check | `security:check-license` | `checkLicense` - **momenteel kapot op `main`**, zie §4 |
+| License-allowlist-check | `security:check-license` | `checkLicense` - toetst de licenties aan de allowlist; faalt bij een niet-toegestane licentie |
 | CVE-uitzonderingen herbeoordelen | - | `backend/cve-exclusions.xml` + de `braces`-uitzondering in `frontend/pnpm-workspace.yaml`; de `braces`-advisory (GHSA-vfj7-8cjw-p6xm) wordt automatisch tegen GitHub's advisory-API gecheckt |
 
 Lokaal uitvoeren zonder op de 1e van de maand te wachten:
 
 ```bash
-mise run deps:check
+mise run deps:outdated
 mise run sonar:issues
 mise run security:license-report
 mise run security:check-license
@@ -66,12 +66,26 @@ liggen.
 | `sonarcloud.yml` (nieuwe `escalate`-job, alleen op push naar `main`) | SonarCloud API, `types=VULNERABILITY` | severity Blocker/Critical |
 | `secret-scan.yml` | gitleaks JSON-rapport (`--redact`, nooit de rauwe secret) | elke bevinding |
 
-Gedeelde logica in [`scripts/escalate-findings.mjs`](https://github.com/jypma-prlg/nl-portal/blob/main/scripts/escalate-findings.mjs)
+Gedeelde logica in [`scripts/escalate-findings.mjs`](https://github.com/pinkroccade/nl-portal/blob/main/scripts/escalate-findings.mjs)
 (unit-getest: zie `scripts/escalate-findings.test.mjs`):
 
-- **Dedupliceren**: vóór het aanmaken wordt gezocht naar een al-open issue met dezelfde
-  CVE-/GHSA-/Sonar-issue-key/gitleaks-fingerprint in de titel. Bestaat die al, dan gebeurt er
-  niets - zo spamt een aanhoudende wekelijkse bevinding niet elke week een nieuw issue.
+- **Dedupliceren**: een dependency-bevinding (dependency-check, grype) is hetzelfde als een
+  bestaand issue bij dezelfde CVE-/GHSA-id voor hetzelfde artefact **zonder versie**:
+  `grpc-netty-shaded-1.84.1.jar` en `grpc-netty-shaded-1.85.1.jar` tellen als één artefact, zodat
+  een versiebump geen nieuwe reeks issues oplevert. Voor SonarCloud en gitleaks blijft de
+  Sonar-issue-key of gitleaks-fingerprint in de titel de sleutel. Bestaat er een open issue met
+  dezelfde sleutel, dan gebeurt er niets - zo spamt een aanhoudende wekelijkse bevinding niet elke
+  week een nieuw issue.
+- **Gesloten issue: heropenen met comment**: is het issue met dezelfde sleutel in de afgelopen 90
+  dagen gesloten, dan wordt geen nieuw issue aangemaakt maar het bestaande heropend, met een
+  comment die de nieuw gemelde versie noemt. Bij meerdere treffers wint een als *completed*
+  gesloten issue van een *not planned* (bijvoorbeeld een gesloten duplicaat), daarna het meest
+  recent gesloten. Gekozen voor heropenen in plaats van alleen een comment: de scanner meldt de
+  bevinding nog, dus ze is niet opgelost, en na heropenen is de volgende run weer een no-op in
+  plaats van een wekelijks herhaalde comment. Een geaccepteerd risico leg je daarom vast als
+  suppressie in de scanner (dependency-check-suppressie of grype-ignore), niet door het issue te
+  sluiten. Een issue dat langer dan 90 dagen dicht is, telt niet meer mee; dan volgt een nieuw
+  issue.
 - **SonarCloud-drempel**: alleen issue-type Vulnerability op Blocker/Critical-niveau escaleert
   direct; Bug/Code Smell en lagere severities blijven in de maandelijkse `sonar:issues`-triage uit
   §2 - anders te veel ruis op elke push.
@@ -80,11 +94,8 @@ Gedeelde logica in [`scripts/escalate-findings.mjs`](https://github.com/jypma-pr
   2026-10-22). Een gemiste bevinding komt dan bij de eerstvolgende push naar `main` alsnog naar
   boven - geen polling-loop toegevoegd om dit op te lossen, dat woog niet op tegen de complexiteit.
 
-## 4. Bekende openstaande items (eerste twee regels in het tracking-issue)
+## 4. Bekende openstaande items (eerste regel in het tracking-issue)
 
-- **`checkLicense` staat kapot op `main`**: "Some library licenses are not allowed." Niet
-  opgelost als onderdeel van dit document - alleen zichtbaar gemaakt via
-  `security:check-license` en elke maand opnieuw gerapporteerd totdat iemand het oppakt.
 - **`braces` GHSA-vfj7-8cjw-p6xm**: nog geen upstream-fix (laatst gecontroleerd 2026-10-22,
   `first_patched_version: null`). De uitzondering in `frontend/pnpm-workspace.yaml` blijft staan;
   `scripts/periodic-maintenance.mjs` checkt dit automatisch elke maand bij GitHub's advisory-API en

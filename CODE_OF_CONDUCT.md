@@ -55,7 +55,7 @@ If you are experiencing or witnessing conflict, we ask you to use the following 
 
 ## Reporting Violations
 
-If someone makes you or anyone else feel unsafe or unwelcome, report it as soon as possible, to help us make the community a better place. Please include as much detail as possible in your report as it is easier for us to address issues when we have more context. A reporting contact for this project has not been published yet; tracked in [issue #16](https://github.com/jypma-prlg/nl-portal/issues/16).
+If someone makes you or anyone else feel unsafe or unwelcome, report it as soon as possible, to help us make the community a better place. Please include as much detail as possible in your report as it is easier for us to address issues when we have more context. A reporting contact for this project has not been published yet; tracked in [issue #16](https://github.com/pinkroccade/nl-portal/issues/16).
 
 ## Attribution
 

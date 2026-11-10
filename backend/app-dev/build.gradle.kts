@@ -62,11 +62,3 @@ tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
 tasks.named<Jar>("jar") {
     enabled = false
 }
-
-tasks.withType<PublishToMavenRepository>().configureEach {
-    enabled = false
-}
-
-tasks.withType<PublishToMavenLocal>().configureEach {
-    enabled = false
-}

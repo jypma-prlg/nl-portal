@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#MISE description="Genereer de capability-docs opnieuw en faal als dat iets wijzigt (actualiteitscontrole voor CI)"
+#MISE depends=["docs:capabilities"]
+set -uo pipefail
+
+paden=(site/architectuur/arc42 site/likec4)
+
+if git diff --ignore-cr-at-eol --exit-code -- "${paden[@]}" \
+  && test -z "$(git ls-files --others --exclude-standard -- "${paden[@]}")"; then
+  exit 0
+fi
+echo "Capability-docs niet actueel: draai 'mise run docs:capabilities' en commit het resultaat."
+exit 1

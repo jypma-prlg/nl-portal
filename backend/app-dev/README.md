@@ -4,9 +4,8 @@ A developer-only sandbox clone of [`backend/app`](../app). It lets developers ru
 work (currently the producten / thema demo) against a fully-enabled backend without touching the
 shippable `:app` module.
 
-It is **run from sources only**. It is never built into an image, staged, or published (no GHCR, Maven,
-or JReleaser). PR CI compiles it (`./gradlew build`, including its integration tests), but nothing ships
-it.
+It is **run from sources only**. It is never built into an image, staged, or published (no GHCR). PR CI
+compiles it (`./gradlew build`, including its integration tests), but nothing ships it.
 
 ## Running
 

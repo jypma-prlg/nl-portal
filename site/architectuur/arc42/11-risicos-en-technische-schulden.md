@@ -39,7 +39,7 @@ horen in de Dependency-Check-/Renovate-dashboards, niet hier — dit hoofdstuk b
 risico's, geen puntoplossingen die door bestaande tooling al worden gesignaleerd.
 
 <!-- BEGIN GENERATED: technische-schuld -->
-_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._
+_Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/pinkroccade/nl-portal/blob/main/docs/capabilities.yaml) via `mise run docs:capabilities`. Wijzig de YAML, niet dit blok; CI faalt als dit blok niet actueel is._
 
 ## 11.4 Technische schuld en capabilities onder twijfel (inventaris 2026-11-04)
 
@@ -53,7 +53,7 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-por
 
 | Capability | Status | Toelichting | Besluit / actie |
 |---|---|---|---|
-| `besluiten-inzien` | `twijfel` | Alleen veldresolvers + REST-download; /api/besluiten/... nergens in frontend gevonden, wel actief onderhouden (17 commits). |  |
+| `besluiten-inzien` | `twijfel` | Alleen veldresolvers; geen eigen ingangen meer (REST-download van besluitdocumenten verwijderd, #105), wel actief onderhouden (17 commits). |  |
 | `partij-beheren` | `kandidaat-verwijderen` | Geen van de 4 operaties in frontend; publieke GraphQL-ingangen kunnen weg (na check externe clients). |  |
 | `verificatie` | `kandidaat-verwijderen` | Geen frontend-gebruik; alleen de publieke GraphQL-ingangen gaan weg. De service blijft als interne afhankelijkheid van contactgegevens-beheren (DigitaleAdresMutation). |  |
 | `product-referentiedata` | `twijfel` | 12 lijst/detail-operaties, geen enkele in frontend gebruikt; lijkt 1-op-1 API-doorgifte zonder consument. | Herbeoordelen zodra de OpenProduct-frontend (producten-inzien, product-themas, productacties) af is. |
@@ -62,8 +62,4 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/jypma-prlg/nl-por
 
 | Capability | Ingang | Status | Voorwaarde |
 |---|---|---|---|
-| `besluiten-inzien` | `GET /api/besluiten/{besluitId}/document/{documentId}/content` | `kandidaat-verwijderen` | eerst bevestigen dat besluitdocumenten nergens getoond worden |
-| `persoonsgegevens-brp` | `getBewonersAantalV2` | `kandidaat-verwijderen` | dubbel met veld bewonersAantal |
-| `klantcontacten-inzien` | `getUserKlantContact` | `kandidaat-verwijderen` |  |
-| `producten-inzien` | `GET /api/product/{productId}/document/{documentId}/content` | `kandidaat-verwijderen` |  |
 <!-- END GENERATED: technische-schuld -->
