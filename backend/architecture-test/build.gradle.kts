@@ -37,6 +37,15 @@ tasks.named<Test>("test") {
     val inventory = rootProject.projectDir.parentFile.resolve("docs/capabilities.yaml")
     inputs.file(inventory)
     systemProperty("capabilities.file", inventory.absolutePath)
+    val tenancyBaseline = rootProject.projectDir.parentFile.resolve("docs/tenancy-baseline.yaml")
+    inputs.file(tenancyBaseline)
+    systemProperty("tenancy.baseline.file", tenancyBaseline.absolutePath)
+    systemProperty(
+        "architecture.diagram.file",
+        rootProject.projectDir.parentFile
+            .resolve("site/architectuur/img/plantuml/modules.puml")
+            .absolutePath,
+    )
     // Every Gradle project except this one is handed to the test: it must either be mapped to a layer
     // or be listed (with a reason) in ModuleLayers.excluded. Nothing is filtered out here, so a new
     // module cannot silently escape the check.
@@ -69,3 +78,20 @@ val jar: Jar by tasks
 val bootJar: org.springframework.boot.gradle.tasks.bundling.BootJar by tasks
 bootJar.enabled = false
 jar.enabled = false
+// Writes the module diagram (PlantUML) to the docs site; the fitness test fails when the committed file is stale.
+val diagramFile = rootProject.projectDir.parentFile.resolve("site/architectuur/img/plantuml/modules.puml")
+tasks.register<JavaExec>("architectureDiagram") {
+    description = "Generate the module/rule-coverage PlantUML diagram"
+    group = "documentation"
+    val sourceSets = project.extensions.getByType<SourceSetContainer>()
+    classpath = sourceSets["test"].runtimeClasspath
+    mainClass.set("nl.nlportal.architecture.ArchitectureDiagramKt")
+    args(
+        diagramFile.absolutePath,
+        rootProject.projectDir.parentFile
+            .resolve("docs/tenancy-baseline.yaml")
+            .absolutePath,
+    )
+    inputs.file(rootProject.projectDir.parentFile.resolve("docs/tenancy-baseline.yaml"))
+    outputs.file(diagramFile)
+}

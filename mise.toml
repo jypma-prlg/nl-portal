@@ -68,6 +68,29 @@ dir = "backend"
 shell = "bash -c"
 run = "./gradlew :architecture-test:test --console=plain"
 
+[tasks."arch:diagram:backend"]
+description = "Genereer het PlantUML-diagram van backend-modules, lagen en regeldekking (site/architectuur/img/plantuml/modules.puml) (#386)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew :architecture-test:architectureDiagram --console=plain"
+
+[tasks."arch:diagram:frontend"]
+description = "Genereer het PlantUML-diagram van de frontend-packages (site/architectuur/img/plantuml/frontend.puml) (#386)"
+run = "node scripts/generate-frontend-diagram.mjs"
+
+[tasks."arch:diagram"]
+description = "Genereer de PlantUML-diagrammen van backend en frontend; commit het resultaat, en draai arch:diagram:render voor de SVG (#386)"
+depends = ["arch:diagram:backend", "arch:diagram:frontend"]
+
+[tasks."arch:diagram:render"]
+description = "Render beide PlantUML-diagrammen naar SVG via Docker (site/architectuur/img/plantuml/*.svg); draai eerst arch:diagram (#386)"
+shell = "bash -c"
+run = """
+for name in modules frontend; do
+  docker run --rm -i plantuml/plantuml:1.2025.4 -tsvg -pipe < site/architectuur/img/plantuml/$name.puml > site/architectuur/img/plantuml/$name.svg
+done
+"""
+
 [tasks."backend:integration-test"]
 description = "Backend-integratietests over alle modules (vereist Docker voor de OpenKlant-container in zgw:openklant)"
 dir = "backend"
