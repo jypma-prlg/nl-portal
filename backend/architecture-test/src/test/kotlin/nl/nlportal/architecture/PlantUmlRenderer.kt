@@ -47,6 +47,7 @@ object PlantUmlRenderer {
         edges: Map<ModuleEdge, Coverage>,
         signals: Map<String, Set<TenancySignal>> = emptyMap(),
         assessments: Map<String, ModuleAssessment> = emptyMap(),
+        proposedRules: List<RuleStatus> = emptyList(),
     ): String {
         val out = StringBuilder()
         out.appendLine("@startuml")
@@ -60,7 +61,19 @@ object PlantUmlRenderer {
                 val assessment = assessments[it.modules.first()]
                 out.appendLine("  [${label(it, signals, assessment)}] as ${alias(it.modules.first())}${colour(assessment)}")
             }
+            if (layer == Layer.CORE && proposedRules.isNotEmpty()) {
+                out.appendLine("  [tenancy-seam\\n<size:10>TenantContext, TenantRegistry: nog niet gebouwd</size>] as tenancy_seam #white")
+            }
             out.appendLine("}")
+        }
+        if (proposedRules.isNotEmpty()) {
+            out.appendLine("note as tenancy_rules")
+            out.appendLine("  **Tenancy-regels (voorstel uit onderzoek #146)**")
+            proposedRules.forEach {
+                val state = if (it.active) "actief" else "voorgesteld, niet actief"
+                out.appendLine("  ${it.rule.methodName}: ${it.rule.description} ($state)")
+            }
+            out.appendLine("end note")
         }
         edges.entries
             .sortedWith(compareBy({ alias(it.key.from) }, { alias(it.key.to) }))

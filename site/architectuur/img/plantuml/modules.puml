@@ -3,6 +3,7 @@ title Modules, lagen en regeldekking
 left to right direction
 package "kern" {
   [:core\n<size:10>omvang L, risico hoog, tenancy: config, globaal</size>] as core #F4B6B6
+  [tenancy-seam\n<size:10>TenantContext, TenantRegistry: nog niet gebouwd</size>] as tenancy_seam #white
 }
 package "gedeelde infrastructuur" {
   [:graphql\n<size:10>omvang S, risico laag</size>] as graphql #CFE8CF
@@ -30,6 +31,14 @@ package "functionaliteit" {
 package "applicatie" {
   [:app / :app-dev\n<size:10>omvang M, risico middel</size>] as app #FBE3A6
 }
+note as tenancy_rules
+  **Tenancy-regels (voorstel uit onderzoek #146)**
+  noConfigurationPropertiesOutsideAutoconfig: configuratie alleen via het register, niet geïnjecteerd buiten de autoconfig (voorgesteld, niet actief)
+  noOwnWebClient: geen WebClient.create()/builder() buiten core en zgw-client (voorgesteld, niet actief)
+  noJvmGlobalState: geen JVM-globale stores (InMemorySecretKeyStore, ThreadLocal, OpenFeatureAPI buiten core.featureflag) (voorgesteld, niet actief)
+  noNewCoroutineScopes: geen GlobalScope, CoroutineScope(...) of runBlocking: de tenant valt dan uit de Reactor Context (voorgesteld, niet actief)
+  tenantRegistryComplete: elke tenant levert bij het opstarten een volledig register op (voorgesteld, niet actief)
+end note
 form --> zgw_objectenapi #green : bewaakt
 haalcentraal2 --> core #grey
 haalcentraal2 ..> haalcentraal_hr #orange : gat

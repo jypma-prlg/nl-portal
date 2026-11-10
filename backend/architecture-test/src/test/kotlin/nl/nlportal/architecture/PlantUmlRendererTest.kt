@@ -95,4 +95,25 @@ class PlantUmlRendererTest {
         val literalBackslashN = "\\" + "n"
         assertThat(puml).contains("[:zgw:zaken$literalBackslashN<size:10>omvang L, risico hoog</size>] as zgw_zaken #F4B6B6")
     }
+
+    @Test
+    fun `shows the tenancy seam as a node that is not built yet and lists the proposed rules`() {
+        val puml =
+            PlantUmlRenderer.render(
+                mappings,
+                emptyMap(),
+                proposedRules =
+                    listOf(
+                        RuleStatus(ProposedRule("noOwnWebClient", "geen eigen WebClient buiten core"), active = false),
+                        RuleStatus(ProposedRule("noJvmGlobalState", "geen JVM-globale toestand"), active = true),
+                    ),
+            )
+
+        val literalBackslashN = "\\" + "n"
+        assertThat(puml).contains(
+            "[tenancy-seam$literalBackslashN<size:10>TenantContext, TenantRegistry: nog niet gebouwd</size>] as tenancy_seam #white",
+        )
+        assertThat(puml).contains("noOwnWebClient: geen eigen WebClient buiten core (voorgesteld, niet actief)")
+        assertThat(puml).contains("noJvmGlobalState: geen JVM-globale toestand (actief)")
+    }
 }

@@ -31,7 +31,7 @@ object ArchitectureDiagram {
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("nl.nlportal")
         val edges = ModuleDependencies.of(classes, mappings).associateWith { RuleCoverage.classify(it, mappings) }
-        return PlantUmlRenderer.render(mappings, edges, TenancySignals.of(classes, mappings), TenancyBaseline.load(baselineFile))
+        return PlantUmlRenderer.render(mappings, edges, TenancySignals.of(classes, mappings), TenancyBaseline.load(baselineFile), ProposedRules.status(ProposedRules.existingRuleNames()))
     }
 }
 
