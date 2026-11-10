@@ -67,6 +67,17 @@ dir = "backend"
 shell = "bash -c"
 run = "./gradlew :architecture-test:moduleLayerChanges -q"
 
+[tasks."arch:diagram"]
+description = "Genereer het PlantUML-diagram van modules, lagen en regeldekking (site/architectuur/img/plantuml/modules.puml); commit het resultaat (#386)"
+dir = "backend"
+shell = "bash -c"
+run = "./gradlew :architecture-test:architectureDiagram --console=plain"
+
+[tasks."arch:diagram:render"]
+description = "Render het PlantUML-diagram naar SVG via Docker (site/architectuur/img/plantuml/modules.svg); draai eerst arch:diagram (#386)"
+shell = "bash -c"
+run = "docker run --rm -i plantuml/plantuml:1.2025.4 -tsvg -pipe < site/architectuur/img/plantuml/modules.puml > site/architectuur/img/plantuml/modules.svg"
+
 [tasks."backend:integration-test"]
 description = "Backend-integratietests over alle modules (vereist Docker voor de OpenKlant-container in zgw:openklant)"
 dir = "backend"
