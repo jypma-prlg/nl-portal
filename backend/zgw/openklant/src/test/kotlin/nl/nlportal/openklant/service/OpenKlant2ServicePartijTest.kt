@@ -147,24 +147,6 @@ class OpenKlant2ServicePartijTest {
             }
         }
 
-    @Test
-    fun `updatePartij creates a new Partij when none exists yet for the authenticated user`() =
-        runTest {
-            // no existing partij found, so a fresh Partij + identificator are created
-            mockServer.enqueue(mockJsonResponse(TestHelper.emptyPage))
-            mockServer.enqueue(mockJsonResponse(singlePartij(PARTIJ_ID)))
-            mockServer.enqueue(mockJsonResponse(somePartijIdentificatorJson()))
-            mockServer.enqueue(mockJsonResponse(singlePartij(PARTIJ_ID)))
-
-            val result =
-                service.updatePartij(
-                    authentication = JwtBuilder().aanvragerBsn(BSN).buildBurgerAuthentication(),
-                    partij = somePartij(),
-                )
-
-            assertNotNull(result)
-        }
-
     private fun somePartij() =
         OpenKlant2Partij(
             indicatieActief = true,

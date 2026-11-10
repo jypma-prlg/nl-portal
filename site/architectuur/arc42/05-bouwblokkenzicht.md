@@ -24,7 +24,7 @@ De backend is Gradle-modules per verantwoordelijkheid (`backend/settings.gradle.
   `openklant`, `taak`, `berichten`, `verificatie`, `objectenapi`, `catalogi-api`,
   `common-ground-authentication`. Dit zijn de modules met de hoogste wijzigingsfrequentie (zie
   hoofdstuk 11) en het onderwerp van de sterkste bevindingen uit de architectuurreview.
-- **Haal Centraal-integraties** — `haalcentraal2` (BRP), `haalcentraal-hr` (bewoning/volmachten).
+- **Haal Centraal-integraties** — `haalcentraal-brp` (BRP), `kvk` (handelsregister).
 - **Payment** — `payment-direct`, betaalprovider-integratie.
 - **Product** — productinformatie, gevoed door OpenProduct.
 - **Portal authentication** — Keycloak/OIDC-integratie en autorisatieregels.
@@ -79,13 +79,10 @@ ingangen (GraphQL-operaties, REST-endpoints, event-listeners) het bereikbaar is.
 | [Taken afhandelen](#capability-taken-afhandelen) | `actief` | `backend/zgw/taak`, `backend/zgw/documenten-api`, `backend/zgw/objectenapi`, `backend/form` | 5 |
 | [Eigen zaken (case-definities)](#capability-eigen-zaken-case) | `verwijderd` | `backend/case` | 0 |
 | [Betalen (Ogone direct)](#capability-betalen-ogone-direct) | `actief` | `backend/payment-direct` | 3 |
-| [Persoonsgegevens (BRP)](#capability-persoonsgegevens-brp) | `actief` | `backend/haalcentraal2` | 1 |
-| [Machtigingen (gemachtigde)](#capability-machtigingen) | `actief` | `backend/haalcentraal2` | 1 |
-| [Bedrijfsgegevens (Handelsregister)](#capability-bedrijfsgegevens-hr) | `actief` | `backend/haalcentraal-hr` | 1 |
+| [Persoonsgegevens (BRP)](#capability-persoonsgegevens-brp) | `actief` | `backend/haalcentraal-brp` | 1 |
+| [Bedrijfsgegevens (Handelsregister)](#capability-bedrijfsgegevens-hr) | `actief` | `backend/kvk` | 1 |
 | [Contactgegevens beheren](#capability-contactgegevens-beheren) | `actief` | `backend/zgw/openklant`, `backend/zgw/verificatie` | 4 |
 | [Klantcontacten inzien](#capability-klantcontacten-inzien) | `actief` | `backend/zgw/openklant` | 1 |
-| [Klantprofiel (partij) beheren](#capability-partij-beheren) | `kandidaat-verwijderen` | `backend/zgw/openklant` | 4 |
-| [Verificatie contactgegevens (los)](#capability-verificatie) | `kandidaat-verwijderen` | `backend/zgw/verificatie` | 3 |
 | [Producten inzien](#capability-producten-inzien) | `in-ontwikkeling` | `backend/zgw/openproduct` | 5 |
 | [Productthema's](#capability-product-themas) | `in-ontwikkeling` | `backend/zgw/openproduct` | 8 |
 | [Productacties en -beslissingen](#capability-productacties) | `in-ontwikkeling` | `backend/zgw/openproduct` | 5 |
@@ -194,24 +191,11 @@ Toont de persoonsgegevens van de ingelogde burger uit Haal Centraal BRP.
 
 - **Status:** `actief`
 - **Bewijs:** getPersoonV2 gebruikt (bewonersAantal als veld), 24 commits.
-- **Modules:** `backend/haalcentraal2`
+- **Modules:** `backend/haalcentraal-brp`
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
 |---|---|---|---|---|
 | graphql-query | `getPersoonV2` | ja | `actief` |  |
-
-<a id="capability-machtigingen"></a>
-### Machtigingen (gemachtigde) (`machtigingen`)
-
-Toont namens wie de gebruiker handelt (gemachtigde persoon of bedrijf).
-
-- **Status:** `actief`
-- **Bewijs:** getGemachtigdeV2 gebruikt in UserContext.
-- **Modules:** `backend/haalcentraal2`
-
-| Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
-|---|---|---|---|---|
-| graphql-query | `getGemachtigdeV2` | ja | `actief` |  |
 
 <a id="capability-bedrijfsgegevens-hr"></a>
 ### Bedrijfsgegevens (Handelsregister) (`bedrijfsgegevens-hr`)
@@ -219,8 +203,8 @@ Toont namens wie de gebruiker handelt (gemachtigde persoon of bedrijf).
 Toont KvK-gegevens van de ingelogde ondernemer.
 
 - **Status:** `actief`
-- **Bewijs:** getBedrijf gebruikt; module achter flag haalcentraal.hr.enabled.
-- **Modules:** `backend/haalcentraal-hr`
+- **Bewijs:** getBedrijf gebruikt; module achter flag kvk.enabled.
+- **Modules:** `backend/kvk`
 
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
 |---|---|---|---|---|
@@ -254,37 +238,6 @@ Toont eerdere contactmomenten van de burger met de gemeente.
 | Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
 |---|---|---|---|---|
 | graphql-query | `getUserKlantContacten` | ja | `actief` |  |
-
-<a id="capability-partij-beheren"></a>
-### Klantprofiel (partij) beheren (`partij-beheren`)
-
-Opvragen en aanmaken/bijwerken van de partij (klantprofiel) van de burger in OpenKlant 2.
-
-- **Status:** `kandidaat-verwijderen`
-- **Bewijs:** Geen van de 4 operaties in frontend; publieke GraphQL-ingangen kunnen weg (na check externe clients).
-- **Modules:** `backend/zgw/openklant`
-
-| Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
-|---|---|---|---|---|
-| graphql-query | `findUserPartij` | nee | `kandidaat-verwijderen` |  |
-| graphql-query | `getUserPartij` | nee | `kandidaat-verwijderen` |  |
-| graphql-mutation | `createUserPartij` | nee | `kandidaat-verwijderen` |  |
-| graphql-mutation | `updateUserPartij` | nee | `kandidaat-verwijderen` |  |
-
-<a id="capability-verificatie"></a>
-### Verificatie contactgegevens (los) (`verificatie`)
-
-Losse API om een verificatiecode aan te maken/controleren en de verificatieconfig op te vragen.
-
-- **Status:** `kandidaat-verwijderen`
-- **Bewijs:** Geen frontend-gebruik; alleen de publieke GraphQL-ingangen gaan weg. De service blijft als interne afhankelijkheid van contactgegevens-beheren (DigitaleAdresMutation).
-- **Modules:** `backend/zgw/verificatie`
-
-| Type | Ingang | Frontend gebruikt | Status | Voorwaarde |
-|---|---|---|---|---|
-| graphql-query | `verificatieConfig` | nee | `kandidaat-verwijderen` |  |
-| graphql-mutation | `createVerificatie` | nee | `kandidaat-verwijderen` |  |
-| graphql-mutation | `verifyVerificatie` | nee | `kandidaat-verwijderen` |  |
 
 <a id="capability-producten-inzien"></a>
 ### Producten inzien (`producten-inzien`)

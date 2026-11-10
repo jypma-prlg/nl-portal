@@ -18,8 +18,6 @@ package nl.nlportal.openklant.autoconfigure
 import nl.nlportal.openklant.graphql.DigitaleAdresMutation
 import nl.nlportal.openklant.graphql.DigitaleAdresQuery
 import nl.nlportal.openklant.graphql.KlantContactQuery
-import nl.nlportal.openklant.graphql.PartijMutation
-import nl.nlportal.openklant.graphql.PartijQuery
 import nl.nlportal.openklant.service.OpenKlant2Service
 import nl.nlportal.verificatie.autoconfigure.VerificatieModuleConfiguration
 import nl.nlportal.verificatie.service.VerificatieService
@@ -29,14 +27,6 @@ import org.springframework.context.annotation.Bean
 
 @ConditionalOnProperty(prefix = "nl-portal.config", name = ["openklant2.enabled"], havingValue = "true")
 class OpenKlantGraphqlAutoConfiguration {
-    @Bean
-    @ConditionalOnMissingBean(PartijQuery::class)
-    fun partijQuery(openKlant2Service: OpenKlant2Service) = PartijQuery(openKlant2Service)
-
-    @Bean
-    @ConditionalOnMissingBean(PartijMutation::class)
-    fun partijMutation(openKlant2Service: OpenKlant2Service) = PartijMutation(openKlant2Service)
-
     @Bean
     @ConditionalOnMissingBean(DigitaleAdresQuery::class)
     fun digitaleAdresQuery(

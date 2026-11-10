@@ -78,16 +78,7 @@ model {
     description 'Toont de persoonsgegevens van de ingelogde burger uit Haal Centraal BRP.'
     metadata {
       status 'actief'
-      modules 'backend/haalcentraal2'
-      ingangen '1'
-    }
-  }
-  capability machtigingen 'Machtigingen (gemachtigde)' {
-    #actief
-    description 'Toont namens wie de gebruiker handelt (gemachtigde persoon of bedrijf).'
-    metadata {
-      status 'actief'
-      modules 'backend/haalcentraal2'
+      modules 'backend/haalcentraal-brp'
       ingangen '1'
     }
   }
@@ -96,7 +87,7 @@ model {
     description 'Toont KvK-gegevens van de ingelogde ondernemer.'
     metadata {
       status 'actief'
-      modules 'backend/haalcentraal-hr'
+      modules 'backend/kvk'
       ingangen '1'
     }
   }
@@ -116,24 +107,6 @@ model {
       status 'actief'
       modules 'backend/zgw/openklant'
       ingangen '1'
-    }
-  }
-  capability partijBeheren 'Klantprofiel (partij) beheren' {
-    #kandidaat_verwijderen
-    description 'Opvragen en aanmaken/bijwerken van de partij (klantprofiel) van de burger in OpenKlant 2.'
-    metadata {
-      status 'kandidaat-verwijderen'
-      modules 'backend/zgw/openklant'
-      ingangen '4'
-    }
-  }
-  capability verificatie 'Verificatie contactgegevens (los)' {
-    #kandidaat_verwijderen
-    description 'Losse API om een verificatiecode aan te maken/controleren en de verificatieconfig op te vragen.'
-    metadata {
-      status 'kandidaat-verwijderen'
-      modules 'backend/zgw/verificatie'
-      ingangen '3'
     }
   }
   capability productenInzien 'Producten inzien' {
@@ -187,14 +160,11 @@ model {
   takenAfhandelen -> nlPortal.backend.form 'Geïmplementeerd in'
   eigenZakenCase -> nlPortal.backend 'Geïmplementeerd in'
   betalenOgoneDirect -> nlPortal.backend.payment 'Geïmplementeerd in'
-  persoonsgegevensBrp -> nlPortal.backend.haalCentraalIntegrations.haalcentraal2 'Geïmplementeerd in'
-  machtigingen -> nlPortal.backend.haalCentraalIntegrations.haalcentraal2 'Geïmplementeerd in'
-  bedrijfsgegevensHr -> nlPortal.backend.haalCentraalIntegrations.haalcentraalHr 'Geïmplementeerd in'
+  persoonsgegevensBrp -> nlPortal.backend.haalCentraalIntegrations.haalcentraalBrp 'Geïmplementeerd in'
+  bedrijfsgegevensHr -> nlPortal.backend.haalCentraalIntegrations.kvk 'Geïmplementeerd in'
   contactgegevensBeheren -> nlPortal.backend.zgwIntegrations.openklant 'Geïmplementeerd in'
   contactgegevensBeheren -> nlPortal.backend.zgwIntegrations.verificatie 'Geïmplementeerd in'
   klantcontactenInzien -> nlPortal.backend.zgwIntegrations.openklant 'Geïmplementeerd in'
-  partijBeheren -> nlPortal.backend.zgwIntegrations.openklant 'Geïmplementeerd in'
-  verificatie -> nlPortal.backend.zgwIntegrations.verificatie 'Geïmplementeerd in'
   productenInzien -> nlPortal.backend.zgwIntegrations.openproduct 'Geïmplementeerd in'
   productThemas -> nlPortal.backend.zgwIntegrations.openproduct 'Geïmplementeerd in'
   productacties -> nlPortal.backend.zgwIntegrations.openproduct 'Geïmplementeerd in'

@@ -1,0 +1,25 @@
+graphql:
+    packages:
+        - "nl.nlportal"
+
+logging:
+    level:
+        reactor.netty.http.client.HttpClient: TRACE
+
+nl-portal:
+    config:
+        haalcentraal-brp:
+            enabled: true
+            properties:
+                brp-api-url: #filled in test
+                bewoning-api-url: #filled in test
+                allowed-cities-for-bewoning:
+                    - "'s-Gravenhage"
+                    - "Ypenburg"
+
+spring:
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: http://localhost:8082/auth/realms/nlportal

@@ -168,36 +168,6 @@ class OpenKlant2Service(
         )
     }
 
-    suspend fun updatePartij(
-        authentication: CommonGroundAuthentication,
-        partij: OpenKlant2Partij,
-    ): OpenKlant2Partij? {
-        val previousPartij = findPartijByAuthentication(authentication)
-        if (previousPartij != null) {
-            val updatedPartij =
-                previousPartij.copy(
-                    indicatieGeheimhouding = partij.indicatieGeheimhouding,
-                    indicatieActief = partij.indicatieActief,
-                    soortPartij = partij.soortPartij,
-                    partijIdentificatie = partij.partijIdentificatie,
-                )
-            val partijResponse =
-                try {
-                    openKlant2Client
-                        .path<Partijen>()
-                        .put(updatedPartij)
-                } catch (ex: WebClientResponseException) {
-                    logger.error(ex) { "Failed to update Partij: ${ex.responseBodyAsString}" }
-                    return null
-                }
-
-            return partijResponse
-        }
-
-        logger.warn { "Failed to update Partij: No existing Partij found. Creating new Partij" }
-        return createPartijWithIdentificatorFromAuthentication(authentication, partij)
-    }
-
     suspend fun findPartijIdentificatorenFromAuthentication(authentication: CommonGroundAuthentication): List<OpenKlant2PartijIdentificator>? {
         val searchFilters: List<Pair<OpenKlant2PartijIdentificatorenFilters, Any>> =
             when (authentication) {

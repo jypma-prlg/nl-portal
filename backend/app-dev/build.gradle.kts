@@ -22,8 +22,8 @@ plugins {
 dependencies {
     implementation(project(":zgw:openklant"))
     // implementation(project(":form"))
-    implementation(project(":haalcentraal-hr"))
-    implementation(project(":haalcentraal2"))
+    implementation(project(":kvk"))
+    implementation(project(":haalcentraal-brp"))
     implementation(project(":zgw:taak"))
     implementation(project(":zgw:documenten-api"))
     implementation(project(":zgw:berichten"))

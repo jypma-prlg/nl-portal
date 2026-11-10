@@ -79,8 +79,8 @@ beschrijving van de huidige structuur, geen streefbeeld. Zie de architectuur-rev
 voor voorstellen om die structuur te verdiepen.
 
 Twee C3-componenten bundelen op hun beurt meerdere Gradle-modules achter één beschrijving:
-`zgwIntegrations` (alle `zgw:*`-modules) en `haalCentraalIntegrations` (`haalcentraal2`,
-`haalcentraal-hr`). Die zijn daarom zelf verder uitgesplitst naar hun werkelijke modules, inclusief de
+`zgwIntegrations` (alle `zgw:*`-modules) en `haalCentraalIntegrations` (`haalcentraal-brp`,
+`kvk`). Die zijn daarom zelf verder uitgesplitst naar hun werkelijke modules, inclusief de
 afhankelijkheden daartussen (views `zgwIntegrationComponents`/`haalCentraalIntegrationComponents`) —
 nog steeds C3, maar met meer detail, niet een officieel vierde C4-niveau (LikeC4 kent geen
 code-niveau, en dat niveau wordt in de C4-methodologie sowieso meestal door een IDE gegenereerd in

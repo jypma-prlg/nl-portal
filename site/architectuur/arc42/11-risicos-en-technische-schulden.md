@@ -54,8 +54,6 @@ _Gegenereerd uit [`docs/capabilities.yaml`](https://github.com/pinkroccade/nl-po
 | Capability | Status | Toelichting | Besluit / actie |
 |---|---|---|---|
 | `besluiten-inzien` | `twijfel` | Alleen veldresolvers; geen eigen ingangen meer (REST-download van besluitdocumenten verwijderd, #105), wel actief onderhouden (17 commits). |  |
-| `partij-beheren` | `kandidaat-verwijderen` | Geen van de 4 operaties in frontend; publieke GraphQL-ingangen kunnen weg (na check externe clients). |  |
-| `verificatie` | `kandidaat-verwijderen` | Geen frontend-gebruik; alleen de publieke GraphQL-ingangen gaan weg. De service blijft als interne afhankelijkheid van contactgegevens-beheren (DigitaleAdresMutation). |  |
 | `product-referentiedata` | `twijfel` | 12 lijst/detail-operaties, geen enkele in frontend gebruikt; lijkt 1-op-1 API-doorgifte zonder consument. | Herbeoordelen zodra de OpenProduct-frontend (producten-inzien, product-themas, productacties) af is. |
 
 ### Ingangen met een eigen risicostatus

@@ -32,8 +32,6 @@ pluginManagement {
         providers.gradleProperty("sonarqubeVersion").get()
     val dependencyLicenseVersion: String =
         providers.gradleProperty("dependencyLicenseVersion").get()
-    val foojayResolverConventionVersion: String =
-        providers.gradleProperty("foojayResolverConventionVersion").get()
     val pitestPluginVersion: String =
         providers.gradleProperty("pitestPluginVersion").get()
 
@@ -49,7 +47,6 @@ pluginManagement {
         id("com.avast.gradle.docker-compose") version gradleDockerComposeVersion apply false
         id("org.sonarqube") version sonarqubeVersion apply false
         id("com.github.jk1.dependency-license-report") version dependencyLicenseVersion apply false
-        id("org.gradle.toolchains.foojay-resolver-convention") version foojayResolverConventionVersion apply false
         id("info.solidsoft.pitest") version pitestPluginVersion apply false
     }
 }
@@ -67,8 +64,8 @@ include(
     "zgw:catalogi-api",
     "zgw:openklant",
     "form",
-    "haalcentraal-hr",
-    "haalcentraal2",
+    "kvk",
+    "haalcentraal-brp",
     "zgw:taak",
     "zgw:documenten-api",
     "zgw:berichten",

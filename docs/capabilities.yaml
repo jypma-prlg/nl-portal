@@ -97,27 +97,17 @@ capabilities:
     beschrijving: Toont de persoonsgegevens van de ingelogde burger uit Haal Centraal BRP.
     status: actief
     bewijs: getPersoonV2 gebruikt (bewonersAantal als veld), 24 commits.
-    modules: [backend/haalcentraal2]
+    modules: [backend/haalcentraal-brp]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-08-31, commits_12m: 24, deprecated_markers: true}
     ingangen:
       - {type: graphql-query, naam: getPersoonV2, frontend_gebruikt: true}
-
-  - id: machtigingen
-    naam: Machtigingen (gemachtigde)
-    beschrijving: Toont namens wie de gebruiker handelt (gemachtigde persoon of bedrijf).
-    status: actief
-    bewijs: getGemachtigdeV2 gebruikt in UserContext.
-    modules: [backend/haalcentraal2]
-    signalen: {in_assembly: true, tests: true, laatste_commit: 2026-08-31, commits_12m: 24, deprecated_markers: true}
-    ingangen:
-      - {type: graphql-query, naam: getGemachtigdeV2, frontend_gebruikt: true}
 
   - id: bedrijfsgegevens-hr
     naam: Bedrijfsgegevens (Handelsregister)
     beschrijving: Toont KvK-gegevens van de ingelogde ondernemer.
     status: actief
-    bewijs: getBedrijf gebruikt; module achter flag haalcentraal.hr.enabled.
-    modules: [backend/haalcentraal-hr]
+    bewijs: getBedrijf gebruikt; module achter flag kvk.enabled.
+    modules: [backend/kvk]
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-09-18, commits_12m: 5, deprecated_markers: false}
     ingangen:
       - {type: graphql-query, naam: getBedrijf, frontend_gebruikt: true}
@@ -144,31 +134,6 @@ capabilities:
     signalen: {in_assembly: true, tests: true, laatste_commit: 2026-10-27, commits_12m: 43, deprecated_markers: true}
     ingangen:
       - {type: graphql-query, naam: getUserKlantContacten, frontend_gebruikt: true}
-
-  - id: partij-beheren
-    naam: Klantprofiel (partij) beheren
-    beschrijving: Opvragen en aanmaken/bijwerken van de partij (klantprofiel) van de burger in OpenKlant 2.
-    status: kandidaat-verwijderen
-    bewijs: Geen van de 4 operaties in frontend; publieke GraphQL-ingangen kunnen weg (na check externe clients).
-    modules: [backend/zgw/openklant]
-    signalen: {in_assembly: true, tests: true, laatste_commit: 2026-10-27, commits_12m: 43, deprecated_markers: true}
-    ingangen:
-      - {type: graphql-query, naam: findUserPartij, frontend_gebruikt: false}
-      - {type: graphql-query, naam: getUserPartij, frontend_gebruikt: false}
-      - {type: graphql-mutation, naam: createUserPartij, frontend_gebruikt: false}
-      - {type: graphql-mutation, naam: updateUserPartij, frontend_gebruikt: false}
-
-  - id: verificatie
-    naam: Verificatie contactgegevens (los)
-    beschrijving: Losse API om een verificatiecode aan te maken/controleren en de verificatieconfig op te vragen.
-    status: kandidaat-verwijderen
-    bewijs: Geen frontend-gebruik; alleen de publieke GraphQL-ingangen gaan weg. De service blijft als interne afhankelijkheid van contactgegevens-beheren (DigitaleAdresMutation).
-    modules: [backend/zgw/verificatie]
-    signalen: {in_assembly: true, tests: true, laatste_commit: 2026-08-27, commits_12m: 15, deprecated_markers: false}
-    ingangen:
-      - {type: graphql-query, naam: verificatieConfig, frontend_gebruikt: false}
-      - {type: graphql-mutation, naam: createVerificatie, frontend_gebruikt: false}
-      - {type: graphql-mutation, naam: verifyVerificatie, frontend_gebruikt: false}
 
   - id: producten-inzien
     naam: Producten inzien

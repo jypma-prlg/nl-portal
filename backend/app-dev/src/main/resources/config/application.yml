@@ -121,14 +121,13 @@ nl-portal:
                 contactgegevens-api-url: http://localhost:8014/contactgegevens/api/v1
                 klantinteracties-api-url: http://localhost:8014/klantinteracties/api/v1
                 token: ac045222c9e7cde8120b48735560f9b920bb58cd
-        haalcentraal2:
+        haalcentraal-brp:
             enabled: true
             properties:
                 brp-api-url: http://localhost:5010/haalcentraal/api/brp/
                 bewoning-api-url: http://localhost:5011/haalcentraal/api/bewoning/
-        haalcentraal:
-            hr:
-                enabled: true
+        kvk:
+            enabled: true
         taak:
             enabled: true
             properties:
@@ -204,6 +203,6 @@ nl-portal:
         modules-whitelist:
             - zakenapi
             - product
-            - haalcentraal2
+            - haalcentraal-brp
             - taak
             - openproduct
