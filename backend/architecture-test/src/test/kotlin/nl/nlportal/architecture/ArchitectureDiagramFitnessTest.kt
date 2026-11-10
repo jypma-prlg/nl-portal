@@ -18,6 +18,7 @@ package nl.nlportal.architecture
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.nio.file.Path
 
 /** The committed diagram must match the code; regenerate it with `mise run arch:diagram`. */
 class ArchitectureDiagramFitnessTest {
@@ -27,6 +28,6 @@ class ArchitectureDiagramFitnessTest {
         assertThat(file).describedAs("Draai `mise run arch:diagram` en commit het resultaat").exists()
         assertThat(file.readText().replace("\r\n", "\n"))
             .describedAs("Het diagram is verouderd: draai `mise run arch:diagram` en commit het resultaat")
-            .isEqualTo(ArchitectureDiagram.generate())
+            .isEqualTo(ArchitectureDiagram.generate(Path.of(System.getProperty("tenancy.baseline.file"))))
     }
 }

@@ -61,6 +61,7 @@ class PlantUmlRendererTest {
             legend right
               grijs: toegestaan, rood gestreept: verboden, oranje gestippeld: niet bewaakt, groen: bewaakt
               tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal)
+              vulkleur: risico van de multitenancy-migratie (rood hoog, geel middel, groen laag)
             endlegend
             @enduml
 
@@ -80,5 +81,18 @@ class PlantUmlRendererTest {
         val literalBackslashN = "\\" + "n"
         assertThat(puml).contains("[:payment-direct$literalBackslashN<size:10>tenancy: config, globaal</size>] as payment_direct")
         assertThat(puml).contains("[:zgw:zaken] as zgw_zaken")
+    }
+
+    @Test
+    fun `shows size and risk from the baseline and colours the module by risk`() {
+        val puml =
+            PlantUmlRenderer.render(
+                mappings,
+                emptyMap(),
+                assessments = mapOf(":zgw:zaken" to ModuleAssessment(Size.L, Risk.HOOG, emptyMap())),
+            )
+
+        val literalBackslashN = "\\" + "n"
+        assertThat(puml).contains("[:zgw:zaken$literalBackslashN<size:10>omvang L, risico hoog</size>] as zgw_zaken #F4B6B6")
     }
 }

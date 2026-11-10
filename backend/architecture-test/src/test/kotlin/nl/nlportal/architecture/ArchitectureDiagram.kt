@@ -18,23 +18,28 @@ package nl.nlportal.architecture
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
 import java.io.File
+import java.nio.file.Path
 
 /** The module diagram of the production code: bytecode dependencies classified by rule coverage. */
 object ArchitectureDiagram {
-    fun generate(mappings: List<ModuleMapping> = ModuleLayers.production): String {
+    fun generate(
+        baselineFile: Path,
+        mappings: List<ModuleMapping> = ModuleLayers.production,
+    ): String {
         val classes =
             ClassFileImporter()
                 .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
                 .importPackages("nl.nlportal")
         val edges = ModuleDependencies.of(classes, mappings).associateWith { RuleCoverage.classify(it, mappings) }
-        return PlantUmlRenderer.render(mappings, edges, TenancySignals.of(classes, mappings))
+        return PlantUmlRenderer.render(mappings, edges, TenancySignals.of(classes, mappings), TenancyBaseline.load(baselineFile))
     }
 }
 
-/** Entry point of the Gradle task `architectureDiagram`; the single argument is the file to write. */
+/** Entry point of the Gradle task `architectureDiagram`; arguments: the file to write and the tenancy baseline. */
 fun main(args: Array<String>) {
-    val output = File(args.single())
+    val (target, baseline) = args
+    val output = File(target)
     output.parentFile.mkdirs()
-    output.writeText(ArchitectureDiagram.generate())
+    output.writeText(ArchitectureDiagram.generate(Path.of(baseline)))
     println("Diagram geschreven naar $output")
 }

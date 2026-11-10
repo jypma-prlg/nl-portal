@@ -22,16 +22,31 @@ object PlantUmlRenderer {
     private fun label(
         mapping: ModuleMapping,
         signals: Map<String, Set<TenancySignal>>,
+        assessment: ModuleAssessment?,
     ): String {
         val name = mapping.modules.joinToString(" / ")
         val found = mapping.modules.flatMap { signals[it].orEmpty() }.toSortedSet()
-        return if (found.isEmpty()) name else "$name\\n<size:10>tenancy: ${found.joinToString(", ") { it.short }}</size>"
+        val parts =
+            listOfNotNull(
+                assessment?.let { "omvang ${it.size}, risico ${it.risk.label}" },
+                found.takeIf { it.isNotEmpty() }?.let { "tenancy: ${it.joinToString(", ") { signal -> signal.short }}" },
+            )
+        return if (parts.isEmpty()) name else "$name\\n<size:10>${parts.joinToString(", ")}</size>"
     }
+
+    private fun colour(assessment: ModuleAssessment?) =
+        when (assessment?.risk) {
+            Risk.HOOG -> " #F4B6B6"
+            Risk.MIDDEL -> " #FBE3A6"
+            Risk.LAAG -> " #CFE8CF"
+            null -> ""
+        }
 
     fun render(
         mappings: List<ModuleMapping>,
         edges: Map<ModuleEdge, Coverage>,
         signals: Map<String, Set<TenancySignal>> = emptyMap(),
+        assessments: Map<String, ModuleAssessment> = emptyMap(),
     ): String {
         val out = StringBuilder()
         out.appendLine("@startuml")
@@ -41,7 +56,10 @@ object PlantUmlRenderer {
             val inLayer = mappings.filter { it.layer == layer }.sortedBy { it.modules.first() }
             if (inLayer.isEmpty()) return@forEach
             out.appendLine("package \"${layer.label}\" {")
-            inLayer.forEach { out.appendLine("  [${label(it, signals)}] as ${alias(it.modules.first())}") }
+            inLayer.forEach {
+                val assessment = assessments[it.modules.first()]
+                out.appendLine("  [${label(it, signals, assessment)}] as ${alias(it.modules.first())}${colour(assessment)}")
+            }
             out.appendLine("}")
         }
         edges.entries
@@ -61,6 +79,7 @@ object PlantUmlRenderer {
         out.appendLine("legend right")
         out.appendLine("  grijs: toegestaan, rood gestreept: verboden, oranje gestippeld: niet bewaakt, groen: bewaakt")
         out.appendLine("  tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal)")
+        out.appendLine("  vulkleur: risico van de multitenancy-migratie (rood hoog, geel middel, groen laag)")
         out.appendLine("endlegend")
         out.appendLine("@enduml")
         return out.toString()

@@ -37,6 +37,9 @@ tasks.named<Test>("test") {
     val inventory = rootProject.projectDir.parentFile.resolve("docs/capabilities.yaml")
     inputs.file(inventory)
     systemProperty("capabilities.file", inventory.absolutePath)
+    val tenancyBaseline = rootProject.projectDir.parentFile.resolve("docs/tenancy-baseline.yaml")
+    inputs.file(tenancyBaseline)
+    systemProperty("tenancy.baseline.file", tenancyBaseline.absolutePath)
     systemProperty(
         "architecture.diagram.file",
         rootProject.projectDir.parentFile
@@ -83,6 +86,12 @@ tasks.register<JavaExec>("architectureDiagram") {
     val sourceSets = project.extensions.getByType<SourceSetContainer>()
     classpath = sourceSets["test"].runtimeClasspath
     mainClass.set("nl.nlportal.architecture.ArchitectureDiagramKt")
-    args(diagramFile.absolutePath)
+    args(
+        diagramFile.absolutePath,
+        rootProject.projectDir.parentFile
+            .resolve("docs/tenancy-baseline.yaml")
+            .absolutePath,
+    )
+    inputs.file(rootProject.projectDir.parentFile.resolve("docs/tenancy-baseline.yaml"))
     outputs.file(diagramFile)
 }
