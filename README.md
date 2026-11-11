@@ -39,6 +39,7 @@ dan gelden SemVer en een deprecation-periode voor breuken (zie
 | `backend/`        | Kotlin/Spring Boot backend libraries + the shippable backend application. One Gradle build. See [backend/README.md](./backend/README.md). |
 | `frontend/`       | pnpm workspace of `@nl-portal/*` React libraries + the shippable frontend application. See [frontend/README.md](./frontend/README.md). |
 | `docker-compose/` | Local development stack (Keycloak, ZGW services) + fixtures. See [docker-compose/README.md](./docker-compose/README.md). |
+| `performance/` | k6 performance tests (smoke now; see [performance/README.md](./performance/README.md)). |
 | `site/`           | Documentation site (VitePress): architecture, usage, hosting, development. See [site/index.md](./site/index.md). |
 
 Helm charts previously lived in Ritense's separate `nl-portal/helm-charts` repository; pinkroccade's
