@@ -4,14 +4,12 @@ NL Portal is opgebouwd met componenten gebaseerd op het [NL design system](https
 
 ![eigen-vormgeving](./img/eigen-vormgeving.png)_Drie verschillende klantportalen met verschillende vormgeving door middel van design tokens_
 
-## Via het Configuration Panel
+## Via configuratie
 
-De eenvoudigste manier om de huisstijl aan te passen is via het [Configuration Panel](../hosting-en-configuratie/configuration-panel.md). Hiermee kun je zonder code aan te passen:
+De eenvoudigste manier om de huisstijl aan te passen is via de backend-configuratie, zonder code aan te passen:
 
-* **Logo uploaden** — vervang het standaard logo door je eigen organisatielogo
-* **Design tokens aanpassen** — pas kleuren, typografie en andere stijlen aan via de ingebouwde CSS-editor
-
-In het Configuration Panel ga je naar de **Theme** sectie. Onder **Logo** kun je een afbeelding uploaden. Onder **Style** vind je een CSS-editor waarin je design tokens kunt toevoegen of overschrijven.
+* **Logo** — `nl-portal.frontend.theme.logo` (env: `NLPORTAL_FRONTEND_THEME_LOGO`) vervangt het standaard logo door je eigen organisatielogo.
+* **Design tokens** — `nl-portal.frontend.theme.style` (env: `NLPORTAL_FRONTEND_THEME_STYLE`) bevat CSS waarin je design tokens toevoegt of overschrijft.
 
 Een voorbeeld van een design token:
 
@@ -19,15 +17,13 @@ Een voorbeeld van een design token:
 --nlportal-header-bar-background-color: #03801f;
 ```
 
-Hiermee wordt de kleur van de header bar ingesteld op #03801f.
-
-Zie de [Configuration Panel](../hosting-en-configuratie/configuration-panel.md) pagina voor het opzetten van het Configuration Panel.
+Hiermee wordt de kleur van de header bar ingesteld op #03801f. Zie [ADR 0016](../development/adr/0016-stateless-configuratie-en-thema-via-bestanden.md) voor de bedoelde uitwerking met logo en stijl als bestand.
 
 ## Een thema activeren met een theme class
 
 Een NL Design System-thema wordt geactiveerd met een class op het root-element. Zet de feature-eigenschap `nl-portal.config.features.properties.theme-class` (env: `NLPORTAL_CONFIG_FEATURES_PROPERTIES_THEMECLASS`) op de naam van je thema, bijvoorbeeld `denhaag-theme`. De frontend plaatst die class op het `<html>`-element, conform de [NL Design System-richtlijn](https://nldesignsystem.nl/handboek/developer/thema-maken/) dat de theme class op `<html>` (of `<body>`) hoort, zodat de token-overrides in het hele document doorwerken.
 
-Dit staat los van de CSS-editor hierboven: die injecteert je token-overrides rechtstreeks. Schrijf die overrides op `:root` als je geen benoemd thema gebruikt; `theme-class` is alleen nodig wanneer je CSS onder een thema-class is gescoped.
+Dit staat los van de style-eigenschap hierboven: die injecteert je token-overrides rechtstreeks. Schrijf die overrides op `:root` als je geen benoemd thema gebruikt; `theme-class` is alleen nodig wanneer je CSS onder een thema-class is gescoped.
 
 ## Design tokens vinden
 

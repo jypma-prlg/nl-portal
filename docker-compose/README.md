@@ -63,10 +63,6 @@ network namespace), so from your host every service is reachable on `localhost:<
 | Redis                                   | -     | zgw (sub-profiles)|
 | Haalcentraal BRP                        | 5010  | haalcentraal      |
 | Haalcentraal Bewoning                   | 5011  | haalcentraal      |
-| Configuration Panel Router              | 3001  | config            |
-| Configuration Panel Backend             | 8090  | config            |
-| Configuration Panel Frontend            | 8091  | config            |
-| Configuration Panel Database (postgres) | -     | config            |
 | ClamAV virus scan                       | 3310  | (default)         |
 
 > **NB!** `RUN_MODE` selects exactly one app-run mode, so `local` and `remote` can never bind the

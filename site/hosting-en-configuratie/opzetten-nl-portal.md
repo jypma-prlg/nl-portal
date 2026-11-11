@@ -65,15 +65,9 @@ docker compose --profile zgw up -d
 
 Start daarna de backend (`./gradlew :app:bootRun` vanuit `backend/`; vereist een `.env.properties`, zie `backend/app/README.md`) en de frontend (`pnpm install && pnpm dev` vanuit `frontend/`). Zie [`GETTING_STARTED.md`](https://github.com/pinkroccade/nl-portal/blob/main/GETTING_STARTED.md) en `docker-compose/README.md` voor de details.
 
-### Configureren via het Configuration Panel
+### Configureren via bestanden
 
-Het [Configuration Panel](./configuration-panel.md) laat je backend modules, logo en huisstijl configureren zonder code en zonder eigen images te bouwen. Voeg het `config`-profiel toe aan de route die je draait, bijvoorbeeld:
-
-```shell
-RUN_MODE=remote docker compose --profile zgw --profile haalcentraal --profile config up -d
-```
-
-Het Configuration Panel is bereikbaar op `http://localhost:3001` met gebruikersnaam **admin** en wachtwoord **admin**. Zie de [Configuration Panel](./configuration-panel.md) pagina voor het aansluiten van een bestaande NL Portal instantie.
+NL Portal is stateless: module-instellingen, frontend-teksten en -URL's, het thema en de feature flags komen uit config-bestanden en omgevingsvariabelen die per deployment worden geladen, zonder database of beheerapplicatie. Een wijziging rolt je uit met een rolling restart. De achtergrond staat in [ADR 0016](../development/adr/0016-stateless-configuratie-en-thema-via-bestanden.md).
 
 ### Maatwerk
 
@@ -87,7 +81,6 @@ De NL Portal images kunnen ook volledig geconfigureerd worden via environment va
 
 Nu je eerste NL Portal draait kun je verder met:
 
-* [Configuration Panel](./configuration-panel.md) — configureer API-koppelingen en theming via een UI.
 * [Eigen vormgeving](../gebruik-en-inrichting/eigen-vormgeving.md) — meer informatie over design tokens en huisstijl.
 * [Deployment guide](./deployment-guide.md) — deploy de NL Portal naar je eigen omgeving (Azure, AWS of Kubernetes).
 * [Keycloak configuratie](./keycloak.md) — sluit de NL Portal aan op je eigen Keycloak.

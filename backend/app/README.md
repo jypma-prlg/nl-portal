@@ -54,7 +54,7 @@ on `localhost:<published-port>` from the host. It differs from the containerised
 |---|---|---|---|
 | `LOGLEVEL` | `INFO` | `DEBUG` | verbose inner dev loop |
 | `SPRING_GRAPHQL_SCHEMA_INTROSPECTION_ENABLED` | unset (off) | `true` | serve an introspectable schema for frontend codegen (never on in the shipped image) |
-| `CONFIGURATION_PANEL_URI`, `..._PREFILL_..._TYPEURL` | `host.docker.internal:<port>` | `localhost:<port>` | the host reaches these services on `localhost`, not `host.docker.internal` |
+| `..._PREFILL_..._TYPEURL` | `host.docker.internal:<port>` | `localhost:<port>` | the host reaches these services on `localhost`, not `host.docker.internal` |
 
 ClamAV virus scanning runs by default: the `clamav` service starts with the compose stack (no profile)
 and `.env.properties.example` already ships `NLPORTAL_CONFIG_VIRUSSCAN_CLAMAV_ENABLED=true`, so a
