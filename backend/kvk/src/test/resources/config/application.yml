@@ -1,0 +1,18 @@
+graphql:
+    packages:
+        - "nl.nlportal"
+
+nl-portal:
+    config:
+        kvk:
+            enabled: true
+            properties:
+                url: #filled in test
+                apiKey: "some-api-key"
+
+spring:
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: http://localhost:8082/auth/realms/nlportal

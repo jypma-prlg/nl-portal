@@ -88,19 +88,18 @@ nl-portal:
             properties:
                 klantinteracties-api-url: http://localhost:56789/klantinteracties/api/v1
                 token: 0000000000000000000000000000000000000000
-        haalcentraal2:
+        haalcentraal-brp:
             enabled: true
             properties:
                 brp-api-url: http://localhost:56789/haalcentraal/api/brp/
                 bewoning-api-url: http://localhost:56789/haalcentraal/api/bewoning/
-        haalcentraal:
-            hr:
-                enabled: true
-                properties:
-                    url: http://localhost:56789
-                    apiKey: test-api-key
-                    ssl:
-                        enabled: false
+        kvk:
+            enabled: true
+            properties:
+                url: http://localhost:56789
+                apiKey: test-api-key
+                ssl:
+                    enabled: false
         taak:
             enabled: true
             properties:

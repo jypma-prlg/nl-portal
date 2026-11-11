@@ -58,6 +58,6 @@ nl-portal:
         modules-whitelist:
             - zakenapi
             - product
-            - haalcentraal2
+            - haalcentraal-brp
             - taak
             - openproduct

@@ -21,7 +21,6 @@ import {
   GetUserDigitaleAdressenQuery,
   MaatschappelijkeActiviteit,
   GetBedrijfDocument,
-  GetGemachtigdeV2Document,
   GetPersoonV2Document,
   GetUserDigitaleAdressenDocument,
 } from "@nl-portal/nl-portal-api";
@@ -64,17 +63,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     useLazyQuery(GetPersoonV2Document);
   const [loadBedrijf, { loading: bedrijfLoading, data: bedrijfData }] =
     useLazyQuery(GetBedrijfDocument);
-  const [
-    loadGemachtigde,
-    { loading: gemachtigdeLoading, data: gemachtigdeData },
-  ] = useLazyQuery(GetGemachtigdeV2Document);
 
   const { data: contactData, loading: contactLoading } = useQuery(
     GetUserDigitaleAdressenDocument,
   );
 
-  const isLoading =
-    persoonLoading || bedrijfLoading || gemachtigdeLoading || contactLoading;
+  const isLoading = persoonLoading || bedrijfLoading || contactLoading;
 
   useEffect(() => {
     if (isCompany) {
@@ -86,13 +80,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         console.error("Error fetching persoon:", error);
       });
     }
-
-    if (isProxy) {
-      loadGemachtigde({ variables: {} }).catch((error) => {
-        console.error("Error fetching gemachtigde:", error);
-      });
-    }
-  }, [isCompany, isProxy, loadBedrijf, loadPersoon, loadGemachtigde]);
+  }, [isCompany, loadBedrijf, loadPersoon]);
 
   const persoonNaam = useMemo(() => {
     const p = persoonData?.getPersoonV2;
@@ -103,18 +91,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     return bedrijfData?.getBedrijf?.naam || "";
   }, [bedrijfData]);
 
-  const gemachtigdeNaam = useMemo(() => {
-    const g = gemachtigdeData?.getGemachtigdeV2;
-    if (!g) return "";
-    return (
-      (g.persoon?.naam ? getFullName(g.persoon.naam) : g.bedrijf?.naam) || ""
-    );
-  }, [gemachtigdeData]);
-
   const username = useMemo(() => {
-    if (isVolmacht) return gemachtigdeNaam;
     return isCompany ? bedrijfNaam : persoonNaam;
-  }, [isVolmacht, gemachtigdeNaam, isCompany, bedrijfNaam, persoonNaam]);
+  }, [isCompany, bedrijfNaam, persoonNaam]);
 
   const usernameVolmacht = useMemo(() => {
     if (!isVolmacht) return "";

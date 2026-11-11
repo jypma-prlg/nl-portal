@@ -20,7 +20,6 @@ import { OidcContext } from "@nl-portal/nl-portal-authentication";
 import {
   QUERY_GET_PERSOON_V2,
   GetBedrijfDocument,
-  QUERY_GET_GEMACHTIGDE_V2,
   QUERY_GET_USER_DIGITALE_ADRESSEN,
 } from "@nl-portal/nl-portal-api";
 import { UserProvider } from "../../contexts/UserContext";
@@ -57,7 +56,7 @@ describe("UserProvider", () => {
     vi.restoreAllMocks();
   });
 
-  it("reports a persoon and gemachtigde fetch failure through console.error instead of an unhandled rejection (typescript:S9383 pattern)", async () => {
+  it("reports a persoon fetch failure through console.error instead of an unhandled rejection (typescript:S9383 pattern)", async () => {
     const consoleErrorSpy = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
@@ -67,10 +66,6 @@ describe("UserProvider", () => {
         contactMock,
         {
           request: { query: QUERY_GET_PERSOON_V2, variables: {} },
-          error: new Error("Network error"),
-        },
-        {
-          request: { query: QUERY_GET_GEMACHTIGDE_V2, variables: {} },
           error: new Error("Network error"),
         },
       ],
@@ -83,12 +78,6 @@ describe("UserProvider", () => {
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         "Error fetching persoon:",
-        expect.anything(),
-      );
-    });
-    await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error fetching gemachtigde:",
         expect.anything(),
       );
     });

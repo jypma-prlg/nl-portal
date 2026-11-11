@@ -28,7 +28,7 @@ class RuleCoverageTest {
             ModuleMapping(":zgw:taak", "p.taak", Layer.FEATURE),
             ModuleMapping(":form", "p.form", Layer.FEATURE),
             ModuleMapping(":payment-direct", "p.payment", Layer.FEATURE),
-            ModuleMapping(":haalcentraal2", "p.hc2", Layer.FEATURE),
+            ModuleMapping(":haalcentraal-brp", "p.hc2", Layer.FEATURE),
             ModuleMapping(listOf(":app", ":app-dev"), "p.app", Layer.APP),
         )
 
@@ -64,7 +64,7 @@ class RuleCoverageTest {
         // shared infra modules may form a cycle: only zgw modules and form are checked
         assertThat(classify(":graphql", ":portal-authentication")).isEqualTo(Coverage.GAP)
         // features outside the cycle-checked set can depend on each other in any direction
-        assertThat(classify(":payment-direct", ":haalcentraal2")).isEqualTo(Coverage.GAP)
+        assertThat(classify(":payment-direct", ":haalcentraal-brp")).isEqualTo(Coverage.GAP)
         assertThat(classify(":zgw:zaken", ":payment-direct")).isEqualTo(Coverage.GAP)
     }
 }

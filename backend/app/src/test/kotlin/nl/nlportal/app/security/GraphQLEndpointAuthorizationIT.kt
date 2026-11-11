@@ -78,9 +78,7 @@ class GraphQLEndpointAuthorizationIT {
          *   val ALLOWED_PUBLIC_OPERATIONS = setOf("myPublicQuery")
          */
         val ALLOWED_PUBLIC_OPERATIONS =
-            setOf(
-                "verificatieConfig", // Returns public config (no user data, no authentication needed)
-            )
+            emptySet<String>()
     }
 
     // ============================================================

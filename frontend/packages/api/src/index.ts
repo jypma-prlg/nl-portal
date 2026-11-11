@@ -24,7 +24,6 @@ export * from "./hooks/useUserContactMutation";
 export * from "./queries/get-taken-v2";
 export * from "./queries/get-zaken";
 export * from "./queries/get-persoon-v2";
-export * from "./queries/get-gemachtigde-v2";
 export * from "./queries/get-user-klant-contacten";
 export * from "./queries/get-zaak";
 export * from "./queries/get-open-product-hoofd-themas-by-producten";

@@ -162,16 +162,16 @@ object ModuleLayers {
                 "betalingen van burgers rechtstreeks afhandelen",
             ),
             ModuleMapping(
-                ":haalcentraal2",
-                "nl.nlportal.haalcentraal2",
+                ":haalcentraal-brp",
+                "nl.nlportal.haalcentraalbrp",
                 Layer.FEATURE,
                 "het ophalen van persoonsgegevens uit de Basisregistratie Personen via Haal Centraal",
             ),
             ModuleMapping(
-                ":haalcentraal-hr",
-                "nl.nlportal.haalcentraal.hr",
+                ":kvk",
+                "nl.nlportal.kvk",
                 Layer.FEATURE,
-                "het ophalen van bedrijfsgegevens uit het Handelsregister via Haal Centraal",
+                "het ophalen van bedrijfsgegevens uit het Handelsregister via de KVK-API",
             ),
             // app and app-dev share one package; telling them apart is out of scope.
             ModuleMapping(

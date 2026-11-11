@@ -31,7 +31,6 @@ import { useContext, useState } from "react";
 import {
   DigitaleAdresType,
   useUserContactMutation,
-  VerificatieType,
 } from "@nl-portal/nl-portal-api";
 import { capitalizeFirstLetter } from "../utils/person-data";
 import ValidationForm from "../components/ValidationForm";
@@ -64,8 +63,9 @@ const TELEFOON_VALIDATION = [
 
 const EditContactInfoPage = () => {
   const { type } = useParams<{ type: TypeParams }>();
-  const adresType = capitalizeFirstLetter(type || "") as
-    keyof typeof DigitaleAdresType | keyof typeof VerificatieType;
+  const adresType = capitalizeFirstLetter(
+    type || "",
+  ) as keyof typeof DigitaleAdresType;
   const digitaleAdresType = DigitaleAdresType[adresType];
   const navigate = useNavigate();
   const { contact } = useContext(UserContext);

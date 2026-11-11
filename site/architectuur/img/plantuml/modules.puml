@@ -11,8 +11,8 @@ package "gedeelde infrastructuur" {
 }
 package "functionaliteit" {
   [:form\n<size:10>omvang S, risico laag, tenancy: config</size>] as form #CFE8CF
-  [:haalcentraal-hr\n<size:10>omvang S, risico middel, tenancy: config, webclient</size>] as haalcentraal_hr #FBE3A6
-  [:haalcentraal2\n<size:10>omvang M, risico middel, tenancy: config</size>] as haalcentraal2 #FBE3A6
+  [:haalcentraal-brp\n<size:10>omvang M, risico middel, tenancy: config</size>] as haalcentraal_brp #FBE3A6
+  [:kvk\n<size:10>omvang S, risico middel, tenancy: config, webclient</size>] as kvk #FBE3A6
   [:payment-direct\n<size:10>omvang L, risico hoog, tenancy: config, webclient, globaal, anoniem</size>] as payment_direct #F4B6B6
   [:zgw:berichten\n<size:10>omvang S, risico middel, tenancy: config</size>] as zgw_berichten #FBE3A6
   [:zgw:besluiten\n<size:10>omvang S, risico middel, tenancy: config</size>] as zgw_besluiten #FBE3A6
@@ -40,11 +40,10 @@ note as tenancy_rules
   tenantRegistryComplete: elke tenant levert bij het opstarten een volledig register op (voorgesteld, niet actief)
 end note
 form --> zgw_objectenapi #green : bewaakt
-haalcentraal2 --> core #grey
-haalcentraal2 ..> haalcentraal_hr #orange : gat
-haalcentraal2 ..> zgw_common_ground_authentication #orange : gat
-haalcentraal_hr --> core #grey
-haalcentraal_hr ..> zgw_common_ground_authentication #orange : gat
+haalcentraal_brp --> core #grey
+haalcentraal_brp ..> zgw_common_ground_authentication #orange : gat
+kvk --> core #grey
+kvk ..> zgw_common_ground_authentication #orange : gat
 payment_direct --> core #grey
 payment_direct ..> zgw_common_ground_authentication #orange : gat
 payment_direct ..> zgw_objectenapi #orange : gat
@@ -86,7 +85,6 @@ zgw_taak --> zgw_common_ground_authentication #green : bewaakt
 zgw_taak --> zgw_documenten_api #green : bewaakt
 zgw_taak --> zgw_objectenapi #green : bewaakt
 zgw_verificatie --> core #grey
-zgw_verificatie --> zgw_common_ground_authentication #green : bewaakt
 zgw_verificatie --> zgw_idtoken_authentication #green : bewaakt
 zgw_zaken --> core #grey
 zgw_zaken --> zgw_besluiten #green : bewaakt

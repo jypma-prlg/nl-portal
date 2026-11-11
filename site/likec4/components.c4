@@ -92,16 +92,14 @@ model {
       zaken -> besluiten 'Gebruikt'
     }
     component haalCentraalIntegrations 'Haal Centraal-integraties' {
-      description 'haalcentraal2 (BRP) en haalcentraal-hr (bewoning/volmachten). Huidige structuur (backend/settings.gradle.kts).'
+      description 'haalcentraal-brp (BRP) en kvk (handelsregister). Huidige structuur (backend/settings.gradle.kts).'
 
-      component haalcentraal2 'haalcentraal2' {
+      component haalcentraalBrp 'haalcentraal-brp' {
         description 'Integratie met Haal Centraal BRP (persoonsgegevens).'
       }
-      component haalcentraalHr 'haalcentraal-hr' {
-        description 'Integratie met Haal Centraal Bewoning (machtigingen/bewoning).'
+      component kvk 'kvk' {
+        description 'Integratie met de KVK-API (handelsregister).'
       }
-
-      haalcentraal2 -> haalcentraalHr 'Gebruikt'
     }
     component payment 'Payment' {
       description 'payment-direct: betaalprovider-integratie.'
@@ -125,8 +123,8 @@ model {
     form -> core 'Gebruikt'
     portalAuthentication -> core 'Gebruikt'
 
-    haalCentraalIntegrations.haalcentraal2 -> zgwIntegrations.commonGroundAuthentication 'Gebruikt'
-    haalCentraalIntegrations.haalcentraalHr -> zgwIntegrations.commonGroundAuthentication 'Gebruikt'
+    haalCentraalIntegrations.haalcentraalBrp -> zgwIntegrations.commonGroundAuthentication 'Gebruikt'
+    haalCentraalIntegrations.kvk -> zgwIntegrations.commonGroundAuthentication 'Gebruikt'
   }
 
   extend nlPortal.frontend {

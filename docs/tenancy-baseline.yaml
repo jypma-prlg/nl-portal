@@ -132,18 +132,18 @@ modules:
       webclient: Client bouwt zelf een WebClient.
       globaal: InMemorySecretKeyStore.INSTANCE is JVM-breed.
       anoniem: POST /api/public/payment/direct/postsale is anoniem (HMAC); heeft tenantrouting nodig via host van webhookUrl en tenant van de keyId.
-  ":haalcentraal2":
+  ":haalcentraal-brp":
     omvang: M
     risico: middel
     toelichting: Twee clients per tenant; allowedCitiesForBewoning en brpFields per tenant (doelbinding BRP).
     signalen:
-      config: HaalCentraal2ModuleConfiguration is een singleton.
-  ":haalcentraal-hr":
+      config: HaalCentraalBrpModuleConfiguration is een singleton.
+  ":kvk":
     omvang: S
     risico: middel
     toelichting: Client per tenant.
     signalen:
-      config: HaalCentraalHrConfig is een singleton.
+      config: KvkConfig is een singleton.
       webclient: Client bouwt zelf een WebClient.
   ":app":
     omvang: M

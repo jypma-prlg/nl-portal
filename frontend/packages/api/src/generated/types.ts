@@ -749,12 +749,6 @@ export type FormDefinition = {
   formDefinition: Scalars['JSON']['output'];
 };
 
-export type GemachtigdeV2 = {
-  __typename?: 'GemachtigdeV2';
-  bedrijf?: Maybe<MaatschappelijkeActiviteit>;
-  persoon?: Maybe<BrpPersoon>;
-};
-
 export type HadBetrokkenActoren = {
   __typename?: 'HadBetrokkenActoren';
   actoridentificator: OpenKlant2Identificator;
@@ -845,9 +839,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   /**  Create DigitaleAdres for User */
   createUserDigitaleAdres?: Maybe<DigitaleAdresResponse>;
-  /**  Create Partij for user */
-  createUserPartij?: Maybe<PartijResponse>;
-  createVerificatie?: Maybe<VerificatieCreateResponse>;
   /**  Delete DigitaleAdres of User by Id */
   deleteUserDigitaleAdres?: Maybe<Scalars['Boolean']['output']>;
   /**  Do Worldline Direct payment */
@@ -860,9 +851,6 @@ export type Mutation = {
   updateProductVerbruiksObject: ProductVerbruiksObject;
   /**  Update DigitaleAdres of User */
   updateUserDigitaleAdres?: Maybe<DigitaleAdresResponse>;
-  /**  Update user Partij */
-  updateUserPartij?: Maybe<PartijResponse>;
-  verifyVerificatie?: Maybe<VerificatieVerifyResponse>;
 };
 
 
@@ -871,14 +859,6 @@ export type MutationCreateUserDigitaleAdresArgs = {
 };
 
 
-export type MutationCreateUserPartijArgs = {
-  partijRequest: PartijRequestInput;
-};
-
-
-export type MutationCreateVerificatieArgs = {
-  verificatieCreateInput: VerificatieCreateInput;
-};
 
 
 export type MutationDeleteUserDigitaleAdresArgs = {
@@ -913,14 +893,6 @@ export type MutationUpdateUserDigitaleAdresArgs = {
 };
 
 
-export type MutationUpdateUserPartijArgs = {
-  partijRequest: PartijRequestInput;
-};
-
-
-export type MutationVerifyVerificatieArgs = {
-  verificatieVerifyInput: VerificatieVerifyInput;
-};
 
 export type OgoneBetaling = {
   __typename?: 'OgoneBetaling';
@@ -1755,33 +1727,6 @@ export type PartijExpand = {
 
 export type PartijIdentificatie = ContactpersoonIdentificatie | OrganisatieIdentificatie | PersoonsIdentificatie;
 
-export type PartijRequestInput = {
-  contactpersoonIdentificatie?: InputMaybe<ContactpersoonIdentificatieInput>;
-  indicatieActief: Scalars['Boolean']['input'];
-  indicatieGeheimhouding: Scalars['Boolean']['input'];
-  organisatieIdentificatie?: InputMaybe<OrganisatieIdentificatieInput>;
-  persoonsIdentificatie?: InputMaybe<PersoonsIdentificatieInput>;
-  type: PartijType;
-};
-
-export type PartijResponse = {
-  __typename?: 'PartijResponse';
-  contactpersoonIdentificatie?: Maybe<ContactpersoonIdentificatie>;
-  digitaleAdressen?: Maybe<Array<OpenKlant2DigitaleAdres>>;
-  indicatieActief: Scalars['Boolean']['output'];
-  indicatieGeheimhouding?: Maybe<Scalars['Boolean']['output']>;
-  klantcontacten?: Maybe<Array<HadKlantcontact>>;
-  organisatieIdentificatie?: Maybe<OrganisatieIdentificatie>;
-  persoonsIdentificatie?: Maybe<PersoonsIdentificatie>;
-  type: PartijType;
-};
-
-export enum PartijType {
-  Contactpersoon = 'CONTACTPERSOON',
-  Organisatie = 'ORGANISATIE',
-  Persoon = 'PERSOON'
-}
-
 export type PersoonsIdentificatie = {
   __typename?: 'PersoonsIdentificatie';
   contactnaam?: Maybe<Contactnaam>;
@@ -1914,8 +1859,6 @@ export type ProductenPage = {
 
 export type Query = {
   __typename?: 'Query';
-  /**  Find the Partij of the authenticated user. */
-  findUserPartij?: Maybe<OpenKlant2Partij>;
   /**  Gets the bedrijf data */
   getBedrijf?: Maybe<MaatschappelijkeActiviteit>;
   /**  Gets a single Bericht by Id */
@@ -1925,8 +1868,6 @@ export type Query = {
   getDirectPaymentStatus: DirectPaymentStatus;
   /**  Get the form definition for a task the authenticated user owns */
   getFormDefinitionByTaskId?: Maybe<FormDefinition>;
-  /**  Gets the data of the gemachtigde */
-  getGemachtigdeV2?: Maybe<GemachtigdeV2>;
   /**  Get a Open product type by id */
   getOpenProduct?: Maybe<OpenProductProduct>;
   /**  Get a actie */
@@ -2007,13 +1948,10 @@ export type Query = {
   /**  Get DigitaleAdressen of authenticated user. */
   getUserDigitaleAdressen?: Maybe<Array<DigitaleAdresResponse>>;
   getUserKlantContacten: Array<OpenKlant2Klantcontact>;
-  /**  Get Partij by Id for authenticated user. */
-  getUserPartij?: Maybe<OpenKlant2Partij>;
   /**  Gets a zaak by id */
   getZaak: Zaak;
   getZaken: ZaakPage;
   productPrefill: PrefillResponse;
-  verificatieConfig?: Maybe<VerificationConfig>;
 };
 
 
@@ -2283,10 +2221,6 @@ export type QueryGetUserKlantContactenArgs = {
 };
 
 
-export type QueryGetUserPartijArgs = {
-  partijId: Scalars['UUID']['input'];
-};
-
 
 export type QueryGetZaakArgs = {
   id: Scalars['UUID']['input'];
@@ -2443,46 +2377,6 @@ export type UpdateProductRequestInput = {
   dataobject?: InputMaybe<Scalars['JSON']['input']>;
   uuid: Scalars['UUID']['input'];
   verbruiksobject?: InputMaybe<Scalars['JSON']['input']>;
-};
-
-export type VerificatieCreateInput = {
-  type: VerificatieType;
-  uuid?: InputMaybe<Scalars['UUID']['input']>;
-  waarde: Scalars['String']['input'];
-};
-
-export type VerificatieCreateResponse = {
-  __typename?: 'VerificatieCreateResponse';
-  errorMessage?: Maybe<Scalars['String']['output']>;
-  success: Scalars['Boolean']['output'];
-  uuid?: Maybe<Scalars['UUID']['output']>;
-};
-
-export enum VerificatieType {
-  Email = 'EMAIL',
-  Overig = 'OVERIG',
-  Telefoonnummer = 'TELEFOONNUMMER'
-}
-
-export type VerificatieVerifyInput = {
-  code: Scalars['String']['input'];
-  type: VerificatieType;
-  uuid?: InputMaybe<Scalars['UUID']['input']>;
-  waarde: Scalars['String']['input'];
-};
-
-export type VerificatieVerifyResponse = {
-  __typename?: 'VerificatieVerifyResponse';
-  errorMessage?: Maybe<Scalars['String']['output']>;
-  uuid?: Maybe<Scalars['UUID']['output']>;
-  verified: Scalars['Boolean']['output'];
-  verifiedOn: Scalars['ZonedDateTime']['output'];
-};
-
-export type VerificationConfig = {
-  __typename?: 'VerificationConfig';
-  enabled?: Maybe<Scalars['Boolean']['output']>;
-  typesNeedVerification?: Maybe<Array<VerificatieType>>;
 };
 
 export type Vestiging = {

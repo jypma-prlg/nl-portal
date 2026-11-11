@@ -1,0 +1,55 @@
+/*
+ * Copyright 2015-2023 Den Haag, Ritense, the Netherlands.
+ *
+ * Licensed under EUPL, Version 1.2 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package nl.nlportal.haalcentraalbrp.domain.brp
+
+data class BrpPersoon(
+    val burgerservicenummer: String? = null,
+    val datumEersteInschrijvingGBA: BrpDatum? = null,
+    val geheimhoudingPersoonsgegevens: Boolean? = false,
+    val geslacht: BrpCodeOmschrijving? = null,
+    val inOnderzoek: BrpInOnderzoek? = null,
+    val uitsluitingKiesrecht: BrpUitsluitingKiesrecht? = null,
+    val europeesKiesrecht: BrpEuropeesKiesrecht? = null,
+    val leeftijd: Int? = null,
+    val naam: BrpNaam? = null,
+    val nationaliteiten: List<BrpNationaliteit>? = null,
+    val geboorte: BrpDatumLandPlaats? = null,
+    val overlijden: BrpDatumLandPlaats? = null,
+    val verblijfplaats: BrpVerblijfplaats? = null,
+    val imigratie: BrpImigratie? = null,
+    val gemeenteVanInschrijving: BrpCodeOmschrijving? = null,
+    val datumInschrijvingInGemeente: BrpDatum? = null,
+    val adressering: BrpAdressering? = null,
+    val indicatieCurateleRegister: Boolean? = false,
+    val gezag: List<BrpGezag>? = null,
+    val verblijfstitel: BrpVerblijfsTitel? = null,
+    val kinderen: List<BrpKind>? = null,
+    val ouders: List<BrpOuder>? = null,
+    val partners: List<BrpPartner>? = null,
+    val rni: List<BrpPersoonRni>? = null,
+    val verificatie: BrpPersoonVerificatie? = null,
+)
+
+data class BrpPersoonRni(
+    val deelnemer: BrpCodeOmschrijving? = null,
+    val omschrijvingVerdrag: String? = null,
+    val categorie: String? = null,
+)
+
+data class BrpPersoonVerificatie(
+    val datum: BrpDatum? = null,
+    val omschrijving: String? = null,
+)

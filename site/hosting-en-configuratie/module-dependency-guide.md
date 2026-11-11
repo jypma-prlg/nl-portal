@@ -23,7 +23,7 @@ flowchart TB
         taak["taak"]
         berichtenmod["berichten"]
         openklant2["openklant2"]
-        haalcentraal2["haalcentraal2"]
+        haalcentraal-brp["haalcentraal-brp"]
     end
 
     zaken --> zakenapi
@@ -41,13 +41,13 @@ flowchart TB
     berichten --> berichtenmod
     berichten --> documentenapis
     
-    account --> haalcentraal2
+    account --> haalcentraal-brp
     account --> openklant2
 ```
 
 ## Afhankelijkheidsmatrix
 
-| Feature | zakenapi | catalogiapi | documentenapis | objectenapi | taak | berichten | openklant2 | haalcentraal2 |
+| Feature | zakenapi | catalogiapi | documentenapis | objectenapi | taak | berichten | openklant2 | haalcentraal-brp |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Zaken | ✓ | ✓ | ✓ | ✓ | ✓ | | ¹ | |
 | Taken | | | ✓ | ✓ | ✓ | | | |

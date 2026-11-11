@@ -32,6 +32,8 @@ NL-Portal is samengevoegd tot een monorepo met een enkele, gedeelde versie voor 
 * **Upgrade naar Spring Boot 4.1.0** (Spring Framework 7 / Spring Security 7), Kotlin 2.4.10. Bouwen en uitbreiden vereist Java 21; controleer eigen code, configuratie en dependencies op Spring Boot 4- / Spring Security 7-wijzigingen.
 * **Frontend-platform bijgewerkt**: React 19, Vite 8, TypeScript 5.9. Bouwen vereist Node 24 en pnpm 11.
 * **Haalcentraal HR: In de graphql response is hoofdvestiging gewijzigd naar vestiging. Dit zorgt ook voor ondersteuning voor als je ingelogd bent voor vestiging en je dus het correct adres krijgt 
+* **Modules hernoemd en opgeschoond (#399).** `haalcentraal2` heet nu `haalcentraal-brp` (pakket `nl.nlportal.haalcentraalbrp`, property `nl-portal.config.haalcentraal-brp`, env `NLPORTAL_CONFIG_HAALCENTRAALBRP_*`). `haalcentraal-hr` heet nu `kvk` (pakket `nl.nlportal.kvk`, `HandelsregisterClient` is `KvkClient`, property `nl-portal.config.kvk`, env `NLPORTAL_CONFIG_KVK_*`); de oude sleutels `haalcentraal.hr` en `haalcentraalhr` vervallen. `haalcentraal-brp` hangt niet meer af van `kvk`.
+
 
 ## Deprecations
 
@@ -40,6 +42,8 @@ NL-Portal is samengevoegd tot een monorepo met een enkele, gedeelde versie voor 
 ## Removals
 
 * (Ogone) payment has been removed, use instead the Direct payment.
+* De query `getGemachtigdeV2` (type `GemachtigdeV2`) is verwijderd, samen met het gemachtigde-deel van `UserContext` in de frontend.
+* De publieke GraphQL-ingangen voor partij (`findUserPartij`, `getUserPartij`, `createUserPartij`, `updateUserPartij`) en verificatie (`verificatieConfig`, `createVerificatie`, `verifyVerificatie`) zijn verwijderd. De verificatieservice blijft bestaan voor `createUserDigitaleAdres` en `updateUserDigitaleAdres`.
 
 ## Migratie-instructies
 
