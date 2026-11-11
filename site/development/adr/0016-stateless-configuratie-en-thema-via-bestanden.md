@@ -37,7 +37,7 @@ property-string, alt-tekst, favicon, validatie en een manier om vooraf te zien h
 6. **Geen hot reload.** De Helm-chart zet een checksum-annotatie van de config op de Deployment, zodat
    een wijziging een rolling restart afdwingt. Geen Reloader en geen `/actuator/refresh`. Module aan/uit
    blijft een opstart-keuze; #157 is hiervoor niet nodig.
-7. **Onderhoudsmelding via flagd.** De enige bewust live wijzigbare instelling is de onderhoudsmelding.
+7. **Onderhoudsmelding via flagd.** Ook deze wijziging landt via een rolling update (ADR 0014, besluit 7).
    Hij wordt een string- of JSON-flag in flagd; `FeatureFlag` wordt daarvoor uitgebreid voorbij
    boolean-only. De properties `overviewMaintenanceAlert*` vervallen (ADR 0012).
 8. **Validatie in één component, op twee plekken.** Dezelfde validator draait bij opstart en in CI.
@@ -76,7 +76,7 @@ property-string, alt-tekst, favicon, validatie en een manier om vooraf te zien h
   een rolling restart. Er is geen UI om te wijzigen; het vervangt de panel-UI door CI-validatie en preview.
 - Gemeenten leveren hun thema aan als bestanden (SVG of PNG, CSS met design tokens); dat vraagt een
   korte handleiding onder Gebruik & inrichting.
-- Een onderhoudsmelding kan live; alle andere instellingen kosten een restart. Dat is bewust.
+- Alle instellingen, de onderhoudsmelding inbegrepen, kosten een rolling update. Dat is bewust.
 - De CSP wordt strenger voor thema-CSS: alleen eigen assets, geen externe bronnen.
 - Open uitwerking voor de spec: formaat en locatie van de lijst contrastparen, welke kernpagina's axe
   afdekt, en of het asset-endpoint onder `/public` of een eigen pad komt.

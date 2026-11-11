@@ -2,7 +2,8 @@
 
 ## Status
 
-Geaccepteerd en deels uitgevoerd (#154, onderdeel van #143). De keuze van een productie-provider is
+Geaccepteerd en deels uitgevoerd (#154, onderdeel van #143). Beslissing 7 (rolling update in plaats van
+hot reload) is toegevoegd in #389. De keuze van een productie-provider is
 bewust uitgesteld (spike #147). De afspraken over levenscyclus en privacy van de evaluatiecontext volgen
 in een eigen ADR (#148).
 
@@ -20,8 +21,7 @@ want credentials horen niet in een flag-systeem).
 
 1. De backend gebruikt **OpenFeature** (CNCF, Java server-SDK) als enige flag-API. Featurecode kent
    alleen `FeatureGate`; geen leverancierstypen buiten de provider-aansluiting.
-2. De standaardprovider is **flagd in bestandsmodus**: werkt zonder flag-server, herlaadt het bestand
-   periodiek en is ook de testprovider. Een andere OpenFeature-provider sluit je aan met een eigen
+2. De standaardprovider is **flagd in bestandsmodus**: werkt zonder flag-server en is ook de testprovider. Een andere OpenFeature-provider sluit je aan met een eigen
    `FeatureProvider`-bean.
 3. De **productie-provider is nog niet gekozen**. Kandidaten staan in spike #147 (Unleash, Flagsmith).
 4. Evaluatie gebeurt alleen in de backend; de frontend ontvangt de uitkomst via het bestaande
@@ -29,6 +29,14 @@ want credentials horen niet in een flag-systeem).
 5. Vier toggle-typen: ops, permission, experiment, release. Een permission-flag is fail-closed: hij kan
    niet standaard aan staan en weigert bij een fout.
 6. Credentials en andere secrets staan nooit in een flag-systeem.
+7. **Wijzigingen landen via een rolling update, niet via hot reload.** Dit volgt het afhankelijkheidsmodel
+   en [ADR 0016](0016-stateless-configuratie-en-thema-via-bestanden.md): een gewijzigd flagbestand
+   (ConfigMap) of een andere provider-configuratie wordt actief doordat pods één voor één herstarten
+   (checksum-annotatie op de Deployment). Het bestand mag live veranderen, maar daar rekenen we niet op:
+   de poll van de flagd-bestandsprovider (`nl-portal.feature-flags.poll-interval-ms`, standaard 5 s) is een
+   eigenschap van de bibliotheek die zich niet netjes laat uitzetten, geen gedrag dat we beloven. Een
+   externe provider (#147) mag wel runtime-evaluatie bieden; dat is een eigenschap van die provider, geen
+   eis aan NL Portal. Er is geen nieuwe ADR: dit is een verduidelijking van deze beslissing.
 
 ## Overwogen alternatieven
 
