@@ -69,8 +69,8 @@ also read the [Code of Conduct](./CODE_OF_CONDUCT.md). Report vulnerabilities pr
 ## Documentation
 
 All documentation - architecture, configuration, feature/theme guides, ADRs and workflows - lives in
-one VitePress site under [`site/`](./site) (`mise run docs:dev` to preview it). It is not currently
-published anywhere outside this repository; see [issue #376](https://github.com/pinkroccade/nl-portal/issues/376).
+one VitePress site under [`site/`](./site) (`mise run docs:dev` to preview it). It is published at
+<https://pinkroccade.github.io/nl-portal/> (GitHub Pages, via `.github/workflows/publish-docs.yml`).
 Sections: [Architectuur](./site/architectuur/index.md), [Gebruik & inrichting](./site/gebruik-en-inrichting/index.md),
 [Hosting & configuratie](./site/hosting-en-configuratie/index.md), [Development](./site/development/index.md).
 
