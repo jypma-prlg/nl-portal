@@ -74,3 +74,6 @@ Nog niet als ADR vastgelegd:
 - [`0018-performancetesten-met-k6-en-otel-agent-in-overlay.md`](../../development/adr/0018-performancetesten-met-k6-en-otel-agent-in-overlay.md) — **voorgesteld**.
   k6 als loadtool op de volledige compose-stack; tracing via een OTel-agent alleen in de perf-overlay,
   Micrometer in de app uitgesteld.
+- [`0019-trunk-based-continuous-delivery.md`](../../development/adr/0019-trunk-based-continuous-delivery.md) — **voorgesteld**.
+  `main` als enige lijn, één build per commit, promotie van dezelfde digest naar `x.y.z` en `latest`;
+  vervangt `rc/*` en `release/<major>.x`.
