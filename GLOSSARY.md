@@ -52,6 +52,23 @@ staat; voeg een nieuwe term toe zodra een module ernaar vernoemd wordt (zie de
   5-lagenmodel) waaraan NL Portal zich bewust toetst en waarvan per eis vastligt hoe die wordt afgedwongen
   of waarom niet. _Avoid_: standaard, richtlijn.
 
+- **Tenant** — één overheidsorganisatie (meestal een gemeente; ook een gemeenschappelijke regeling,
+  waterschap of provincie) als afnemer van de NL Portal-SaaS-dienst, met precies één portaal voor
+  haar inwoners en ondernemers. Gegevens en configuratie van tenants zijn logisch van elkaar
+  gescheiden. _Vermijd_: klant (dat is de burger/ondernemer), organisatie, instantie.
+- **OIN (Organisatie-identificatienummer)** — het twintigcijferige nummer uit het OIN-register van
+  Logius dat een tenant uniek identificeert. Bij een herindeling ontstaat een nieuwe organisatie met
+  een nieuw OIN, en dus een nieuwe tenant. _Vermijd_: gemeentecode of CBS-code als tenantsleutel.
+- **Cel** — een groep tenants die dezelfde NL Portal-runtime delen, afgeschermd van andere cellen; ook
+  de eenheid waarin een release stapsgewijs wordt uitgerold. Een cel met één tenant is een eigen instantie
+  voor die tenant. _Avoid_: cluster, shard, pool.
+- **Tenantbestand** — de niet-geheime inrichting van één tenant in één omgeving: domeinen, koppelingen,
+  thema en cel, met verwijzingen naar geheimen. Onderdeel van de omgevingsconfiguratie van die tenant.
+- **Publieke ID-broker** — de Keycloak waarmee burgers en ondernemers inloggen; federeert naar DigiD,
+  wallets en (alleen in acceptatie) lokale accounts.
+- **Private ID-broker** — de Keycloak voor beheertoegang; federeert naar de Entra ID van Pink of van
+  de gemeente. Nooit bedoeld voor burgers of ondernemers.
+
 Zie ook `site/architectuur/arc42/12-glossarium.md` voor architectuurspecifieke
 afkortingen (C1/C2/C3, ADR, SBOM, ...), en de `/codebase-design`-skill voor de architectuurvocabulaire
 (module, interface, seam, ...) die in de architectuurreview wordt gebruikt.
