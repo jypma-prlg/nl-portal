@@ -113,3 +113,40 @@ jobs:
                     cosign verify "${PRIMARY_TAG}" \
                        --certificate-identity "https://github.com/${GITHUB_REPOSITORY}/.github/workflows/_build-app-image.yml@${GITHUB_REF}" \
                        --certificate-oidc-issuer https://token.actions.githubusercontent.com
+
+            -   name: Generate the image SBOM with Syft
+                if: ${{ inputs.push }}
+                uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+                with:
+                    image: ${{ inputs.primaryTag }}@${{ steps.build-and-push.outputs.digest }}
+                    format: cyclonedx-json
+                    output-file: image-sbom.cyclonedx.json
+                    upload-artifact: false
+                    upload-release-assets: false
+
+            -   name: Attest the SBOM on the image digest
+                if: ${{ inputs.push }}
+                env:
+                    DIGEST: ${{ steps.build-and-push.outputs.digest }}
+                    TAGS: ${{ inputs.tags }}
+                run: |
+                    while IFS= read -r tag; do
+                      [ -z "${tag}" ] && continue
+                      cosign attest --yes --type cyclonedx --predicate image-sbom.cyclonedx.json "${tag}@${DIGEST}"
+                    done <<< "${TAGS}"
+
+            -   name: Verify the SBOM attestation
+                if: ${{ inputs.push }}
+                env:
+                    PRIMARY_TAG: ${{ inputs.primaryTag }}
+                run: |
+                    cosign verify-attestation "${PRIMARY_TAG}" --type cyclonedx \
+                       --certificate-identity "https://github.com/${GITHUB_REPOSITORY}/.github/workflows/_build-app-image.yml@${GITHUB_REF}" \
+                       --certificate-oidc-issuer https://token.actions.githubusercontent.com > /dev/null
+
+            -   name: Upload the image SBOM for the release
+                if: ${{ inputs.push }}
+                uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+                with:
+                    name: ${{ inputs.stack }}-image-sbom
+                    path: image-sbom.cyclonedx.json
