@@ -1,0 +1,152 @@
+# Tenancy-baseline backend NL Portal (#386): wat staat een gedeelde multi-tenant runtime in de weg?
+# VOORLOPIG: omvang en risico zijn overgenomen uit onderzoek #146 (multitenancy-backend-impact) en nog niet
+# door de maintainer beoordeeld. Pas ze aan zodra #146 en ADR 0017 op main staan.
+#
+# Alleen het oordeel staat hier; de signalen worden bij elke run uit de bytecode afgeleid.
+#   omvang:  S = één klasse of autoconfig, M = autoconfig + client + service, L = nieuw mechanisme of beveiligingskritisch
+#   risico:  laag | middel | hoog
+#   signalen: config = @ConfigurationProperties-singleton buiten de autoconfig, webclient = bouwt zelf een WebClient,
+#             anoniem = REST-endpoint onder /api/public (geen token, dus tenant alleen uit het host-domein),
+#             globaal = JVM-globale toestand. Elk bekend signaal heeft een reden of een plan.
+# Fitness-test: backend/architecture-test (TenancyBaselineFitnessTest, draait mee in `check`):
+#   - signaal in code maar niet hier  -> falen (los het op of voeg het met reden toe)
+#   - signaal hier maar niet in code  -> falen (verwijder het: de module is dan gemigreerd)
+#   - module zonder regel hier, of regel voor een onbekende module -> falen
+# Na een wijziging: `mise run arch:diagram` en de bijgewerkte .puml/.svg committen.
+version: 1
+beoordeeld: {datum: 2026-11-06, bron: "onderzoek #146, commit 9300129ac", status: voorlopig}
+modules:
+  ":core":
+    omvang: L
+    risico: hoog
+    toelichting: Nieuwe tenancy-seam (TenantContext, TenantRegistry), security-resolver per issuer, featureflag-context per tenant.
+    signalen:
+      config: Frontend-, security- en featureflag-configuratie is één singleton; moet per tenant uit het register.
+      globaal: OpenFeatureAPI is globaal; bedoeld, de tenant zit in de evaluatiecontext (FeatureContextFactory moet die uit de TenantContext halen).
+      anoniem: GET /api/public/frontend en /api/public/ping zijn anoniem; de tenant komt hier alleen uit het host-domein (ping heeft geen tenant nodig).
+  ":graphql":
+    omvang: S
+    risico: laag
+    toelichting: Geen wijziging; gating per tenant via een WebGraphQlInterceptor.
+    signalen: {}
+  ":portal-authentication":
+    omvang: S
+    risico: laag
+    toelichting: Optioneel tenant als veld op PortalAuthentication.
+    signalen: {}
+  ":zgw:zaken-api":
+    omvang: M
+    risico: middel
+    toelichting: Client per tenant via het register; zaakdata van de verkeerde bron is een datalek.
+    signalen:
+      config: ZakenApiConfig is een singleton.
+  ":zgw:zaken":
+    omvang: S
+    risico: laag
+    toelichting: Volgt zaken-api, besluiten en catalogi-api.
+    signalen: {}
+  ":zgw:berichten":
+    omvang: S
+    risico: middel
+    toelichting: Objecttype-URL per tenant; volgt het objectenapi-register.
+    signalen:
+      config: BerichtenConfiguration is een singleton.
+  ":zgw:besluiten":
+    omvang: S
+    risico: middel
+    toelichting: Client per tenant.
+    signalen:
+      config: BesluitenApiConfig is een singleton.
+  ":zgw:catalogi-api":
+    omvang: S
+    risico: laag
+    toelichting: Client per tenant.
+    signalen:
+      config: CatalogiApiConfig is een singleton.
+      webclient: Client bouwt zelf een WebClient; hoort in de gedeelde zgw-client (ADR 0002).
+  ":zgw:documenten-api":
+    omvang: M
+    risico: hoog
+    toelichting: Configuratiemap per tenant; de contains-match op document-URL kan de verkeerde tenantconfiguratie kiezen.
+    signalen:
+      config: DocumentApisConfig is een singleton.
+      webclient: Client bouwt zelf een WebClient per aanroep.
+  ":zgw:openklant":
+    omvang: M
+    risico: middel
+    toelichting: Client per tenant; contactgegevens zijn persoonsgegevens.
+    signalen:
+      config: OpenKlantModuleConfiguration is een singleton.
+      webclient: Client bouwt zelf een WebClient.
+  ":zgw:openproduct":
+    omvang: M
+    risico: middel
+    toelichting: Drie clients per tenant; DMN- en prefillconfiguratie per tenant.
+    signalen:
+      config: OpenProductModuleConfiguration is een singleton.
+      webclient: Clients bouwen zelf een WebClient.
+  ":zgw:verificatie":
+    omvang: M
+    risico: middel
+    toelichting: Client per tenant.
+    signalen:
+      config: VerificatieModuleConfiguration is een singleton.
+      webclient: Client bouwt zelf een WebClient.
+  ":zgw:idtoken-authentication":
+    omvang: S
+    risico: laag
+    toelichting: Geen functionele wijziging; HS256-secrets per tenant via ESO.
+    signalen: {}
+  ":zgw:common-ground-authentication":
+    omvang: L
+    risico: hoog
+    toelichting: Eén Keycloak-client en jwk-set-uri voor de hele runtime; token-endpoint wordt afgeleid uit de iss-claim.
+    signalen:
+      config: KeycloakConfig is een singleton.
+      webclient: WebClient.create() in CommonGroundAuthenticationConverter.
+  ":zgw:objectenapi":
+    omvang: M
+    risico: hoog
+    toelichting: Client per tenant; getObjectByUrl stuurt de token naar elke binnenkomende URL (tokenlek naar andere host).
+    signalen:
+      config: ObjectsApiClientConfig is een singleton.
+      webclient: Client bouwt zelf een WebClient per aanroep.
+  ":zgw:taak":
+    omvang: S
+    risico: middel
+    toelichting: Objecttype-URL per tenant; volgt het objectenapi-register.
+    signalen:
+      config: TaakConfig is een singleton.
+  ":form":
+    omvang: S
+    risico: laag
+    toelichting: Objecttype-URL per tenant.
+    signalen:
+      config: FormConfig is een singleton.
+  ":payment-direct":
+    omvang: L
+    risico: hoog
+    toelichting: Postsale-webhook heeft geen tenantrouting; JVM-globale sleutelstore laat keyId's van tenants elkaar overschrijven.
+    signalen:
+      config: DirectPaymentModuleConfiguration is een singleton.
+      webclient: Client bouwt zelf een WebClient.
+      globaal: InMemorySecretKeyStore.INSTANCE is JVM-breed.
+      anoniem: POST /api/public/payment/direct/postsale is anoniem (HMAC); heeft tenantrouting nodig via host van webhookUrl en tenant van de keyId.
+  ":haalcentraal-brp":
+    omvang: M
+    risico: middel
+    toelichting: Twee clients per tenant; allowedCitiesForBewoning en brpFields per tenant (doelbinding BRP).
+    signalen:
+      config: HaalCentraalBrpModuleConfiguration is een singleton.
+  ":kvk":
+    omvang: S
+    risico: middel
+    toelichting: Client per tenant.
+    signalen:
+      config: KvkConfig is een singleton.
+      webclient: Client bouwt zelf een WebClient.
+  ":app":
+    omvang: M
+    risico: middel
+    toelichting: Configuratieschema naar nl-portal.tenants.<oin>.config.<module>; actuator refresh/restart dichtzetten.
+    signalen: {}

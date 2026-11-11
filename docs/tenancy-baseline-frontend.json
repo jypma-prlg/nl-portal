@@ -1,0 +1,37 @@
+{
+  "_toelichting": "Tenancy-baseline frontend (#386). VOORLOPIG: overgenomen uit onderzoek #200 (multitenancy-frontend-impact), nog niet door de maintainer beoordeeld. Alleen het oordeel staat hier; de imports worden uit de code afgeleid. omvang: S = één bestand of config, M = meerdere bestanden of een runtime-mechanisme, L = nieuw mechanisme of beveiligingskritisch. risico: laag | middel | hoog. De test faalt bij een package zonder regel of een regel voor een onbekende package. Na een wijziging: mise run arch:diagram en het resultaat committen.",
+  "version": 1,
+  "beoordeeld": { "datum": "2026-11-06", "bron": "onderzoek #200", "status": "voorlopig" },
+  "packages": {
+    "@nl-portal/nl-portal-api": {
+      "omvang": "S",
+      "risico": "laag",
+      "toelichting": "Same-origin /api en /graphql; geen tenantspecifieke URL's nodig."
+    },
+    "@nl-portal/nl-portal-authentication": {
+      "omvang": "M",
+      "risico": "middel",
+      "toelichting": "Realm en client per tenant (hangt af van #199); redirect-URI's komen al uit window.location.origin."
+    },
+    "@nl-portal/nl-portal-localization": {
+      "omvang": "S",
+      "risico": "laag",
+      "toelichting": "Geen tenantafhankelijkheid gevonden."
+    },
+    "@nl-portal/nl-portal-user-interface": {
+      "omvang": "M",
+      "risico": "middel",
+      "toelichting": "Thema, logo en toggles komen per tenant uit /api/public/frontend; de backend moet per tenant antwoorden (#146)."
+    },
+    "nl-portal-app": {
+      "omvang": "M",
+      "risico": "middel",
+      "toelichting": "config.js, CSP, titel, favicon en manifest per tenant, gegenereerd uit één tenantbestand; nginx map op host."
+    },
+    "nl-portal-app-dev": {
+      "omvang": "S",
+      "risico": "laag",
+      "toelichting": "Alleen lokale ontwikkeling; volgt de app."
+    }
+  }
+}

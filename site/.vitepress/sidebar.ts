@@ -69,6 +69,7 @@ export const sidebar: Record<string, SidebarItem[]> = {
         page("architectuur", "5-lagenmodel.md"),
         page("architectuur", "authentication-en-authorization.md"),
         page("architectuur", "c4-model.md"),
+        page("architectuur", "regeldekking.md"),
       ],
     },
     { text: "Integraties", collapsed: true, items: dirItems("architectuur/integraties") },

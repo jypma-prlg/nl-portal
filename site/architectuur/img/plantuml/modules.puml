@@ -1,0 +1,107 @@
+@startuml
+title Modules, lagen en regeldekking
+left to right direction
+package "kern" {
+  [:core\n<size:10>omvang L, risico hoog, tenancy: config, globaal, anoniem</size>] as core #F4B6B6
+  [tenancy-seam\n<size:10>TenantContext, TenantRegistry: nog niet gebouwd</size>] as tenancy_seam #white
+}
+package "gedeelde infrastructuur" {
+  [:graphql\n<size:10>omvang S, risico laag</size>] as graphql #CFE8CF
+  [:portal-authentication\n<size:10>omvang S, risico laag</size>] as portal_authentication #CFE8CF
+}
+package "functionaliteit" {
+  [:form\n<size:10>omvang S, risico laag, tenancy: config</size>] as form #CFE8CF
+  [:haalcentraal-brp\n<size:10>omvang M, risico middel, tenancy: config</size>] as haalcentraal_brp #FBE3A6
+  [:kvk\n<size:10>omvang S, risico middel, tenancy: config, webclient</size>] as kvk #FBE3A6
+  [:payment-direct\n<size:10>omvang L, risico hoog, tenancy: config, webclient, globaal, anoniem</size>] as payment_direct #F4B6B6
+  [:zgw:berichten\n<size:10>omvang S, risico middel, tenancy: config</size>] as zgw_berichten #FBE3A6
+  [:zgw:besluiten\n<size:10>omvang S, risico middel, tenancy: config</size>] as zgw_besluiten #FBE3A6
+  [:zgw:catalogi-api\n<size:10>omvang S, risico laag, tenancy: config, webclient</size>] as zgw_catalogi_api #CFE8CF
+  [:zgw:common-ground-authentication / :zgw:common-ground-authentication-test\n<size:10>omvang L, risico hoog, tenancy: config, webclient</size>] as zgw_common_ground_authentication #F4B6B6
+  [:zgw:documenten-api\n<size:10>omvang M, risico hoog, tenancy: config, webclient</size>] as zgw_documenten_api #F4B6B6
+  [:zgw:idtoken-authentication\n<size:10>omvang S, risico laag</size>] as zgw_idtoken_authentication #CFE8CF
+  [:zgw:objectenapi\n<size:10>omvang M, risico hoog, tenancy: config, webclient</size>] as zgw_objectenapi #F4B6B6
+  [:zgw:openklant\n<size:10>omvang M, risico middel, tenancy: config, webclient</size>] as zgw_openklant #FBE3A6
+  [:zgw:openproduct\n<size:10>omvang M, risico middel, tenancy: config, webclient</size>] as zgw_openproduct #FBE3A6
+  [:zgw:taak\n<size:10>omvang S, risico middel, tenancy: config</size>] as zgw_taak #FBE3A6
+  [:zgw:verificatie\n<size:10>omvang M, risico middel, tenancy: config, webclient</size>] as zgw_verificatie #FBE3A6
+  [:zgw:zaken\n<size:10>omvang S, risico laag</size>] as zgw_zaken #CFE8CF
+  [:zgw:zaken-api\n<size:10>omvang M, risico middel, tenancy: config</size>] as zgw_zaken_api #FBE3A6
+}
+package "applicatie" {
+  [:app / :app-dev\n<size:10>omvang M, risico middel</size>] as app #FBE3A6
+}
+note as tenancy_rules
+  **Tenancy-regels (voorstel uit onderzoek #146)**
+  noConfigurationPropertiesOutsideAutoconfig: configuratie alleen via het register, niet geïnjecteerd buiten de autoconfig (voorgesteld, niet actief)
+  noOwnWebClient: geen WebClient.create()/builder() buiten core en zgw-client (voorgesteld, niet actief)
+  noJvmGlobalState: geen JVM-globale stores (InMemorySecretKeyStore, ThreadLocal, OpenFeatureAPI buiten core.featureflag) (voorgesteld, niet actief)
+  noNewCoroutineScopes: geen GlobalScope, CoroutineScope(...) of runBlocking: de tenant valt dan uit de Reactor Context (voorgesteld, niet actief)
+  tenantRegistryComplete: elke tenant levert bij het opstarten een volledig register op (voorgesteld, niet actief)
+end note
+form --> zgw_objectenapi #green : bewaakt
+haalcentraal_brp --> core #grey
+haalcentraal_brp ..> zgw_common_ground_authentication #orange : gat
+kvk --> core #grey
+kvk ..> zgw_common_ground_authentication #orange : gat
+payment_direct --> core #grey
+payment_direct ..> zgw_common_ground_authentication #orange : gat
+payment_direct ..> zgw_objectenapi #orange : gat
+payment_direct ..> zgw_taak #orange : gat
+portal_authentication --> core #grey
+zgw_berichten --> core #grey
+zgw_berichten --> graphql #grey
+zgw_berichten --> zgw_common_ground_authentication #green : bewaakt
+zgw_berichten --> zgw_documenten_api #green : bewaakt
+zgw_berichten --> zgw_objectenapi #green : bewaakt
+zgw_besluiten --> core #grey
+zgw_besluiten --> zgw_catalogi_api #green : bewaakt
+zgw_besluiten --> zgw_common_ground_authentication #green : bewaakt
+zgw_besluiten --> zgw_documenten_api #green : bewaakt
+zgw_besluiten --> zgw_idtoken_authentication #green : bewaakt
+zgw_catalogi_api --> core #grey
+zgw_catalogi_api --> zgw_idtoken_authentication #green : bewaakt
+zgw_common_ground_authentication --> core #grey
+zgw_common_ground_authentication --> portal_authentication #grey
+zgw_documenten_api --> core #grey
+zgw_documenten_api --> portal_authentication #grey
+zgw_documenten_api --> zgw_idtoken_authentication #green : bewaakt
+zgw_objectenapi --> core #grey
+zgw_openklant --> core #grey
+zgw_openklant --> zgw_common_ground_authentication #green : bewaakt
+zgw_openklant --> zgw_verificatie #green : bewaakt
+zgw_openproduct --> core #grey
+zgw_openproduct --> graphql #grey
+zgw_openproduct --> zgw_common_ground_authentication #green : bewaakt
+zgw_openproduct --> zgw_documenten_api #green : bewaakt
+zgw_openproduct --> zgw_idtoken_authentication #green : bewaakt
+zgw_openproduct --> zgw_objectenapi #green : bewaakt
+zgw_openproduct --> zgw_taak #green : bewaakt
+zgw_openproduct --> zgw_zaken_api #green : bewaakt
+zgw_taak --> core #grey
+zgw_taak --> form #green : bewaakt
+zgw_taak --> graphql #grey
+zgw_taak --> zgw_common_ground_authentication #green : bewaakt
+zgw_taak --> zgw_documenten_api #green : bewaakt
+zgw_taak --> zgw_objectenapi #green : bewaakt
+zgw_verificatie --> core #grey
+zgw_verificatie --> zgw_idtoken_authentication #green : bewaakt
+zgw_zaken --> core #grey
+zgw_zaken --> zgw_besluiten #green : bewaakt
+zgw_zaken --> zgw_catalogi_api #green : bewaakt
+zgw_zaken --> zgw_common_ground_authentication #green : bewaakt
+zgw_zaken --> zgw_documenten_api #green : bewaakt
+zgw_zaken --> zgw_zaken_api #green : bewaakt
+zgw_zaken_api --> core #grey
+zgw_zaken_api --> graphql #grey
+zgw_zaken_api --> zgw_catalogi_api #green : bewaakt
+zgw_zaken_api --> zgw_common_ground_authentication #green : bewaakt
+zgw_zaken_api --> zgw_documenten_api #green : bewaakt
+zgw_zaken_api --> zgw_idtoken_authentication #green : bewaakt
+zgw_zaken_api --> zgw_objectenapi #green : bewaakt
+legend right
+  grijs: toegestaan, rood gestreept: verboden, oranje gestippeld: niet bewaakt, groen: bewaakt
+  tenancy: signalen die een gedeelde multi-tenant runtime in de weg staan (config, webclient, globaal, anoniem)
+  vulkleur: risico van de multitenancy-migratie (rood hoog, geel middel, groen laag)
+endlegend
+@enduml
