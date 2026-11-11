@@ -148,6 +148,21 @@ Alles start met `docker compose up`; knoppen staan in een `.env` (kopieer `.env.
 - **Netwerk `mijngemeente`:** met `NETWERK=mijngemeente` sluit de stack aan op het externe Docker-netwerk met de API's (ZGW, Haal Centraal, Diftar). Maak het netwerk eenmalig aan met `docker network create mijngemeente`.
 - **Pentest-doelwit:** `RUN_MODE=local`: gebouwd uit de bronnen, met de geïmporteerde realm en testgebruikers.
 
+### Performance-overlay en tracing
+`compose.perf.yaml` is een overlay voor performancetesten (zie
+[ADR 0018](../site/development/adr/0018-performancetesten-met-k6-en-otel-agent-in-overlay.md)). Hij werkt
+met `RUN_MODE=local` of `remote` (niet met `sources`, want dan draait de backend niet in compose).
+
+- `mise run perf:stack-up`: de stack zonder tracing. Zo draaien baselineruns.
+- `mise run perf:stack-up-tracing`: dezelfde stack plus de OpenTelemetry Java-agent op de portal-backend,
+  OTel aan op OpenZaak en Objecten, en Grafana Tempo als collector (100% sampling). Zo draait de diagnostische run.
+- `mise run perf:stack-down`: stopt de stack en ruimt de volumes op.
+
+De agent komt alleen via een volume in de backend-container (init-service `otel-javaagent`); de
+backend-image en het release-artefact blijven ongewijzigd. Een trage request vind je terug in Tempo
+op `http://localhost:3200/api/traces/<trace-id>`; de trace-id is het tweede deel van de `traceparent`-header
+die k6 meestuurt (`00-<trace-id>-<span-id>-01`). Een trace loopt van portal-backend naar OpenZaak.
+
 ### Starting up supporting services only
 To run only the supporting services (e.g. when running the application from your IDE),
 leave `RUN_MODE` at its default (`sources`), which starts no app container. Two options:

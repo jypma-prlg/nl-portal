@@ -314,3 +314,20 @@ run = "node scripts/sonar-issues.mjs"
 [tasks."release:cut-rc"]
 description = "Bepaal de volgende SemVer-versie uit Conventional Commits sinds de laatste tag, werk version.txt + CHANGELOG.md bij en commit beide op een nieuwe rc/<versie>-branch (pusht niet; zie ADR 0004)"
 run = "node scripts/release-cut-rc.mjs"
+
+# --- Performance-stack (overlay docker-compose/compose.perf.yaml) ---
+
+[tasks."perf:stack-up"]
+description = "Start de compose-stack met de perf-overlay zonder tracing (baseline; RUN_MODE standaard local)"
+dir = "docker-compose"
+run = 'RUN_MODE="${RUN_MODE:-local}" docker compose -f docker-compose.yaml -f compose.perf.yaml --profile zgw up -d --build'
+
+[tasks."perf:stack-up-tracing"]
+description = "Start de compose-stack met de perf-overlay, OTel-agent en Tempo (100% tracing, diagnose; RUN_MODE standaard local)"
+dir = "docker-compose"
+run = 'RUN_MODE="${RUN_MODE:-local}" PERF_JAVA_AGENT=true PERF_OTEL_SDK_DISABLED=false COMPOSE_PROFILES=zgw,tracing docker compose -f docker-compose.yaml -f compose.perf.yaml up -d --build'
+
+[tasks."perf:stack-down"]
+description = "Stop de perf-stack en verwijder de volumes"
+dir = "docker-compose"
+run = 'RUN_MODE="${RUN_MODE:-local}" COMPOSE_PROFILES=zgw,tracing docker compose -f docker-compose.yaml -f compose.perf.yaml down -v'

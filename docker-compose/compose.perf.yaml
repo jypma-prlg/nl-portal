@@ -1,0 +1,65 @@
+# Overlay voor performancetesten (zie site/development/adr/0018-performancetesten-met-k6-en-otel-agent-in-overlay.md).\n#\n# Gebruik naast docker-compose.yaml, met RUN_MODE=local of RUN_MODE=remote (de overlay past de\n# portal-backend aan, die in RUN_MODE=sources niet in compose draait):\n#\n#   Baseline (zonder tracing):\n#     docker compose -f docker-compose.yaml -f compose.perf.yaml --profile zgw up -d\n#   Diagnose (100% tracing naar Tempo):\n#     PERF_JAVA_AGENT=true PERF_OTEL_SDK_DISABLED=false \n#       COMPOSE_PROFILES=zgw,tracing docker compose -f docker-compose.yaml -f compose.perf.yaml up -d\n#\n# `mise run perf:stack-up` en `mise run perf:stack-up-tracing` doen dit voor je.\n#\n# De OpenTelemetry Java-agent wordt alleen hier toegevoegd, via een volume: het release-artefact\n# (de backend-image) bevat geen tracing-dependency. Zonder die variabelen (en zonder profiel `tracing`) staat tracing uit en\n# gedraagt de stack zich als de gewone stack, zodat baselineruns niet door de agent worden vertekend.
+services:
+    localhost:
+        ports:
+            - "3200:3200" # Tempo query API (trace opvragen via /api/traces/<id>)
+
+    # Eenmalig: kopieert de OTel Java-agent naar een gedeeld volume, zodat de backend-image ongewijzigd blijft.
+    otel-javaagent:
+        image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:2.20.1
+        container_name: nl-portal-otel-javaagent
+        profiles:
+            - tracing
+        command: ["cp", "/javaagent.jar", "/otel/javaagent.jar"]
+        volumes:
+            - otel-agent:/otel
+
+    nl-portal-tempo:
+        image: grafana/tempo:2.8.2
+        container_name: nl-portal-tempo
+        profiles:
+            - tracing
+        network_mode: "service:localhost"
+        command: ["-config.file=/etc/tempo/tempo.yaml"]
+        volumes:
+            - ./imports/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+            - type: tmpfs
+              target: /var/tempo
+              tmpfs:
+                  mode: 01777
+
+    nl-portal-backend:
+        environment:
+            # Leeg zonder tracing: dan wordt geen agent geladen.
+            JAVA_TOOL_OPTIONS: ${PERF_JAVA_AGENT:+-javaagent:/otel/javaagent.jar}
+            OTEL_SDK_DISABLED: "${PERF_OTEL_SDK_DISABLED:-true}"
+            OTEL_SERVICE_NAME: nl-portal-backend
+            OTEL_TRACES_SAMPLER: always_on
+            OTEL_METRICS_EXPORTER: none
+            OTEL_LOGS_EXPORTER: none
+            OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+            OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4318
+            OTEL_PROPAGATORS: tracecontext,baggage
+        volumes:
+            - otel-agent:/otel:ro
+        depends_on:
+            otel-javaagent:
+                condition: service_completed_successfully
+                required: false
+
+    # OpenZaak en Objecten hebben OTel al ingebouwd (in de basis staat OTEL_SDK_DISABLED=true).
+    nl-portal-openzaak:
+        environment:
+            - OTEL_SDK_DISABLED=${PERF_OTEL_SDK_DISABLED:-true}
+            - OTEL_SERVICE_NAME=open-zaak
+            - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+            - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+
+    nl-portal-open-object:
+        environment:
+            - OTEL_SDK_DISABLED=${PERF_OTEL_SDK_DISABLED:-true}
+            - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+            - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+
+volumes:
+    otel-agent:
