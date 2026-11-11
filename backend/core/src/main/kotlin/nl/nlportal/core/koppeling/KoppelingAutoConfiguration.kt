@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.nlportal.idtokenauthentication.autoconfigure
+package nl.nlportal.core.koppeling
 
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
 import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.web.reactive.function.client.WebClient
 
+/** Registreert de koppelingen en de fabriek waarmee modules er een geauthenticeerde [WebClient] van maken. */
 @AutoConfiguration
-class IdTokenGeneratorAutoConfiguration {
+@EnableConfigurationProperties(KoppelingenProperties::class)
+class KoppelingAutoConfiguration {
     @Bean
-    fun idTokenGenerator(): IdTokenGenerator = IdTokenGenerator()
+    @ConditionalOnMissingBean(KoppelingWebClientFactory::class)
+    fun koppelingWebClientFactory(
+        webClientBuilder: WebClient.Builder,
+        zgwJwtGenerator: ZgwJwtGenerator,
+    ) = KoppelingWebClientFactory(webClientBuilder, zgwJwtGenerator)
 }

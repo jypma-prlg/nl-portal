@@ -21,7 +21,7 @@ import nl.nlportal.besluiten.domain.Besluit
 import nl.nlportal.besluiten.domain.BesluitAuditTrail
 import nl.nlportal.besluiten.domain.BesluitDocument
 import nl.nlportal.besluiten.domain.ResultPage
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import org.springframework.http.HttpStatus
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.client.ClientRequest
@@ -116,7 +116,7 @@ class BesluitenApiClient(
     }
 
     private fun getToken(): String =
-        IdTokenGenerator().generateToken(
+        ZgwJwtGenerator().generateToken(
             besluitenApiConfig.secret.requireConfigured("besluitenapi", "secret"),
             besluitenApiConfig.clientId.requireConfigured("besluitenapi", "clientId"),
         )

@@ -20,7 +20,7 @@ import nl.nlportal.core.ssl.ResourceClientSslContextResolver
 import nl.nlportal.documentenapi.client.DocumentApisConfig
 import nl.nlportal.documentenapi.client.DocumentenApiClient
 import nl.nlportal.documentenapi.service.DocumentenApiService
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -47,7 +47,7 @@ class DocumentenApiAutoConfiguration {
     @Bean
     fun documentenApiClient(
         documentApisConfig: DocumentApisConfig,
-        idTokenGenerator: IdTokenGenerator,
+        zgwJwtGenerator: ZgwJwtGenerator,
         @Autowired(required = false) clientSslContextResolver: ClientSslContextResolver? = null,
-    ): DocumentenApiClient = DocumentenApiClient(documentApisConfig.properties, idTokenGenerator, clientSslContextResolver)
+    ): DocumentenApiClient = DocumentenApiClient(documentApisConfig.properties, zgwJwtGenerator, clientSslContextResolver)
 }

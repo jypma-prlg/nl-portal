@@ -25,7 +25,6 @@ dependencies {
     api(project(":zgw:catalogi-api"))
     api(project(":zgw:common-ground-authentication"))
     api(project(":zgw:documenten-api"))
-    api(project(":zgw:idtoken-authentication"))
     api(project(":zgw:objectenapi"))
 
     implementation(Dependencies.springBootStarter)

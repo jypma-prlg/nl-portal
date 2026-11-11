@@ -326,7 +326,6 @@ Opvragen van bestanden, contacten, links, locaties, organisaties en prijzen uit 
 | `backend/portal-authentication` | infra (authenticatie-basis) |
 | `backend/zgw/common-ground-authentication` | infra (Keycloak/OIDC) |
 | `backend/zgw/common-ground-authentication-test` | test-library |
-| `backend/zgw/idtoken-authentication` | library (ZGW JWT naar API's) |
 | `backend/zgw/objectenapi` | library (client Objecten API) |
 | `backend/zgw/catalogi-api` | library (client Catalogi API) |
 | `backend/zgw/zaken-api` | library (client Zaken API) |

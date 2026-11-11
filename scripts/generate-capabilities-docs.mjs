@@ -26,7 +26,6 @@ const MODULE_ELEMENTS = {
   "backend/portal-authentication": `${BACKEND}.portalAuthentication`,
   "backend/haalcentraal-brp": `${BACKEND}.haalCentraalIntegrations.haalcentraalBrp`,
   "backend/kvk": `${BACKEND}.haalCentraalIntegrations.kvk`,
-  "backend/zgw/idtoken-authentication": `${ZGW}.idtokenAuthentication`,
   "backend/zgw/common-ground-authentication": `${ZGW}.commonGroundAuthentication`,
   "backend/zgw/objectenapi": `${ZGW}.objectenapi`,
   "backend/zgw/catalogi-api": `${ZGW}.catalogiApi`,

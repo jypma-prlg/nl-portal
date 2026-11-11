@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.nlportal.idtokenauthentication
+package nl.nlportal.core.koppeling
 
-object TestHelper {
+object ZgwJwtTestHelper {
     const val TEST_CLIENT_ID = "test client id"
     const val TEST_ENCRYPTION_SECRET_VALID = "NYy.TAQYbHRRWC_b2rfoqs4oR9jXj38N"
     const val TEST_ENCRYPTION_SECRET_INVALID = "RRWC_b2rfXj38Noqs4o.R9j"

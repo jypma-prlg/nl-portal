@@ -20,7 +20,6 @@ plugins {
 val isLib = true
 
 dependencies {
-    api(project(":zgw:idtoken-authentication"))
     api(project(":graphql"))
     api(project(":zgw:catalogi-api"))
     api(project(":zgw:documenten-api"))

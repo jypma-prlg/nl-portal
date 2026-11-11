@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.nlportal.idtokenauthentication.service
+package nl.nlportal.core.koppeling
 
 import com.nimbusds.jwt.SignedJWT
-import kotlin.test.assertEquals
-import nl.nlportal.idtokenauthentication.TestHelper.TEST_CLIENT_ID
-import nl.nlportal.idtokenauthentication.TestHelper.TEST_ENCRYPTION_SECRET_INVALID
-import nl.nlportal.idtokenauthentication.TestHelper.TEST_ENCRYPTION_SECRET_VALID
-import nl.nlportal.idtokenauthentication.TestHelper.TEST_USER_ID
-import nl.nlportal.idtokenauthentication.TestHelper.TEST_USER_REPRESENTATION
+import org.junit.jupiter.api.Assertions.assertEquals
+import nl.nlportal.core.koppeling.ZgwJwtTestHelper.TEST_CLIENT_ID
+import nl.nlportal.core.koppeling.ZgwJwtTestHelper.TEST_ENCRYPTION_SECRET_INVALID
+import nl.nlportal.core.koppeling.ZgwJwtTestHelper.TEST_ENCRYPTION_SECRET_VALID
+import nl.nlportal.core.koppeling.ZgwJwtTestHelper.TEST_USER_ID
+import nl.nlportal.core.koppeling.ZgwJwtTestHelper.TEST_USER_REPRESENTATION
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class IdTokenGeneratorTest {
-    private val idTokenGenerator = IdTokenGenerator()
+class ZgwJwtGeneratorTest {
+    private val zgwJwtGenerator = ZgwJwtGenerator()
     private lateinit var testClientId: String
     private lateinit var testUserId: String
     private lateinit var testUserRepresentation: Any
@@ -45,7 +46,7 @@ class IdTokenGeneratorTest {
         val testSecretKey = TEST_ENCRYPTION_SECRET_VALID
 
         val generatedToken =
-            idTokenGenerator.generateToken(
+            zgwJwtGenerator.generateToken(
                 testSecretKey,
                 testClientId,
             )
@@ -55,8 +56,8 @@ class IdTokenGeneratorTest {
 
         Assertions.assertThat(claimsSet.issuer).isEqualTo(testClientId)
         Assertions.assertThat(claimsSet.claims.get("client_id")).isEqualTo(testClientId)
-        Assertions.assertThat(claimsSet.claims.get("user_id")).isEqualTo("Valtimo")
-        Assertions.assertThat(claimsSet.claims.get("user_representation")).isEqualTo("Valtimo")
+        Assertions.assertThat(claimsSet.claims.get("user_id")).isEqualTo("nl-portal")
+        Assertions.assertThat(claimsSet.claims.get("user_representation")).isEqualTo("nl-portal")
     }
 
     @Test
@@ -64,7 +65,7 @@ class IdTokenGeneratorTest {
         val testSecretKey = TEST_ENCRYPTION_SECRET_VALID
 
         val generatedToken =
-            idTokenGenerator.generateToken(
+            zgwJwtGenerator.generateToken(
                 testSecretKey,
                 testClientId,
                 testUserId,
@@ -80,12 +81,24 @@ class IdTokenGeneratorTest {
     }
 
     @Test
+    fun `tokens verlopen na vijftien minuten, ook met gebruikersinformatie`() {
+        val zonderGebruiker = zgwJwtGenerator.generateToken(TEST_ENCRYPTION_SECRET_VALID, testClientId)
+        val metGebruiker = zgwJwtGenerator.generateToken(TEST_ENCRYPTION_SECRET_VALID, testClientId, testUserId, testUserRepresentation)
+
+        listOf(zonderGebruiker, metGebruiker).forEach {
+            val claims = SignedJWT.parse(it).jwtClaimsSet
+            val geldigheid = claims.expirationTime.time - claims.issueTime.time
+            assertTrue(geldigheid in 899_000..901_000, "geldigheid $geldigheid ms")
+        }
+    }
+
+    @Test
     fun `should throw error when secret is too short`() {
         val testSecretKey = TEST_ENCRYPTION_SECRET_INVALID
 
         val exception =
             assertThrows(IllegalArgumentException::class.java) {
-                idTokenGenerator.generateToken(
+                zgwJwtGenerator.generateToken(
                     testSecretKey,
                     testClientId,
                 )
