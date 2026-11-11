@@ -16,8 +16,11 @@
 package nl.nlportal.zakenapi.client
 
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig.CatalogiApiConfigProperties
+import nl.nlportal.core.modulestatus.ModuleState
+import nl.nlportal.core.modulestatus.ModuleStatusRegistry
 import nl.nlportal.core.util.ModuleNotConfiguredException
 import nl.nlportal.zakenapi.client.ZakenApiConfig.ZakenApiConfigProperties
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -41,5 +44,17 @@ class ZakenApiClientConfigurationTest {
     fun `urls fail clearly without configuration`() {
         assertThrows<ModuleNotConfiguredException> { client().getZaakUrl("1") }
         assertThrows<ModuleNotConfiguredException> { client().getZaakTypeUrl(UUID.randomUUID()) }
+    }
+
+    @Test
+    fun `ontbrekende configuratie komt als NOT_CONFIGURED in de modulestatus`() {
+        val registry = ModuleStatusRegistry()
+        val client = ZakenApiClient(ZakenApiConfigProperties(), CatalogiApiConfigProperties(), WebClient.builder(), registry)
+
+        assertThrows<ModuleNotConfiguredException> { client.webClient }
+
+        val status = registry.snapshot().single()
+        assertEquals("zakenapi", status.module)
+        assertEquals(ModuleState.NOT_CONFIGURED, status.status)
     }
 }
