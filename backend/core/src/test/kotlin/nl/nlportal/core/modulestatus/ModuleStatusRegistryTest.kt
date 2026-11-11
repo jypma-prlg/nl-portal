@@ -93,10 +93,8 @@ class ModuleStatusRegistryTest {
     }
 
     @Test
-    fun `aangemelde module zonder verkeer is UNKNOWN`() {
-        registry.register("taak")
-
-        val status = registry.snapshot().single()
+    fun `aangezette module zonder verkeer is UNKNOWN`() {
+        val status = registry.snapshot(mapOf("taak" to true)).single()
 
         assertEquals(ModuleState.UNKNOWN, status.status)
         assertNull(status.reden)
@@ -109,9 +107,8 @@ class ModuleStatusRegistryTest {
         registry.recordSuccess("zaken", "b")
         registry.recordSuccess("zaken", "a")
         registry.recordSuccess("berichten", "x")
-        registry.register("taak")
 
-        val snapshot = registry.snapshot()
+        val snapshot = registry.snapshot(mapOf("taak" to true))
 
         assertEquals(listOf("berichten", "taak", "zaken"), snapshot.map { it.module })
         assertEquals(listOf("a", "b", "c", "d", "e", "f", "g", "h"), snapshot.last().apis.map { it.api })
@@ -138,5 +135,20 @@ class ModuleStatusRegistryTest {
 
         assertEquals(ModuleState.UP, status.status)
         assertNull(status.reden)
+    }
+
+    @Test
+    fun `uitgezette module is DISABLED, ook met eerdere storing`() {
+        registry.recordFailure("zaken", "a", Oorzaak.UNREACHABLE)
+
+        val status = registry.snapshot(mapOf("zaken" to false, "taak" to false)).first { it.module == "zaken" }
+
+        assertEquals(ModuleState.DISABLED, status.status)
+    }
+
+    @Test
+    fun `module uit de configuratie met aan-vlag zonder verkeer is geen DISABLED`() {
+        assertEquals(ModuleState.UNKNOWN, registry.snapshot(mapOf("taak" to true)).single().status)
+        assertEquals(ModuleState.DISABLED, registry.snapshot(mapOf("taak" to false)).single().status)
     }
 }

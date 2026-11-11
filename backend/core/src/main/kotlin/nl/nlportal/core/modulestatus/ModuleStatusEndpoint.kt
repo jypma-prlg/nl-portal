@@ -15,6 +15,7 @@
  */
 package nl.nlportal.core.modulestatus
 
+import nl.nlportal.core.frontend.configuration.FrontendModuleConfigurationProperties
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation
 
@@ -22,7 +23,8 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation
 @Endpoint(id = "modulestatus")
 class ModuleStatusEndpoint(
     private val registry: ModuleStatusRegistry,
+    private val modules: FrontendModuleConfigurationProperties,
 ) {
     @ReadOperation
-    fun modules(): List<ModuleStatus> = registry.snapshot()
+    fun modules(): List<ModuleStatus> = registry.snapshot(modules.config.mapValues { it.value.enabled })
 }

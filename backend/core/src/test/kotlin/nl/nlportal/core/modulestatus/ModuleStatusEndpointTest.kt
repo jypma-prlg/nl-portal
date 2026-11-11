@@ -72,4 +72,20 @@ class ModuleStatusEndpointTest(
             .jsonPath("$[?(@.module=='zaken')].apis[0].laatsteFout.oorzaak")
             .isEqualTo("UNREACHABLE")
     }
+
+    @Test
+    fun `modules uit de configuratie staan erin als DISABLED of UNKNOWN`() {
+        client
+            .get()
+            .uri("/actuator/modulestatus")
+            .headers { it.setBasicAuth("beheer", "geheim") }
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody()
+            .jsonPath("$[?(@.module=='besluiten')].status")
+            .isEqualTo("DISABLED")
+            .jsonPath("$[?(@.module=='taak')].status")
+            .isEqualTo("UNKNOWN")
+    }
 }

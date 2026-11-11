@@ -4,11 +4,11 @@ Het beheerendpoint `GET /actuator/modulestatus` toont per module en API of de ko
 
 ## Wat het toont
 
-De status is passief: hij komt uit de laatste echte request-uitkomst, er is geen eigen polling. Per module:
+De status is passief: hij komt uit de laatste echte request-uitkomst, er is geen eigen polling. Aan of uit komt uit `nl-portal.config.<module>.enabled`; alle modules uit die configuratie staan erin, ook als ze niet publiek zijn. Per module:
 
 | Veld | Betekenis |
 |---|---|
-| `status` | `UP`, `DEGRADED` (API onbereikbaar), `NOT_CONFIGURED` (configuratie ontbreekt) of `UNKNOWN` (aangezet, nog geen verkeer) |
+| `status` | `UP`, `DEGRADED` (API onbereikbaar), `NOT_CONFIGURED` (configuratie ontbreekt), `UNKNOWN` (aangezet, nog geen verkeer) of `DISABLED` (uitgezet in de configuratie, geen storing) |
 | `reden` | `UNREACHABLE` of `NOT_CONFIGURED`; leeg bij `UP` |
 | `apis[]` | per API: `bereikbaar`, `laatstGecontroleerd`, `laatsteFout` (oorzaakcode en tijdstip) |
 
