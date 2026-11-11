@@ -7,5 +7,6 @@ Voor ops en beheerders die NL Portal installeren en inrichten.
 - [Module dependency guide](./module-dependency-guide.md)
 - [Configuration panel](./configuration-panel.md)
 - [Connectiviteit](./connectiviteit.md)
+- [Beheerpoort: modulestatus](./beheer-modulestatus.md)
 - [Keycloak](./keycloak.md) — [token exchange](./keycloak-token-exchange.md)
 - [Document filtering](./document-filtering.md)

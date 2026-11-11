@@ -50,6 +50,7 @@ network namespace), so from your host every service is reachable on `localhost:<
 | NL Portal Backend (build from source)   | 8080  | RUN_MODE=local    |
 | NL Portal Frontend (build from source)  | 3000  | RUN_MODE=local    |
 | NL Portal Backend (published image)     | 8080  | RUN_MODE=remote   |
+| NL Portal Backend beheerpoort (`/actuator/modulestatus`) | 8091 | RUN_MODE=local, remote |
 | NL Portal Frontend (published image)    | 3000  | RUN_MODE=remote   |
 | Keycloak                                | 8082  | - (core)          |
 | Keycloak Database (postgres)            | -     | - (core)          |
