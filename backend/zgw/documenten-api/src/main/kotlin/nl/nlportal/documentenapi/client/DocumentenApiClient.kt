@@ -24,7 +24,7 @@ import nl.nlportal.core.ssl.ClientSslContextResolver
 import nl.nlportal.documentenapi.client.DocumentApisConfig.DocumentenApisConfigProperties
 import nl.nlportal.documentenapi.domain.Document
 import nl.nlportal.documentenapi.domain.PostEnkelvoudiginformatieobjectRequest
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.http.MediaType
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
@@ -40,7 +40,7 @@ import java.util.UUID
 
 class DocumentenApiClient(
     private val documentenApiConfigs: DocumentenApisConfigProperties,
-    private val idTokenGenerator: IdTokenGenerator,
+    private val zgwJwtGenerator: ZgwJwtGenerator,
     private val clientSslContextResolver: ClientSslContextResolver? = null,
 ) {
     suspend fun getDocument(
@@ -141,7 +141,7 @@ class DocumentenApiClient(
                 if (!documentenApiConfig.secret.isNullOrBlank() && !documentenApiConfig.clientId.isNullOrBlank()) {
                     // only add an authorization header if there is a secret and clientId
                     val token =
-                        idTokenGenerator.generateToken(documentenApiConfig.secret!!, documentenApiConfig.clientId!!)
+                        zgwJwtGenerator.generateToken(documentenApiConfig.secret!!, documentenApiConfig.clientId!!)
                     it.defaultHeader("Authorization", "Bearer $token")
                 }
             }.build()

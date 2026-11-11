@@ -92,11 +92,6 @@ modules:
     signalen:
       config: VerificatieModuleConfiguration is een singleton.
       webclient: Client bouwt zelf een WebClient.
-  ":zgw:idtoken-authentication":
-    omvang: S
-    risico: laag
-    toelichting: Geen functionele wijziging; HS256-secrets per tenant via ESO.
-    signalen: {}
   ":zgw:common-ground-authentication":
     omvang: L
     risico: hoog

@@ -21,7 +21,7 @@ import nl.nlportal.core.modulestatus.webClientFilter
 import nl.nlportal.core.util.requireConfigured
 import io.netty.handler.logging.LogLevel
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig.CatalogiApiConfigProperties
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import nl.nlportal.zakenapi.client.ZakenApiConfig.ZakenApiConfigProperties
 import nl.nlportal.zakenapi.client.request.ZaakInformatieobjecten
 import nl.nlportal.zakenapi.client.request.ZaakObjecten
@@ -82,7 +82,7 @@ class ZakenApiClient(
     }
 
     private fun getToken(): String =
-        IdTokenGenerator().generateToken(
+        ZgwJwtGenerator().generateToken(
             zakenApiConfig.secret.requireConfigured("zakenapi", "secret"),
             zakenApiConfig.clientId.requireConfigured("zakenapi", "clientId"),
         )

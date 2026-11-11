@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.nlportal.idtokenauthentication.service
+package nl.nlportal.core.koppeling
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
@@ -22,7 +22,12 @@ import com.nimbusds.jwt.JWTClaimsSet.Builder
 import com.nimbusds.jwt.SignedJWT
 import java.util.Date
 
-class IdTokenGenerator {
+/**
+ * Tekent het korte JWT dat de ZGW-standaard vraagt voor een aanroep naar een ZGW-API: HS256 met het gedeelde
+ * geheim van de koppeling. De claims `user_id` en `user_representation` komen in het audit-spoor van de API;
+ * zonder gebruikerscontext staat daar het systeem zelf (`nl-portal`).
+ */
+class ZgwJwtGenerator {
     fun generateToken(
         secretKey: String,
         clientId: String,
@@ -88,11 +93,11 @@ class IdTokenGenerator {
         userRepresentation: Any?,
     ): Builder =
         this
-            .claim("user_id", userId ?: DEFAULT_USER_ID)
-            .claim("user_representation", userRepresentation ?: DEFAULT_USER_REPRESENTATION)
+            .claim("user_id", userId ?: SYSTEM_USER_ID)
+            .claim("user_representation", userRepresentation ?: SYSTEM_USER_REPRESENTATION)
 
     companion object {
-        private const val DEFAULT_USER_ID = "Valtimo"
-        private const val DEFAULT_USER_REPRESENTATION = "Valtimo"
+        private const val SYSTEM_USER_ID = "nl-portal"
+        private const val SYSTEM_USER_REPRESENTATION = "nl-portal"
     }
 }

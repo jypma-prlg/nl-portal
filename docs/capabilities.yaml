@@ -207,7 +207,6 @@ modules_zonder_ingang:
   - {module: backend/portal-authentication, rol: infra (authenticatie-basis)}
   - {module: backend/zgw/common-ground-authentication, rol: infra (Keycloak/OIDC)}
   - {module: backend/zgw/common-ground-authentication-test, rol: test-library}
-  - {module: backend/zgw/idtoken-authentication, rol: library (ZGW JWT naar API's)}
   - {module: backend/zgw/objectenapi, rol: library (client Objecten API)}
   - {module: backend/zgw/catalogi-api, rol: library (client Catalogi API)}
   - {module: backend/zgw/zaken-api, rol: library (client Zaken API)}

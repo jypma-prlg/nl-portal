@@ -18,7 +18,7 @@ package nl.nlportal.catalogiapi.autoconfigure
 import nl.nlportal.catalogiapi.client.CatalogiApiClient
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig
 import nl.nlportal.catalogiapi.service.CatalogiApiService
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -36,6 +36,6 @@ class CatalogiApiAutoConfiguration {
     @Bean
     fun catalogiApiClient(
         catalogiApiConfig: CatalogiApiConfig,
-        idTokenGenerator: IdTokenGenerator,
-    ): CatalogiApiClient = CatalogiApiClient(catalogiApiConfig.properties, idTokenGenerator)
+        zgwJwtGenerator: ZgwJwtGenerator,
+    ): CatalogiApiClient = CatalogiApiClient(catalogiApiConfig.properties, zgwJwtGenerator)
 }

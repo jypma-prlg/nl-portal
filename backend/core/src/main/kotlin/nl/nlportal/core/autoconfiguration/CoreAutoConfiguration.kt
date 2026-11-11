@@ -15,6 +15,7 @@
  */
 package nl.nlportal.core.autoconfiguration
 
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import nl.nlportal.core.featureflag.FeatureContextFactory
 import nl.nlportal.core.featureflag.FeatureGate
 import nl.nlportal.core.frontend.configuration.FrontendConfigurationProperties
@@ -36,6 +37,10 @@ import tools.jackson.databind.json.JsonMapper
     FrontendConfigurationProperties::class,
 )
 class CoreAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingBean(ZgwJwtGenerator::class)
+    fun zgwJwtGenerator(): ZgwJwtGenerator = ZgwJwtGenerator()
+
     @Bean("objectMapper")
     @ConditionalOnMissingBean(name = ["jsonMapper"])
     fun objectMapper(): JsonMapper = Mapper.get()
