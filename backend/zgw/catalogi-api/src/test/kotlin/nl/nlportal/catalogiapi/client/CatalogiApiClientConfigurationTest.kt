@@ -18,7 +18,7 @@ package nl.nlportal.catalogiapi.client
 import kotlinx.coroutines.runBlocking
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig.CatalogiApiConfigProperties
 import nl.nlportal.core.util.ModuleNotConfiguredException
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.UUID
@@ -26,7 +26,7 @@ import java.util.UUID
 class CatalogiApiClientConfigurationTest {
     @Test
     fun `use without configuration fails clearly`() {
-        val client = CatalogiApiClient(CatalogiApiConfigProperties(), IdTokenGenerator())
+        val client = CatalogiApiClient(CatalogiApiConfigProperties(), ZgwJwtGenerator())
         assertThrows<ModuleNotConfiguredException> { runBlocking { client.getZaakType(UUID.randomUUID()) } }
     }
 }

@@ -19,7 +19,7 @@ import kotlinx.coroutines.runBlocking
 import nl.nlportal.core.util.ModuleNotConfiguredException
 import nl.nlportal.documentenapi.client.DocumentApisConfig.DocumentenApisConfigProperties
 import nl.nlportal.documentenapi.client.DocumentApisConfig.DocumentenApisConfigProperties.DocumentApiConfig
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.UUID
@@ -27,14 +27,14 @@ import java.util.UUID
 class DocumentenApiClientConfigurationTest {
     @Test
     fun `unknown document api fails clearly`() {
-        val client = DocumentenApiClient(DocumentenApisConfigProperties(), IdTokenGenerator())
+        val client = DocumentenApiClient(DocumentenApisConfigProperties(), ZgwJwtGenerator())
         assertThrows<ModuleNotConfiguredException> { runBlocking { client.getDocument(UUID.randomUUID(), "openzaak") } }
     }
 
     @Test
     fun `document api without url fails clearly`() {
         val properties = DocumentenApisConfigProperties().apply { configurations = mapOf("openzaak" to DocumentApiConfig()) }
-        val client = DocumentenApiClient(properties, IdTokenGenerator())
+        val client = DocumentenApiClient(properties, ZgwJwtGenerator())
         assertThrows<ModuleNotConfiguredException> { runBlocking { client.getDocument(UUID.randomUUID(), "openzaak") } }
     }
 }

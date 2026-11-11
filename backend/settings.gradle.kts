@@ -57,7 +57,6 @@ include(
     "gradle:license-report",
     "graphql",
     "portal-authentication",
-    "zgw:idtoken-authentication",
     "zgw:common-ground-authentication",
     "zgw:common-ground-authentication-test",
     "zgw:objectenapi",
