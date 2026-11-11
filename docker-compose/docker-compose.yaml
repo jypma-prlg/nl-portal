@@ -2,6 +2,7 @@ name: nl-portal-docker-compose
 
 include:
     - path: "compose.localhost-${RUN_MODE:-sources}.yaml"
+    - path: "compose.netwerk-${NETWERK:-uit}.yaml"
 
 services:
 

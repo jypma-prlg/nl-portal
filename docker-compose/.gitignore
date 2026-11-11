@@ -1,2 +1,7 @@
 .idea
 .gradle
+.env
+imports/koppelingen/secrets/*
+!imports/koppelingen/secrets/.gitkeep
+imports/koppelingen/*.yaml
+!imports/koppelingen/*.example.yaml

@@ -1,0 +1,8 @@
+nl-portal:
+  koppelingen:
+    voorbeeld:
+      endpoint: http://voorbeeld-api:8080
+      authenticatie:
+        type: client-credentials
+        client-id: nl-portal
+        client-secret-file: /etc/nl-portal/koppelingen/secrets/voorbeeld
