@@ -12,6 +12,12 @@ services:
         container_name: nl-portal-backend
         network_mode: "service:localhost"
         env_file: imports/backend.env
+        environment:
+            NLPORTAL_FEATUREFLAGS_FILE: /etc/nl-portal/flags/nl-portal.flagd.json
+            SPRING_CONFIG_IMPORT: optional:configtree:/etc/nl-portal/koppelingen/
+        volumes:
+            - ./imports/flags:/etc/nl-portal/flags:ro
+            - ./imports/koppelingen:/etc/nl-portal/koppelingen:ro
 
     nl-portal-frontend:
         image: ghcr.io/pinkroccade/nl-portal-frontend:${NL_PORTAL_IMAGE_TAG:?zet NL_PORTAL_IMAGE_TAG op een tag uit ghcr.io/pinkroccade/nl-portal-backend en -frontend (zie docker-compose/README.md)}

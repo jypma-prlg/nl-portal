@@ -1,0 +1,15 @@
+# Sluit de omgeving aan op het externe Docker-netwerk `mijngemeente` waarin de API's
+# (ZGW, Haal Centraal, Diftar e.d.) draaien. Het netwerk wordt niet door deze stack
+# aangemaakt: `docker network create mijngemeente` als het ontbreekt.
+# Activeren met NETWERK=mijngemeente (bijvoorbeeld in `.env`).
+# Alle services delen de netwerknamespace van `localhost`, dus alleen die hoeft mee te doen;
+# de API's zijn dan bereikbaar onder hun containernaam.
+services:
+    localhost:
+        networks:
+            - default
+            - mijngemeente
+
+networks:
+    mijngemeente:
+        external: true

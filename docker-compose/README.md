@@ -15,6 +15,7 @@
   * [Maintenance](#maintenance)
     * [Demo data imports](#demo-data-imports)
     * [Regenerating fixtures](#regenerating-fixtures)
+  * [Configuratie en extern netwerk](#configuratie-en-extern-netwerk)
   * [Known issues](#known-issues)
 <!-- TOC -->
 
@@ -141,6 +142,14 @@ shippable app); changing a library rebuilds it and the app hot-reloads. Full con
 > - **Any shell:** add `RUN_MODE=remote` (and `NL_PORTAL_IMAGE_TAG=<tag>`) to a `.env` file in this
 >   directory (Compose reads it automatically). This persists across runs, so remove it to go back
 >   to the `sources` default.
+
+### Configuratie en extern netwerk
+Alles start met `docker compose up`; knoppen staan in een `.env` (kopieer `.env.example`).
+
+- **Flags:** `imports/flags/nl-portal.flagd.json` (flagd-bestand) wordt read-only in de backend gemount; wijzigingen worden binnen enkele seconden opgepikt.
+- **Koppelingen:** `imports/koppelingen/` bevat per koppeling endpoint en authenticatie, met geheimen als bestand in `secrets/` (gitignored). Zie [imports/koppelingen/README.md](imports/koppelingen/README.md).
+- **Netwerk `mijngemeente`:** met `NETWERK=mijngemeente` sluit de stack aan op het externe Docker-netwerk met de API's (ZGW, Haal Centraal, Diftar). Maak het netwerk eenmalig aan met `docker network create mijngemeente`.
+- **Pentest-doelwit:** `RUN_MODE=local`: gebouwd uit de bronnen, met de geïmporteerde realm en testgebruikers.
 
 ### Starting up supporting services only
 To run only the supporting services (e.g. when running the application from your IDE),

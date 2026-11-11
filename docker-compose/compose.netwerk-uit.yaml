@@ -1,0 +1,2 @@
+# Standaard: geen extern netwerk. Zie compose.netwerk-mijngemeente.yaml.
+services: {}

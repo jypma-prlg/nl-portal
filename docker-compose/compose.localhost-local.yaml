@@ -10,6 +10,12 @@ services:
         build: ../backend
         network_mode: "service:localhost"
         env_file: imports/backend.env
+        environment:
+            NLPORTAL_FEATUREFLAGS_FILE: /etc/nl-portal/flags/nl-portal.flagd.json
+            SPRING_CONFIG_IMPORT: optional:configtree:/etc/nl-portal/koppelingen/
+        volumes:
+            - ./imports/flags:/etc/nl-portal/flags:ro
+            - ./imports/koppelingen:/etc/nl-portal/koppelingen:ro
 
     nl-portal-frontend:
         container_name: nl-portal-frontend
