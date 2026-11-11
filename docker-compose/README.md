@@ -93,10 +93,10 @@ the product without a local build. The tag is required and comes from `NL_PORTAL
 ```shell
 RUN_MODE=remote NL_PORTAL_IMAGE_TAG=<tag> docker compose --profile zgw --profile haalcentraal up -d
 ```
-> Note: no release has been published under `ghcr.io/pinkroccade` yet, so only snapshot tags
-> (`<version>-main-<timestamp>-<sha>-SNAPSHOT`, one per push to `main`) exist; pick one from the
-> package pages of `nl-portal-backend` and `nl-portal-frontend` in the pinkroccade organisation.
-> Once releases exist, a version (`1.2.3`), minor (`1.2`) or major (`1`) tag works too. The older
+> Release `0.1.0` is published under `ghcr.io/pinkroccade`; version (`0.1.0`), minor (`0.1`), major (`0`)
+> and `latest` tags all work. Snapshot tags (`<version>-main-<timestamp>-<sha>-SNAPSHOT`, one per push
+> to `main`) also exist. Each release image is signed and carries a CycloneDX SBOM attestation and the
+> label `nl.nlportal.sbom` (see [SBOM](../site/development/workflows/sbom.md)). The older
 > `ghcr.io/nl-portal/*` images are Ritense's and no longer receive updates from this repository.
 > Either way, make sure the `imports/` fixtures and configuration in this
 > stack are compatible with the chosen tag.

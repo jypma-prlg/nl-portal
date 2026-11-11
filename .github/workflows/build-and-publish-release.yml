@@ -92,6 +92,9 @@ jobs:
                 ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.version }}
                 ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.minor }}
                 ghcr.io/pinkroccade/nl-portal-backend:${{ needs.prepare.outputs.major }}
+                ghcr.io/pinkroccade/nl-portal-backend:latest
+            labels: |
+                nl.nlportal.sbom=https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare.outputs.version }}/nl-portal-backend-${{ needs.prepare.outputs.version }}.image.sbom.cyclonedx.json
         secrets: inherit
 
     image-fe:
@@ -106,6 +109,9 @@ jobs:
                 ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.version }}
                 ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.minor }}
                 ghcr.io/pinkroccade/nl-portal-frontend:${{ needs.prepare.outputs.major }}
+                ghcr.io/pinkroccade/nl-portal-frontend:latest
+            labels: |
+                nl.nlportal.sbom=https://github.com/${{ github.repository }}/releases/download/${{ needs.prepare.outputs.version }}/nl-portal-frontend-${{ needs.prepare.outputs.version }}.image.sbom.cyclonedx.json
         secrets: inherit
 
     create-release:

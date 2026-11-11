@@ -10,10 +10,10 @@ Pull the published images and run them; no build. For demos and evaluation.
 
 ```shell
 cd docker-compose
-RUN_MODE=remote docker compose --profile zgw --profile haalcentraal up -d
+RUN_MODE=remote NL_PORTAL_IMAGE_TAG=0.1.0 docker compose --profile zgw --profile haalcentraal up -d
 ```
 
-The portal is at http://localhost:3000. See
+`0.1.0` is the first release; use `latest` to follow the newest one. The portal is at http://localhost:3000. See
 [docker-compose/README.md](./docker-compose/README.md#remote-published-images) for profiles, image
 tags and test-user credentials.
 
