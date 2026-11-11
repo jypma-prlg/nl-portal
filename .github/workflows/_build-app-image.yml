@@ -15,6 +15,10 @@ on:
                 description: "One tag used for the post-push cosign verify."
                 type: string
                 required: true
+            labels:
+                description: "Newline-separated OCI labels for the pushed image."
+                type: string
+                default: ""
             push:
                 type: boolean
                 default: false
@@ -92,6 +96,7 @@ jobs:
                     platforms: ${{ inputs.platforms }}
                     push: ${{ inputs.push }}
                     provenance: false
+                    labels: ${{ inputs.labels }}
                     tags: ${{ inputs.tags }}
 
             -   name: Sign the image with the GitHub OIDC token
