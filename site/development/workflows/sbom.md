@@ -64,3 +64,18 @@ Niet in deze wijziging doorgevoerd (buiten scope van een documentatie-PR), maar 
 vervolgstap: `_stage-fe.yml` krijgt een `Generate SBOM`-stap die `mise run sbom:frontend` draait en
 hangt aan de GitHub Release, analoog aan hoe `_stage-be.yml` en `create-release` dat nu al voor de backend
 doen (zie #221 voor de koppeling aan het image) — zodat elke release zowel een backend- als een frontend-SBOM publiceert.
+
+## Image-SBOM en attestation (release)
+
+`_build-app-image.yml` draait na het pushen van een image Syft op de image-digest en maakt een
+CycloneDX-SBOM. Die wordt met `cosign attest --type cyclonedx` gesigneerd aan de digest gehangen
+(keyless, GitHub OIDC) en direct gecontroleerd met `cosign verify-attestation`. Bij een release
+draagt het image bovendien het OCI-label `nl.nlportal.sbom` met de URL van het SBOM-asset
+(`nl-portal-<backend|frontend>-<versie>.image.sbom.cyclonedx.json`) van de GitHub Release. De
+release-workflow publiceert naast `x.y.z`, `x.y` en `x` ook `latest`.
+
+```bash
+cosign verify-attestation ghcr.io/pinkroccade/nl-portal-backend:<versie> --type cyclonedx \
+  --certificate-identity-regexp 'https://github.com/pinkroccade/nl-portal/.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
