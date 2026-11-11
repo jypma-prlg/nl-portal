@@ -3,6 +3,7 @@ server:
 
 management:
     # Beheerpoort apart zetten: MANAGEMENT_SERVER_PORT=8091 (zie site/hosting-en-configuratie/beheer-modulestatus.md)
+    # Beheerpoort apart zetten: MANAGEMENT_SERVER_PORT=8091 (zie site/hosting-en-configuratie/beheer-modulestatus.md)
     endpoint:
         health:
             access: read_only
@@ -10,16 +11,12 @@ management:
                 enabled: true
         modulestatus:
             access: read_only
-        refresh:
-            access: unrestricted
-        restart:
-            access: unrestricted
     endpoints:
         access:
             default: none
         web:
             exposure:
-                include: health, refresh, restart, modulestatus
+                include: health, modulestatus
 
 spring:
     application:

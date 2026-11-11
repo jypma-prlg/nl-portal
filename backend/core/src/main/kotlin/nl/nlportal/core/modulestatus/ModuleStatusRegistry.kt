@@ -19,10 +19,14 @@ import java.time.Clock
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 
-/** Reden waarom een API niet werkt. Bewust een vaste code: geen foutmelding, URL of geheim. */
+/**
+ * Reden waarom een API niet werkt. Bewust een vaste code: geen foutmelding, URL of geheim.
+ * Volgorde = ernst: de eerste waarde wint als een module meerdere oorzaken heeft.
+ */
 enum class Oorzaak { NOT_CONFIGURED, UNREACHABLE }
 
-enum class ModuleState { UP, DEGRADED, NOT_CONFIGURED }
+/** `UNKNOWN`: de module staat aan maar heeft nog geen verkeer gehad. */
+enum class ModuleState { UP, DEGRADED, NOT_CONFIGURED, UNKNOWN }
 
 data class LaatsteFout(
     val oorzaak: Oorzaak,
@@ -51,6 +55,12 @@ class ModuleStatusRegistry(
     private val clock: Clock = Clock.systemUTC(),
 ) {
     private val apis = ConcurrentHashMap<Pair<String, String>, ApiStatus>()
+    private val modules = ConcurrentHashMap.newKeySet<String>()
+
+    /** Meldt een aangezette module, zodat die ook zonder verkeer in de status staat. */
+    fun register(module: String) {
+        modules.add(module)
+    }
 
     fun recordSuccess(
         module: String,
@@ -70,19 +80,19 @@ class ModuleStatusRegistry(
         apis[module to api] = ApiStatus(api, false, nu, LaatsteFout(oorzaak, nu))
     }
 
-    fun snapshot(): List<ModuleStatus> =
-        apis.entries
-            .groupBy({ it.key.first }, { it.value })
-            .toSortedMap()
-            .map { (module, lijst) ->
-                val kapot = lijst.filter { !it.bereikbaar }
-                val reden = kapot.mapNotNull { it.laatsteFout?.oorzaak }.let { if (Oorzaak.NOT_CONFIGURED in it) Oorzaak.NOT_CONFIGURED else it.firstOrNull() }
-                val status =
-                    when {
-                        kapot.isEmpty() -> ModuleState.UP
-                        reden == Oorzaak.NOT_CONFIGURED -> ModuleState.NOT_CONFIGURED
-                        else -> ModuleState.DEGRADED
-                    }
-                ModuleStatus(module, status, reden, lijst.sortedBy { it.api })
-            }
+    fun snapshot(): List<ModuleStatus> {
+        val perModule = apis.entries.groupBy({ it.key.first }, { it.value })
+        return (modules + perModule.keys).toSortedSet().map { module ->
+            val lijst = perModule[module].orEmpty().sortedBy { it.api }
+            val reden = lijst.filter { !it.bereikbaar }.mapNotNull { it.laatsteFout?.oorzaak }.minOrNull()
+            val status =
+                when {
+                    lijst.isEmpty() -> ModuleState.UNKNOWN
+                    reden == null -> ModuleState.UP
+                    reden == Oorzaak.NOT_CONFIGURED -> ModuleState.NOT_CONFIGURED
+                    else -> ModuleState.DEGRADED
+                }
+            ModuleStatus(module, status, reden, lijst)
+        }
+    }
 }

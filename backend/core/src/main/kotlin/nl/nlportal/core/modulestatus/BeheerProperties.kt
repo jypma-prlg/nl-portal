@@ -25,4 +25,24 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class BeheerProperties {
     var gebruikersnaam: String? = null
     var wachtwoordHash: String? = null
+
+    /** Naam en hash als beide zijn ingesteld, anders `null` (dan is er geen account). */
+    fun inloggegevens(): Pair<String, String>? {
+        val naam = gebruikersnaam
+        val hash = wachtwoordHash
+        return if (naam.isNullOrBlank() || hash.isNullOrBlank()) null else naam to hash
+    }
+
+    fun isGeconfigureerd() = inloggegevens() != null
+
+    /** Waarschuwingen voor configuraties die in productie niet horen; `heeftBeheerpoort` is of er een aparte poort is. */
+    fun waarschuwingen(heeftBeheerpoort: Boolean): List<String> =
+        buildList {
+            if (wachtwoordHash?.startsWith("{noop}") == true) {
+                add("Beheerwachtwoord is een {noop}-hash: alleen toegestaan voor lokaal gebruik")
+            }
+            if (isGeconfigureerd() && !heeftBeheerpoort) {
+                add("Beheerendpoint staat op de publieke poort: zet MANAGEMENT_SERVER_PORT voor een aparte beheerpoort")
+            }
+        }
 }

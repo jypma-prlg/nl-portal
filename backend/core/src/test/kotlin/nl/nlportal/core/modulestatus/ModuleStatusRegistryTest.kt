@@ -91,4 +91,52 @@ class ModuleStatusRegistryTest {
         assertEquals(LaatsteFout(Oorzaak.UNREACHABLE, storing), api.laatsteFout)
         assertEquals(ModuleState.UP, registry.snapshot().single().status)
     }
+
+    @Test
+    fun `aangemelde module zonder verkeer is UNKNOWN`() {
+        registry.register("taak")
+
+        val status = registry.snapshot().single()
+
+        assertEquals(ModuleState.UNKNOWN, status.status)
+        assertNull(status.reden)
+        assertEquals(emptyList<ApiStatus>(), status.apis)
+    }
+
+    @Test
+    fun `modules en API's staan gesorteerd`() {
+        listOf("h", "g", "f", "e", "d", "c").forEach { registry.recordSuccess("zaken", it) }
+        registry.recordSuccess("zaken", "b")
+        registry.recordSuccess("zaken", "a")
+        registry.recordSuccess("berichten", "x")
+        registry.register("taak")
+
+        val snapshot = registry.snapshot()
+
+        assertEquals(listOf("berichten", "taak", "zaken"), snapshot.map { it.module })
+        assertEquals(listOf("a", "b", "c", "d", "e", "f", "g", "h"), snapshot.last().apis.map { it.api })
+    }
+
+    @Test
+    fun `een herstelde API telt niet meer mee voor de reden`() {
+        registry.recordFailure("zaken", "a", Oorzaak.NOT_CONFIGURED)
+        registry.recordFailure("zaken", "b", Oorzaak.UNREACHABLE)
+        registry.recordSuccess("zaken", "a")
+
+        val status = registry.snapshot().single()
+
+        assertEquals(ModuleState.DEGRADED, status.status)
+        assertEquals(Oorzaak.UNREACHABLE, status.reden)
+    }
+
+    @Test
+    fun `een succes na een fout wist de reden en zet de module op UP`() {
+        registry.recordFailure("zaken", "a", Oorzaak.UNREACHABLE)
+        registry.recordSuccess("zaken", "a")
+
+        val status = registry.snapshot().single()
+
+        assertEquals(ModuleState.UP, status.status)
+        assertNull(status.reden)
+    }
 }

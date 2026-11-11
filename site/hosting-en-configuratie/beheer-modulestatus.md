@@ -8,7 +8,7 @@ De status is passief: hij komt uit de laatste echte request-uitkomst, er is geen
 
 | Veld | Betekenis |
 |---|---|
-| `status` | `UP`, `DEGRADED` (API onbereikbaar) of `NOT_CONFIGURED` (configuratie ontbreekt) |
+| `status` | `UP`, `DEGRADED` (API onbereikbaar), `NOT_CONFIGURED` (configuratie ontbreekt) of `UNKNOWN` (aangezet, nog geen verkeer) |
 | `reden` | `UNREACHABLE` of `NOT_CONFIGURED`; leeg bij `UP` |
 | `apis[]` | per API: `bereikbaar`, `laatstGecontroleerd`, `laatsteFout` (oorzaakcode en tijdstip) |
 
@@ -25,7 +25,21 @@ Er staan nooit URL's, foutmeldingen, stacktraces of geheimen in. Een herstelde A
 | `NLPORTAL_BEHEER_GEBRUIKERSNAAM` | Gebruikersnaam |
 | `NLPORTAL_BEHEER_WACHTWOORDHASH` | Wachtwoordhash met prefix, bijvoorbeeld `{bcrypt}$2a$10$...` |
 
-Gebruik in productie een bcrypt-hash en lever die via een secret. `{noop}wachtwoord` is alleen voor lokaal gebruik.
+Gebruik in productie een bcrypt-hash en lever die via een secret, nooit via een bestand in de repository. `{noop}wachtwoord` is alleen voor lokaal gebruik; de applicatie waarschuwt in de log als je dat buiten lokaal gebruikt.
+
+Een hash maak je zo (met `htpasswd` uit apache2-utils; zet `{bcrypt}` ervoor):
+
+```shell
+htpasswd -bnBC 10 "" 'kies-een-sterk-wachtwoord' | tr -d ':\n' | sed 's/$2y/$2a/'
+```
+
+In een Compose-bestand schrijf je elke `$` in de hash als `$$`; in een `env_file` staat de hash letterlijk. In Kubernetes gebruik je een `Secret` als omgevingsvariabele.
+
+## Wat er niet is
+
+- **Geen throttling in de applicatie.** Een teller per pod helpt niet bij meerdere pods. De primaire maatregel is netwerkscheiding: publiceer de beheerpoort niet via de publieke ingress en beperk toegang met een netwerkpolicy. Throttling hoort bij de ingress. Mislukte aanmeldingen komen als waarschuwing in de log, zonder gebruikersnaam of wachtwoord.
+- **Geen `refresh` of `restart`.** Die actuator-endpoints zijn uitgezet: configuratiewijzigingen gaan via een rolling update (ADR 0016). Alleen `health` is publiek bereikbaar via `/actuator/health`.
+- **Een waarschuwing, geen startfout.** Zonder `MANAGEMENT_SERVER_PORT` draait het endpoint op de publieke poort en waarschuwt de applicatie bij het opstarten. Productie moet de variabele zetten; de health-probes blijven op de gewone poort tot je ze verplaatst.
 
 ## Docker Compose
 

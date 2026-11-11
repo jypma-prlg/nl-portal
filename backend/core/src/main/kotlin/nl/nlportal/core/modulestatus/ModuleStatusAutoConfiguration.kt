@@ -15,7 +15,9 @@
  */
 package nl.nlportal.core.modulestatus
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint
+import org.springframework.core.env.Environment
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -52,22 +54,25 @@ class ModuleStatusAutoConfiguration {
     fun beheerSecurityWebFilterChain(
         http: ServerHttpSecurity,
         properties: BeheerProperties,
+        environment: Environment,
     ): SecurityWebFilterChain {
-        val naam = properties.gebruikersnaam
-        val hash = properties.wachtwoordHash
-        val manager: ReactiveAuthenticationManager =
-            if (naam.isNullOrBlank() || hash.isNullOrBlank()) {
+        properties.waarschuwingen(environment.getProperty("management.server.port") != null).forEach { logger.warn { it } }
+        val inloggegevens = properties.inloggegevens()
+        val basisManager: ReactiveAuthenticationManager =
+            if (inloggegevens == null) {
                 // Geen account: nooit authenticeren (fail closed), maar het opstarten blijft slagen.
                 ReactiveAuthenticationManager { Mono.error(BadCredentialsException("Beheer niet geconfigureerd")) }
             } else {
                 val gebruiker =
                     User
-                        .withUsername(naam)
-                        .password(hash)
+                        .withUsername(inloggegevens.first)
+                        .password(inloggegevens.second)
                         .roles(BEHEER_ROL)
                         .build()
                 UserDetailsRepositoryReactiveAuthenticationManager(MapReactiveUserDetailsService(gebruiker))
             }
+
+        val manager = ReactiveAuthenticationManager { auth -> basisManager.authenticate(auth).doOnError { logger.warn { "Mislukte aanmelding op het beheerendpoint" } } }
 
         return http
             .securityMatcher(EndpointRequest.to(ModuleStatusEndpoint::class.java))
@@ -79,6 +84,7 @@ class ModuleStatusAutoConfiguration {
     }
 
     private companion object {
+        val logger = KotlinLogging.logger {}
         const val BEHEER_ROL = "BEHEER"
     }
 }
