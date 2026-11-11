@@ -91,7 +91,7 @@ als veilige startpositie. Je wijzigt flags door een eigen flagbestand aan te wij
 | Property | Omgevingsvariabele | Betekenis |
 |---|---|---|
 | `nl-portal.feature-flags.file` | `NLPORTAL_FEATUREFLAGS_FILE` | Pad naar je eigen flagbestand. Zonder deze instelling wordt het meegeleverde bestand gebruikt. |
-| `nl-portal.feature-flags.poll-interval-ms` | `NLPORTAL_FEATUREFLAGS_POLLINTERVALMS` | Hoe vaak het bestand op wijzigingen wordt gecontroleerd (standaard 5000). Een aangepast bestand werkt zonder herstart door. |
+| `nl-portal.feature-flags.poll-interval-ms` | `NLPORTAL_FEATUREFLAGS_POLLINTERVALMS` | Hoe vaak het bestand op wijzigingen wordt gecontroleerd (standaard 5000). Reken hier niet op: een flagwijziging rol je uit met een rolling update. |
 
 Het bestand heeft het [flagd-formaat](https://flagd.dev/reference/flag-definitions/). Het meegeleverde
 bestand is het uitgangspunt: kopieer het uit de broncode van NL Portal
@@ -112,9 +112,9 @@ bestand is het uitgangspunt: kopieer het uit de broncode van NL Portal
 
 Op Kubernetes mount je het bestand uit een ConfigMap en zet je `NLPORTAL_FEATUREFLAGS_FILE` op het
 gemounte pad. Een flag die ontbreekt in je bestand valt terug op de standaardwaarde in de code, en een
-flag voor toegang (permission) valt bij twijfel altijd terug op uit. Kubernetes werkt een gemounte
-ConfigMap bij met een bestandswissel; of NL Portal die wijziging zonder herstart oppikt is nog niet in
-een echte clusteromgeving getest, controleer dat in je eigen omgeving.
+flag voor toegang (permission) valt bij twijfel altijd terug op uit. Een wijziging van het flagbestand rol je uit met een
+rolling update (zet een checksum van de ConfigMap als annotatie op de Deployment, zodat pods herstarten);
+NL Portal belooft geen live herladen.
 
 **Evaluatiecontext en targeting**
 
