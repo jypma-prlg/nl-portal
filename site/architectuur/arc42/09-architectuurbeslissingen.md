@@ -71,3 +71,6 @@ Nog niet als ADR vastgelegd:
 - [`0017-vluchtige-state-toegestaan.md`](../../development/adr/0017-vluchtige-state-toegestaan.md) — **geaccepteerd**.
   Verfijnt ADR 0013: geen *persistente* state; vluchtige state (sessies, cache) mag. Redis als
   sessieopslag is verplicht bij een BFF, als cache optioneel.
+- [`0018-performancetesten-met-k6-en-otel-agent-in-overlay.md`](../../development/adr/0018-performancetesten-met-k6-en-otel-agent-in-overlay.md) — **voorgesteld**.
+  k6 als loadtool op de volledige compose-stack; tracing via een OTel-agent alleen in de perf-overlay,
+  Micrometer in de app uitgesteld.
