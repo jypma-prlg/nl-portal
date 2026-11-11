@@ -19,13 +19,18 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import nl.nlportal.commonground.authentication.JwtBuilder
 import nl.nlportal.kvk.client.KvkClient
+import nl.nlportal.kvk.domain.Eigenaar
+import nl.nlportal.kvk.domain.Embedded
+import nl.nlportal.kvk.domain.Vestiging
 import nl.nlportal.kvk.domain.MaatschappelijkeActiviteit
 import nl.nlportal.kvk.domain.MaterieleRegistratie
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
@@ -66,5 +71,53 @@ class KvkServiceTest {
             val bedrijf = kvkService.getMaatschappelijkeActiviteit(authentication)
 
             assertNull(bedrijf)
+        }
+
+    @Test
+    fun `getMaatschappelijkeActiviteit geeft null voor een burger`() =
+        runTest {
+            val authentication = JwtBuilder().aanvragerBsn("999993653").buildBurgerAuthentication()
+
+            assertNull(kvkService.getMaatschappelijkeActiviteit(authentication))
+            verifyNoInteractions(kvkClient)
+        }
+
+    @Test
+    fun `getKvkData geeft null als de client faalt`() =
+        runTest {
+            whenever(kvkClient.getMaatschappelijkeActiviteit("123")).thenThrow(IllegalStateException("kapot"))
+
+            assertNull(kvkService.getKvkData("123"))
+        }
+
+    @Test
+    fun `getKvkData zet de opgehaalde vestiging als een vestigingsnummer is opgegeven`() =
+        runTest {
+            val hoofdvestiging = mock<Vestiging>()
+            val vestiging = mock<Vestiging>()
+            val embedded = Embedded(hoofdvestiging = hoofdvestiging, eigenaar = mock<Eigenaar>())
+            val activiteit = mock<MaatschappelijkeActiviteit>()
+            whenever(activiteit.embedded).thenReturn(embedded)
+            whenever(kvkClient.getMaatschappelijkeActiviteit("123")).thenReturn(activiteit)
+            whenever(kvkClient.getVestiging("456")).thenReturn(vestiging)
+
+            kvkService.getKvkData("123", "456")
+
+            assertSame(vestiging, embedded.vestiging)
+        }
+
+    @Test
+    fun `getKvkData houdt de hoofdvestiging als de vestiging niet opgehaald kan worden`() =
+        runTest {
+            val hoofdvestiging = mock<Vestiging>()
+            val embedded = Embedded(hoofdvestiging = hoofdvestiging, eigenaar = mock<Eigenaar>())
+            val activiteit = mock<MaatschappelijkeActiviteit>()
+            whenever(activiteit.embedded).thenReturn(embedded)
+            whenever(kvkClient.getMaatschappelijkeActiviteit("123")).thenReturn(activiteit)
+            whenever(kvkClient.getVestiging("456")).thenThrow(IllegalStateException("kapot"))
+
+            kvkService.getKvkData("123", "456")
+
+            assertSame(hoofdvestiging, embedded.vestiging)
         }
 }
