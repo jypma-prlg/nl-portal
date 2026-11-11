@@ -68,7 +68,7 @@ Meerdere origins zet je komma-gescheiden in `ALLOWEDORIGINS`. Gebruik `*` voor o
 De frontend haalt zijn feature-toggles en -eigenschappen op via `GET /api/public/frontend`, gevuld vanuit `nl-portal.frontend` op de backend. Deze volgen dezelfde relaxed-binding naamconventie, bijvoorbeeld `NLPORTAL_FRONTEND_TOGGLES_OVERVIEWMAINTENANCEALERTENABLED=true`.
 
 - Feature flags: de toggle `messageCountEnabled` komt uit de feature flag `ops.frontend.message-count` (zie [Feature flags](#feature-flags)) en wordt niet meer via `nl-portal.frontend.toggles` ingesteld.
-- `nl-portal.frontend.toggles.*` — booleans, zoals `casesPartialSearchEnabled`, `openProductEnabled`, `casesResultExplanationEnabled`, `myInhabitantCountEnabled`, `casesContactMomentsEnabled`, `overviewIntroEnabled`, `overviewMaintenanceAlertEnabled`.
+- `nl-portal.frontend.toggles.*` — booleans; naam, standaard en effect per toggle staan in de [feature flags-referentie](./feature-flags.md).
 - `nl-portal.frontend.properties.*` — waarden, zoals `messageCountPollingInterval`, `overviewCurrentCasesPreviewLength`, `overviewCurrentTasksPreviewLength`, `themeClass`, de `overviewMaintenanceAlert{Title,Text}{Nl,En}` teksten en de BRP/adres-URL's.
 
 De onderhoudsmelding op de overzichtspagina zet je bijvoorbeeld aan met:
@@ -150,13 +150,7 @@ Een flag die alleen voor één tenant aan staat:
 
 **Beschikbare flags**
 
-| Flag | Type | Standaard | Effect |
-|---|---|---|---|
-| `ops.frontend.message-count` | ops | uit | Toont het aantal ongelezen berichten in de frontend (`messageCountEnabled`). |
-
-De overige frontend-toggles en de module-activatie worden stapsgewijs flags (zie
-[ADR 0014](../development/adr/0014-feature-flags-via-openfeature.md)); tot die tijd stel je ze in zoals
-hierboven beschreven.
+Per flag naam, type, standaard en effect staan in de [feature flags-referentie](./feature-flags.md), samen met de frontend-toggles die nog geen flag zijn.
 
 Een andere OpenFeature-provider (bijvoorbeeld een flag-server) sluit je aan door in een eigen
 Spring-configuratie een bean van het type `FeatureProvider` te registreren; die vervangt dan het

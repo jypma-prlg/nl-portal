@@ -192,7 +192,6 @@ nl-portal:
             overview-maintenance-alert-text-en: This environment is running in development mode with test data.
             overview-current-tasks-preview-length: 4
         toggles:
-            message-count-enabled: true
             cases-partial-search-enabled: true
             my-inhabitant-count-enabled: true
             open-product-enabled: true

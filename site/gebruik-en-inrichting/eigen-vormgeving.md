@@ -21,7 +21,7 @@ Hiermee wordt de kleur van de header bar ingesteld op #03801f. Zie [ADR 0016](..
 
 ## Een thema activeren met een theme class
 
-Een NL Design System-thema wordt geactiveerd met een class op het root-element. Zet de feature-eigenschap `nl-portal.config.features.properties.theme-class` (env: `NLPORTAL_CONFIG_FEATURES_PROPERTIES_THEMECLASS`) op de naam van je thema, bijvoorbeeld `denhaag-theme`. De frontend plaatst die class op het `<html>`-element, conform de [NL Design System-richtlijn](https://nldesignsystem.nl/handboek/developer/thema-maken/) dat de theme class op `<html>` (of `<body>`) hoort, zodat de token-overrides in het hele document doorwerken.
+Een NL Design System-thema wordt geactiveerd met een class op het root-element. Zet de feature-eigenschap `nl-portal.frontend.properties.theme-class` (env: `NLPORTAL_FRONTEND_PROPERTIES_THEMECLASS`) op de naam van je thema, bijvoorbeeld `denhaag-theme`. De frontend plaatst die class op het `<html>`-element, conform de [NL Design System-richtlijn](https://nldesignsystem.nl/handboek/developer/thema-maken/) dat de theme class op `<html>` (of `<body>`) hoort, zodat de token-overrides in het hele document doorwerken.
 
 Dit staat los van de style-eigenschap hierboven: die injecteert je token-overrides rechtstreeks. Schrijf die overrides op `:root` als je geen benoemd thema gebruikt; `theme-class` is alleen nodig wanneer je CSS onder een thema-class is gescoped.
 
