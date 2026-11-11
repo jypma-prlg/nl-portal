@@ -18,8 +18,6 @@ object Dependencies {
     val jsonPath by lazy { "com.jayway.jsonpath:json-path:${Versions.jsonPath}" }
     val kotlinCoroutines by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}" }
     val kotlinCoroutinesReactor by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${Versions.kotlinCoroutines}" }
-    val springCloudConfig by lazy { "org.springframework.cloud:spring-cloud-starter-config:${Versions.springCloud}" }
-    val springCloudBootstrap by lazy { "org.springframework.cloud:spring-cloud-starter-bootstrap:${Versions.springCloud}" }
 
     val clamAv by lazy { "xyz.capybara:clamav-client:${Versions.clamAvVersion}" }
     val tikaCore by lazy { "org.apache.tika:tika-core:${Versions.apacheTikaVersion}" }
