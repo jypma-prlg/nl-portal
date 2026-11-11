@@ -1,7 +1,5 @@
 .idea
 .gradle
 .env
-imports/koppelingen/secrets/*
-!imports/koppelingen/secrets/.gitkeep
-imports/koppelingen/*.yaml
-!imports/koppelingen/*.example.yaml
+imports/koppelingen/nl-portal/koppelingen/*/*
+!imports/koppelingen/nl-portal/koppelingen/*/*.example

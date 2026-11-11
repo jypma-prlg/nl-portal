@@ -1,13 +1,16 @@
 # Koppelingen
 
-Deze map wordt read-only gemount op `/etc/nl-portal/koppelingen` in de backend. Per koppeling
-(`nl-portal.koppelingen.<naam>`) staat het endpoint en de authenticatie in een eigen bestand;
-geheimen staan als losse bestanden in `secrets/` en worden via een `*_FILE`-verwijzing gelezen,
-zodat er geen geheim in een env-bestand of in versiebeheer staat.
+Deze map wordt read-only gemount op `/etc/nl-portal/koppelingen` en door Spring Boot geïmporteerd als
+[configtree](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.files.configtree)
+(`SPRING_CONFIG_IMPORT=optional:configtree:...`). Het pad onder deze map is de propertynaam, de
+bestandsinhoud de waarde, zodat endpoint en geheimen als losse bestanden zonder env-bestand of
+versiebeheer worden aangeleverd:
 
-1. Kopieer `voorbeeld.example.yaml` naar `<naam>.yaml` en vul het endpoint in.
-2. Zet het geheim in `secrets/<naam>` (één waarde, geen newline nodig).
-3. `docker compose up -d`; de bestanden zijn gitignored.
+```
+nl-portal/koppelingen/<naam>/endpoint        ->  nl-portal.koppelingen.<naam>.endpoint
+nl-portal/koppelingen/<naam>/client-secret   ->  nl-portal.koppelingen.<naam>.client-secret
+```
 
-De applicatie kent het verschil tussen een echte API en een mockservice niet: alleen endpoint en
-authenticatie verschillen per omgeving.
+Kopieer `endpoint.example` in `nl-portal/koppelingen/voorbeeld/` naar `endpoint` en pas het aan. Echte
+bestanden zijn gitignored. De propertynamen per koppeling volgen uit
+[#393](https://github.com/pinkroccade/nl-portal/issues/393); tot die er zijn leest niets deze waarden.

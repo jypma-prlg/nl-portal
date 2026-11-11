@@ -15,6 +15,7 @@
   * [Maintenance](#maintenance)
     * [Demo data imports](#demo-data-imports)
     * [Regenerating fixtures](#regenerating-fixtures)
+  * [Configuratie en extern netwerk](#configuratie-en-extern-netwerk)
   * [Known issues](#known-issues)
 <!-- TOC -->
 
