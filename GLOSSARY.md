@@ -55,3 +55,8 @@ staat; voeg een nieuwe term toe zodra een module ernaar vernoemd wordt (zie de
 Zie ook `site/architectuur/arc42/12-glossarium.md` voor architectuurspecifieke
 afkortingen (C1/C2/C3, ADR, SBOM, ...), en de `/codebase-design`-skill voor de architectuurvocabulaire
 (module, interface, seam, ...) die in de architectuurreview wordt gebruikt.
+- **Beheerpoort** — het afgeschermde beheerdeel van NL Portal, apart van wat burgers en ondernemers
+  bereiken. Alleen voor beheerders; toont onder meer de modulestatus.
+- **Modulestatus** — de laatst waargenomen werking van een module en de bijbehorende API's: werkend,
+  verstoord, niet geconfigureerd of nog niet gebruikt. Afgeleid van echt verkeer en alleen zichtbaar
+  voor beheerders.

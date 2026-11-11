@@ -15,6 +15,7 @@
  */
 package nl.nlportal.zakenapi.autoconfigure
 
+import nl.nlportal.core.modulestatus.ModuleStatusRegistry
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig
 import nl.nlportal.commonground.authentication.AuthenticationMachtigingsDienstService
 import nl.nlportal.documentenapi.service.DocumentenApiService
@@ -60,5 +61,6 @@ class ZakenApiAutoConfiguration {
         zakenApiConfig: ZakenApiConfig,
         catalogiApiConfig: CatalogiApiConfig,
         webClientBuilder: WebClient.Builder,
-    ): ZakenApiClient = ZakenApiClient(zakenApiConfig.properties, catalogiApiConfig.properties, webClientBuilder)
+        moduleStatus: ModuleStatusRegistry,
+    ): ZakenApiClient = ZakenApiClient(zakenApiConfig.properties, catalogiApiConfig.properties, webClientBuilder, moduleStatus)
 }

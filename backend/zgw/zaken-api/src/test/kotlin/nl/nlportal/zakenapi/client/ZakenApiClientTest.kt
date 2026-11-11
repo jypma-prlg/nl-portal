@@ -19,6 +19,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig.CatalogiApiConfigProperties
 import nl.nlportal.commonground.authentication.JwtBuilder
+import nl.nlportal.core.modulestatus.ModuleState
+import nl.nlportal.core.modulestatus.ModuleStatusRegistry
 import nl.nlportal.zakenapi.client.ZakenApiConfig.ZakenApiConfigProperties
 import nl.nlportal.zakenapi.client.request.ObjectType
 import okhttp3.mockwebserver.MockResponse
@@ -41,6 +43,7 @@ class ZakenApiClientTest {
     lateinit var client: WebClient
     lateinit var mockServer: MockWebServer
     lateinit var zakenApiClient: ZakenApiClient
+    val moduleStatus = ModuleStatusRegistry()
 
     @BeforeEach
     fun setUp() {
@@ -64,7 +67,7 @@ class ZakenApiClientTest {
                 "12345678123456781234567812345678",
             )
 
-        zakenApiClient = ZakenApiClient(zakenApiConfigProperties, catalogiApiConfigProperties, WebClient.builder())
+        zakenApiClient = ZakenApiClient(zakenApiConfigProperties, catalogiApiConfigProperties, WebClient.builder(), moduleStatus)
     }
 
     @AfterEach
@@ -78,6 +81,26 @@ class ZakenApiClientTest {
 
         assertEquals("$host/zaken/api/v1/zaken/2941048a-7290-4a78-8c4e-14feaec137dc", value)
     }
+
+    @Test
+    fun `zaken search - succesvol antwoord zet de modulestatus op UP`() =
+        runTest {
+            mockServer.enqueue(emptyZakenResponse())
+
+            zakenApiClient.zaken().search().retrieve()
+
+            assertEquals(ModuleState.UP, moduleStatus.snapshot().single().status)
+        }
+
+    @Test
+    fun `zaken search - een 503 zet de modulestatus op DEGRADED`() =
+        runTest {
+            mockServer.enqueue(MockResponse().setResponseCode(503))
+
+            runCatching { zakenApiClient.zaken().search().retrieve() }
+
+            assertEquals(ModuleState.DEGRADED, moduleStatus.snapshot().single().status)
+        }
 
     @Test
     fun `zaken search - errors`() {

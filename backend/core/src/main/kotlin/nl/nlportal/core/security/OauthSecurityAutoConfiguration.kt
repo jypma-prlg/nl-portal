@@ -81,7 +81,7 @@ class OauthSecurityAutoConfiguration {
                 it.pathMatchers("/graphiql").permitAll()
                 it.pathMatchers("/graphql").permitAll()
                 it
-                    .pathMatchers("/actuator/**")
+                    .pathMatchers("/actuator/health", "/actuator/health/**")
                     .permitAll()
                     .apply {
                         securityEndpointsConfig.unsecured.forEach { endpoint ->

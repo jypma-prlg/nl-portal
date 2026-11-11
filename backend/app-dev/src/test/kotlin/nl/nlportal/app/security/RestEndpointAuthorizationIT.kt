@@ -81,7 +81,7 @@ class RestEndpointAuthorizationIT {
             listOf(
                 "/graphiql",
                 "/graphql",
-                "/actuator/**",
+                "/actuator/health/**",
             )
     }
 

@@ -15,6 +15,9 @@
  */
 package nl.nlportal.zakenapi.client
 
+import nl.nlportal.core.modulestatus.ModuleStatusRegistry
+import nl.nlportal.core.modulestatus.bewaakConfiguratie
+import nl.nlportal.core.modulestatus.webClientFilter
 import nl.nlportal.core.util.requireConfigured
 import io.netty.handler.logging.LogLevel
 import nl.nlportal.catalogiapi.client.CatalogiApiConfig.CatalogiApiConfigProperties
@@ -50,28 +53,32 @@ class ZakenApiClient(
     private val zakenApiConfig: ZakenApiConfigProperties,
     private val catalogiApiConfig: CatalogiApiConfigProperties,
     webClientBuilder: WebClient.Builder,
+    private val moduleStatus: ModuleStatusRegistry = ModuleStatusRegistry(),
 ) {
     val webClient: WebClient by lazy {
-        webClientBuilder
-            .clone()
-            .baseUrl(zakenApiConfig.url.requireConfigured("zakenapi", "url"))
-            .clientConnector(
-                ReactorClientHttpConnector(
-                    HttpClient.create().wiretap(
-                        "reactor.netty.http.client.HttpClient",
-                        LogLevel.TRACE,
-                        AdvancedByteBufFormat.TEXTUAL,
+        moduleStatus.bewaakConfiguratie(MODULE, API) {
+            webClientBuilder
+                .clone()
+                .baseUrl(zakenApiConfig.url.requireConfigured("zakenapi", "url"))
+                .clientConnector(
+                    ReactorClientHttpConnector(
+                        HttpClient.create().wiretap(
+                            "reactor.netty.http.client.HttpClient",
+                            LogLevel.TRACE,
+                            AdvancedByteBufFormat.TEXTUAL,
+                        ),
                     ),
-                ),
-            ).filter(
-                ExchangeFilterFunction.ofRequestProcessor {
-                    Mono.just(
-                        ClientRequest.from(it).header("Authorization", "Bearer ${getToken()}").build(),
-                    )
-                },
-            ).defaultHeader("Accept-Crs", "EPSG:4326")
-            .defaultHeader("Content-Crs", "EPSG:4326")
-            .build()
+                ).filter(moduleStatus.webClientFilter(MODULE, API))
+                .filter(
+                    ExchangeFilterFunction.ofRequestProcessor {
+                        Mono.just(
+                            ClientRequest.from(it).header("Authorization", "Bearer ${getToken()}").build(),
+                        )
+                    },
+                ).defaultHeader("Accept-Crs", "EPSG:4326")
+                .defaultHeader("Content-Crs", "EPSG:4326")
+                .build()
+        }
     }
 
     private fun getToken(): String =
@@ -101,6 +108,12 @@ class ZakenApiClient(
     fun zaakSubStatussen(): ZaakSubStatussen = ZaakSubStatussenImpl(this)
 
     fun useNnpKvkQueryIdentificators(): Boolean = zakenApiConfig.useNnpKvkQueryIdentificators
+
+    private companion object {
+        /** Modulenaam = sleutel in `nl-portal.config`, zoals de beheerstatus die toont. */
+        const val MODULE = "zakenapi"
+        const val API = "zakenapi"
+    }
 }
 
 fun WebClient.ResponseSpec.handleStatus() =
