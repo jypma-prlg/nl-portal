@@ -21,7 +21,8 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const git = (...args) => execFileSync("git", args, { cwd: repoRoot, encoding: "utf8" });
 
 // Voorheen ingecheckte waarden voor Keycloak en :app; mogen nergens in tracked bestanden terugkomen.
-const LEGACY_SECRETS = ["ookVRUAxmEWMcosfcGR5nxeoUC4Rgwbc", "lR2hhFRHraNwIbNfhlNivVIMdJkTqq6s"];
+// In stukken, zodat dit testbestand zelf geen van de oude secrets als geheel bevat.
+const LEGACY_SECRETS = [["ookVRUAx", "mEWMcosfcGR5nxeoUC4Rgwbc"], ["lR2hhFRHraNwIbNf", "hlNivVIMdJkTqq6s"]].map((parts) => parts.join(""));
 
 function scratchRoot() {
   const root = mkdtempSync(join(tmpdir(), "dev-setup-"));

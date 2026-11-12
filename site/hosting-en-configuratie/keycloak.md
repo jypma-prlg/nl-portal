@@ -122,7 +122,7 @@ De [audience mappers](./keycloak-token-exchange.md#stap-2-audience-mappers) zett
 De docker-compose demo-omgeving in de monorepo bevat een volledig werkend voorbeeld van alle bovenstaande configuratie, ingericht op de standard token exchange. Gebruik deze als referentie bij het inrichten van een eigen Keycloak:
 
 * `docker-compose/docker-compose.yaml` — de Keycloak service. Let op dat hier géén `KC_FEATURES` staat: dat is precies wat de standard token exchange oplevert.
-* `docker-compose/templates/keycloak/nlportal-realm.json` — een template (secrets als `{{...}}`-placeholders; `mise run dev:setup` rendert het naar het gitignored `docker-compose/.generated/keycloak/`) voor een volledig realm met de twee clients, de `aanvrager` client scope, de audience mappers, de `middel` mapper en testgebruikers (`burger` met BSN attribuut en `authenticationMethod` `digid`, `bedrijf` met KVK attribuut en `authenticationMethod` `eherkenning`).
+* `docker-compose/templates/keycloak/nlportal-realm.json` — een template (secrets als placeholders; `mise run dev:setup` rendert het naar het gitignored `docker-compose/.generated/keycloak/`) voor een volledig realm met de twee clients, de `aanvrager` client scope, de audience mappers, de `middel` mapper en testgebruikers (`burger` met BSN attribuut en `authenticationMethod` `digid`, `bedrijf` met KVK attribuut en `authenticationMethod` `eherkenning`).
 
 De bestandsnamen van de realm-imports eindigen op `-realm.json`. Dat is geen vormvoorkeur: Keycloak gebruikt die naamgeving om de importvolgorde te bepalen, en zonder die naamgeving start Keycloak 26 niet op.
 
