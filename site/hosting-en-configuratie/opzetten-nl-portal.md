@@ -63,7 +63,7 @@ Voor actieve ontwikkeling draai je alleen de ondersteunende services in compose 
 docker compose --profile zgw up -d
 ```
 
-Start daarna de backend (`./gradlew :app:bootRun` vanuit `backend/`; vereist een `.env.properties`, zie `backend/app/README.md`) en de frontend (`pnpm install && pnpm dev` vanuit `frontend/`). Zie [`GETTING_STARTED.md`](https://github.com/pinkroccade/nl-portal/blob/main/GETTING_STARTED.md) en `docker-compose/README.md` voor de details.
+Start daarna de backend (`./gradlew :app:bootRun` vanuit `backend/`; vereist een `.env.properties` (genereer die met `mise run dev:setup`), zie `backend/app/README.md`) en de frontend (`pnpm install && pnpm dev` vanuit `frontend/`). Zie [`GETTING_STARTED.md`](https://github.com/pinkroccade/nl-portal/blob/main/GETTING_STARTED.md) en `docker-compose/README.md` voor de details.
 
 ### Configureren via bestanden
 

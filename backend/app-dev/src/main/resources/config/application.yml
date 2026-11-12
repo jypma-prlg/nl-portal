@@ -50,7 +50,7 @@ nl-portal:
         keycloak:
             resource: nl-portal-m2m
             credentials:
-                secret: ookVRUAxmEWMcosfcGR5nxeoUC4Rgwbc
+                secret: ${KEYCLOAK_CLIENT_SECRET:}
     security:
         cors:
             -   path: "/**"

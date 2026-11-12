@@ -180,6 +180,10 @@ run = "k6 run performance/scenarios/smoke.ts"
 description = "Draai de tests van de repo-scripts (scripts/*.test.mjs)"
 run = 'node --test "scripts/**/*.test.mjs"'
 
+[tasks."dev:setup"]
+description = "Genereer de lokale dev-omgeving met willekeurige secrets (Keycloak-realms, docker-compose/.env, backend/app/.env.properties); opnieuw draaien geeft een verse omgeving"
+run = "node scripts/dev-setup.mjs"
+
 [tasks."docs:install"]
 description = "Installeer de dependencies van de docs-site"
 dir = "site"
