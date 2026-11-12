@@ -2,7 +2,7 @@
 
 NL Portal heeft veel functionaliteiten out of the box, en is volledig modulair uitbreidbaar. Alle functionaliteiten zijn optioneel en kunnen aan of uitgezet worden.
 
-Frontend-features worden op de backend geconfigureerd onder `nl-portal.frontend. (env: `NLPORTAL_FRONTEND_*`) en door de frontend opgehaald via `GET /api/public/frontend`. Zie de [Deployment guide](../hosting-en-configuratie/deployment-guide.md#frontend-features) voor de toggles en eigenschappen.
+Frontend-eigenschappen worden op de backend geconfigureerd onder `nl-portal.frontend.properties` (env: `NLPORTAL_FRONTEND_PROPERTIES_*`), de toggles zijn feature flags (`ops.frontend.*`), en beide worden door de frontend opgehaald via `GET /api/public/frontend`. Zie de [Deployment guide](../hosting-en-configuratie/deployment-guide.md#frontend-features) voor de toggles en eigenschappen.
 
 
 ### Beveiligde omgeving

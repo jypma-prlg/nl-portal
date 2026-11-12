@@ -143,7 +143,7 @@ shippable app); changing a library rebuilds it and the app hot-reloads. Full con
 ### Configuratie en extern netwerk
 Alles start met `docker compose up`; knoppen staan in een `.env` (kopieer `.env.example`).
 
-- **Flags:** `imports/flags/nl-portal.flagd.json` (flagd-bestand) wordt read-only in de backend gemount; een wijziging werkt na een herstart van de backend (op een cluster via een rolling update). Welke flags er zijn, wat ze doen en welke frontend-toggles nog via `imports/backend.env` lopen: [feature flags-referentie](../site/hosting-en-configuratie/feature-flags.md).
+- **Flags:** `imports/flags/nl-portal.flagd.json` (flagd-bestand) wordt read-only in de backend gemount; een wijziging werkt na een herstart van de backend (op een cluster via een rolling update). Welke flags (ook alle frontend-toggles) er zijn en wat ze doen: [feature flags-referentie](../site/hosting-en-configuratie/feature-flags.md).
 - **Koppelingen:** `imports/koppelingen/` bevat per koppeling endpoint en authenticatie, met geheimen als bestand in `secrets/` (gitignored). Zie [imports/koppelingen/README.md](imports/koppelingen/README.md).
 - **Netwerk `mijngemeente`:** met `NETWERK=mijngemeente` sluit de stack aan op het externe Docker-netwerk met de API's (ZGW, Haal Centraal, Diftar). Maak het netwerk eenmalig aan met `docker network create mijngemeente`.
 - **Pentest-doelwit:** `RUN_MODE=local`: gebouwd uit de bronnen, met de geïmporteerde realm en testgebruikers.

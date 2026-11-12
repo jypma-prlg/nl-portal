@@ -23,7 +23,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class FrontendConfigurationProperties {
     var theme: FrontendTheme = FrontendTheme()
     var properties: FrontendProperties = FrontendProperties()
-    var toggles: FrontendToggles = FrontendToggles()
     var modulesWhitelist: List<String> = emptyList()
 
     class FrontendTheme(
@@ -48,19 +47,6 @@ class FrontendConfigurationProperties {
         var overviewMaintenanceAlertTextEn: String? = null
         var overviewCurrentCasesPreviewLength: Int? = null
         var overviewCurrentTasksPreviewLength: Int? = null
-        var custom: String? = null
-    }
-
-    @JsonInclude(Include.NON_NULL)
-    class FrontendToggles {
-        var messageCountEnabled: Boolean? = null
-        var casesPartialSearchEnabled: Boolean? = null
-        var openProductEnabled: Boolean? = null
-        var casesResultExplanationEnabled: Boolean? = null
-        var myInhabitantCountEnabled: Boolean? = null
-        var casesContactMomentsEnabled: Boolean? = null
-        var overviewIntroEnabled: Boolean? = null
-        var overviewMaintenanceAlertEnabled: Boolean? = null
         var custom: String? = null
     }
 }

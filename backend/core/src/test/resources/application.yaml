@@ -44,12 +44,6 @@ nl-portal:
   "otelEnabled": true
   }'
 
-    toggles:
-      cases-partial-search-enabled: true
-      cases-result-explanation-enabled: true
-      open-product-enabled: true
-      my-inhabitant-count-enabled: false
-      cases-contact-moments-enabled: true
 ---
 spring:
   config:

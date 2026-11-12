@@ -28,6 +28,7 @@ import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTest
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
+import tools.jackson.databind.JsonNode
 
 @SpringBootTest
 @AutoConfigureWebTestClient(timeout = "36000")
@@ -35,19 +36,23 @@ class FrontendFeatureFlagTest(
     @Autowired private val webTestClient: WebTestClient,
 ) {
     @Test
-    fun `message count toggle follows the flag file, also after the file changes`() {
-        writeFlagFile(messageCountEnabled = false)
+    fun `every frontend toggle follows its flag, also after the file changes`() {
+        writeFlagFile(enabled = false)
         await().atMost(Duration.ofSeconds(10)).untilAsserted {
-            assertEquals(false, messageCountToggle())
+            val toggles = frontendToggles()
+            TOGGLE_FLAGS.keys.forEach { assertEquals(false, toggles.requiredAt("/$it").booleanValue(), it) }
+            assertEquals("{}", toggles.requiredAt("/custom").stringValue())
         }
 
-        writeFlagFile(messageCountEnabled = true)
+        writeFlagFile(enabled = true)
         await().atMost(Duration.ofSeconds(10)).untilAsserted {
-            assertEquals(true, messageCountToggle())
+            val toggles = frontendToggles()
+            TOGGLE_FLAGS.keys.forEach { assertEquals(true, toggles.requiredAt("/$it").booleanValue(), it) }
+            assertEquals(mapOf("betaBanner" to true), Mapper.get().readValue(toggles.requiredAt("/custom").stringValue(), Map::class.java))
         }
     }
 
-    private fun messageCountToggle(): Boolean? {
+    private fun frontendToggles(): JsonNode {
         val body =
             webTestClient
                 .get()
@@ -61,25 +66,42 @@ class FrontendFeatureFlagTest(
         return Mapper
             .get()
             .readTree(body)
-            .requiredAt("/toggles/messageCountEnabled")
-            .booleanValue()
+            .requiredAt("/toggles")
     }
 
     companion object {
         private val flagFile: Path = Files.createTempFile("feature-flags", ".flagd.json")
 
-        private fun writeFlagFile(messageCountEnabled: Boolean) {
-            val default = if (messageCountEnabled) "on" else "off"
+        private val TOGGLE_FLAGS =
+            mapOf(
+                "messageCountEnabled" to "ops.frontend.message-count",
+                "casesPartialSearchEnabled" to "ops.frontend.cases-partial-search",
+                "openProductEnabled" to "ops.frontend.open-product",
+                "casesResultExplanationEnabled" to "ops.frontend.cases-result-explanation",
+                "myInhabitantCountEnabled" to "ops.frontend.my-inhabitant-count",
+                "casesContactMomentsEnabled" to "ops.frontend.cases-contact-moments",
+                "overviewIntroEnabled" to "ops.frontend.overview-intro",
+                "overviewMaintenanceAlertEnabled" to "ops.frontend.overview-maintenance-alert",
+            )
+
+        private fun writeFlagFile(enabled: Boolean) {
+            val default = if (enabled) "on" else "off"
+            val booleanFlags =
+                TOGGLE_FLAGS.values.joinToString(",") {
+                    "\"$it\": { \"state\": \"ENABLED\", \"variants\": { \"on\": true, \"off\": false }, \"defaultVariant\": \"$default\" }"
+                }
+            val customVariant = if (enabled) """{ "betaBanner": true }""" else "{}"
             Files.writeString(
                 flagFile,
                 """
                 {
                   "${'$'}schema": "https://flagd.dev/schema/v0/flags.json",
                   "flags": {
-                    "ops.frontend.message-count": {
+                    $booleanFlags,
+                    "ops.frontend.custom-toggles": {
                       "state": "ENABLED",
-                      "variants": { "on": true, "off": false },
-                      "defaultVariant": "$default"
+                      "variants": { "current": $customVariant },
+                      "defaultVariant": "current"
                     }
                   }
                 }
@@ -90,7 +112,7 @@ class FrontendFeatureFlagTest(
         @JvmStatic
         @DynamicPropertySource
         fun featureFlagProperties(registry: DynamicPropertyRegistry) {
-            writeFlagFile(messageCountEnabled = false)
+            writeFlagFile(enabled = false)
             registry.add("nl-portal.feature-flags.file") { flagFile.toString() }
             registry.add("nl-portal.feature-flags.poll-interval-ms") { 200 }
         }

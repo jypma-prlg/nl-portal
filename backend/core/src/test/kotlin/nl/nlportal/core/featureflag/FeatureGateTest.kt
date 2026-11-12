@@ -17,10 +17,13 @@ package nl.nlportal.core.featureflag
 
 import dev.openfeature.sdk.EvaluationContext
 import dev.openfeature.sdk.ImmutableContext
+import dev.openfeature.sdk.ImmutableStructure
 import dev.openfeature.sdk.OpenFeatureAPI
 import dev.openfeature.sdk.ProviderEvaluation
+import dev.openfeature.sdk.Value
 import dev.openfeature.sdk.providers.memory.Flag
 import dev.openfeature.sdk.providers.memory.InMemoryProvider
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -93,6 +96,20 @@ class FeatureGateTest {
         val gate = gateWith(emptyMap())
 
         assertFalse(gate.isEnabled(FeatureFlag("permission.frontend.unknown", ToggleType.PERMISSION), ImmutableContext()))
+    }
+
+    @Test
+    fun `a boolean map flag yields its booleans, and an unknown one an empty map`() {
+        val structure =
+            Flag
+                .builder<Value>()
+                .variant("variant", Value(ImmutableStructure(mapOf("betaBanner" to Value(true), "text" to Value("no")))))
+                .defaultVariant("variant")
+                .build()
+        val gate = gateWith(mapOf("ops.frontend.custom" to structure))
+
+        assertEquals(mapOf("betaBanner" to true), gate.booleanMap("ops.frontend.custom", ImmutableContext()))
+        assertEquals(emptyMap<String, Boolean>(), gate.booleanMap("ops.frontend.unknown", ImmutableContext()))
     }
 
     @Test

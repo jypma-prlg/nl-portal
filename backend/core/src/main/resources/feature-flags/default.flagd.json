@@ -3,7 +3,66 @@
   "flags": {
     "ops.frontend.message-count": {
       "state": "ENABLED",
-      "variants": { "on": true, "off": false },
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
+    },
+    "ops.frontend.cases-partial-search": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
+    },
+    "ops.frontend.open-product": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
+    },
+    "ops.frontend.cases-result-explanation": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
+    },
+    "ops.frontend.my-inhabitant-count": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
+    },
+    "ops.frontend.cases-contact-moments": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
+    },
+    "ops.frontend.overview-intro": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
+      "defaultVariant": "off"
+    },
+    "ops.frontend.overview-maintenance-alert": {
+      "state": "ENABLED",
+      "variants": {
+        "on": true,
+        "off": false
+      },
       "defaultVariant": "off"
     }
   }
