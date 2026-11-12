@@ -13,12 +13,14 @@ lokale omgeving met willekeurige secrets, vanaf de repo-root:
 mise run dev:setup
 ```
 
-Dit rendert de templates onder `docker-compose/templates/keycloak/` naar het gitignored
-`docker-compose/.generated/keycloak/`, schrijft de secrets (Keycloak-adminwachtwoord, database-wachtwoord en
-het client-secret van `nl-portal-m2m`) in `docker-compose/.env` en genereert `backend/app/.env.properties`. Zonder
-deze stap weigert `docker compose` te starten. Draaide de stack al, start hem dan opnieuw met een lege
-Keycloak-database: `docker compose down && docker compose up -d`. De testgebruikers (`burger`, `bedrijf`) staan met een wachtwoordhash in de realm-template; de ZGW-componenten
-krijgen hun gegenereerde secrets in een vervolgticket (#152).
+Dit rendert de templates onder `docker-compose/templates/` (de Keycloak-realms en de seed-gegevens van Open Zaak,
+Objects, Open Notificaties, Open Klant en Open Product) naar het gitignored `docker-compose/.generated/`. Alle
+secrets komen in `docker-compose/.env`: het Keycloak-client-secret, de JWT-secrets en API-tokens tussen de
+componenten, de databasewachtwoorden, de Django-`SECRET_KEY`'s, de beheerderswachtwoorden en het RabbitMQ-wachtwoord.
+Ook `backend/app/.env.properties` en `backend/app-dev/.env.properties` worden gegenereerd. Zonder deze stap weigert
+`docker compose` te starten. Draaide de stack al, start hem dan opnieuw met lege databases:
+`docker compose down -v && docker compose up -d`. De testgebruikers (`burger`, `bedrijf`) staan met een
+wachtwoordhash in de realm-template.
 
 ## 1. Remote — evaluate the released product
 

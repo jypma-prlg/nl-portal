@@ -55,7 +55,7 @@
     "pk": 1,
     "fields": {
         "identifier": "valtimo_client",
-        "secret": "e09b8bc5-5831-4618-ab28-41411304309d"
+        "secret": "{{OPENZAAK_VALTIMO_CLIENT_SECRET}}"
     }
 },
 {
@@ -63,7 +63,7 @@
     "pk": 2,
     "fields": {
         "identifier": "nl-portal",
-        "secret": "DGXJs3GKU84LFZWWfdb!nk6gpL6mL9@A"
+        "secret": "{{OPENZAAK_NLPORTAL_SECRET}}"
     }
 },
 {
@@ -71,7 +71,7 @@
     "pk": 3,
     "fields": {
         "identifier": "opennotificaties",
-        "secret": "opennotificaties"
+        "secret": "{{OPENZAAK_OPENNOTIFICATIES_SECRET}}"
     }
 },
 {
@@ -79,7 +79,7 @@
     "pk": 4,
     "fields": {
         "identifier": "openformulieren",
-        "secret": "openformulieren"
+        "secret": "{{OPENZAAK_OPENFORMULIEREN_SECRET}}"
     }
 },
 {
@@ -146,7 +146,7 @@
         "api_connection_check_path": "",
         "auth_type": "zgw",
         "client_id": "openzaak",
-        "secret": "jG2v*vobB2*g6Mna-R3CqeQ2FXReX_cE",
+        "secret": "{{NOTIFICATIES_OPENZAAK_SECRET}}",
         "oauth2_token_url": "",
         "oauth2_scope": "",
         "jwt_valid_for": 43200,

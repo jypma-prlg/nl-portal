@@ -13,7 +13,14 @@ type Env = Record<string, string | undefined>;
 const zonderSlash = (url: string) => url.replace(/\/+$/, "");
 const getal = (env: Env, naam: string, standaard: number) => Number(env[naam] ?? standaard);
 
-// De standaardwaarden zijn de lokale demo-gegevens uit docker-compose/imports (backend.env, realm-import).
+// Secrets en tokens staan nergens als standaardwaarde: ze komen uit PERF_* of uit docker-compose/.env
+// (gegenereerd door `mise run dev:setup`; `mise run perf:seed` laadt dat bestand).
+function verplicht(env: Env, ...namen: string[]): string {
+  for (const naam of namen) if (env[naam]) return env[naam];
+  throw new Error(`Zet ${namen.join(" of ")} (draai eerst mise run dev:setup)`);
+}
+
+// De overige standaardwaarden zijn de lokale demo-gegevens uit docker-compose/imports (realm-import).
 export function laadConfig(env: Env) {
   const openzaak = zonderSlash(env.PERF_OPENZAAK_URL ?? "http://localhost:8001");
   const objecten = zonderSlash(env.PERF_OBJECTEN_URL ?? "http://localhost:8010");
@@ -29,17 +36,17 @@ export function laadConfig(env: Env) {
       url: zonderSlash(env.PERF_KEYCLOAK_URL ?? "http://localhost:8082/auth"),
       realm: env.PERF_REALM ?? "nlportal",
       adminGebruiker: env.PERF_KEYCLOAK_ADMIN ?? "admin",
-      adminWachtwoord: env.PERF_KEYCLOAK_ADMIN_PASSWORD ?? "admin",
+      adminWachtwoord: verplicht(env, "PERF_KEYCLOAK_ADMIN_PASSWORD", "KEYCLOAK_ADMIN_PASSWORD"),
     },
     openzaak: {
       url: openzaak,
       clientId: env.PERF_ZGW_CLIENT_ID ?? "nl-portal",
-      secret: env.PERF_ZGW_SECRET ?? "DGXJs3GKU84LFZWWfdb!nk6gpL6mL9@A",
+      secret: verplicht(env, "PERF_ZGW_SECRET", "OPENZAAK_NLPORTAL_SECRET"),
       catalogi: `${openzaak}/catalogi/api/v1`,
     },
     objecten: {
       url: objecten,
-      token: env.PERF_OBJECTEN_TOKEN ?? "182c13e2209161852c53cef53a879f7a2f923430",
+      token: verplicht(env, "PERF_OBJECTEN_TOKEN", "OBJECTS_API_TOKEN"),
       taakTypeUrl: env.PERF_TAAK_TYPE_URL ?? `${objecten}/api/v2/objecttypes/b4a617af-6969-45e8-9afd-d51e170716d5`,
     },
   };

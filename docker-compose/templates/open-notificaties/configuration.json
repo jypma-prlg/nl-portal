@@ -4,7 +4,7 @@
         "pk": 1,
         "fields": {
             "identifier": "objects-api",
-            "secret": "xxoV*EMTKD@n6bFq6Ab*8BvLiB6XC!E3"
+            "secret": "{{NOTIFICATIES_OBJECTS_SECRET}}"
         }
     },
     {
@@ -12,7 +12,7 @@
         "pk": 2,
         "fields": {
             "identifier": "openzaak",
-            "secret": "jG2v*vobB2*g6Mna-R3CqeQ2FXReX_cE"
+            "secret": "{{NOTIFICATIES_OPENZAAK_SECRET}}"
         }
     },
     {

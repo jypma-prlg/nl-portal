@@ -15,6 +15,14 @@ services:
         env_file: imports/backend.env
         environment:
             KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_M2M_CLIENT_SECRET:?draai eerst mise run dev:setup}
+            NLPORTAL_CONFIG_OBJECTENAPI_PROPERTIES_TOKEN: "${OBJECTS_API_TOKEN:?draai eerst mise run dev:setup}"
+            NLPORTAL_CONFIG_ZAKENAPI_PROPERTIES_SECRET: "${OPENZAAK_NLPORTAL_SECRET:?draai eerst mise run dev:setup}"
+            NLPORTAL_CONFIG_CATALOGIAPI_PROPERTIES_SECRET: "${OPENZAAK_NLPORTAL_SECRET:?draai eerst mise run dev:setup}"
+            NLPORTAL_CONFIG_BESLUITENAPI_PROPERTIES_SECRET: "${OPENZAAK_NLPORTAL_SECRET:?draai eerst mise run dev:setup}"
+            NLPORTAL_CONFIG_DOCUMENTENAPIS_PROPERTIES_CONFIGURATIONS_OPENZAAK_SECRET: "${OPENZAAK_NLPORTAL_SECRET:?draai eerst mise run dev:setup}"
+            NLPORTAL_CONFIG_DOCUMENTENAPIS_PROPERTIES_CONFIGURATIONS_DUMMYDOC_SECRET: "${OPENZAAK_NLPORTAL_SECRET:?draai eerst mise run dev:setup}"
+            NLPORTAL_CONFIG_OPENKLANT2_PROPERTIES_TOKEN: "${OPENKLANT_API_TOKEN:?draai eerst mise run dev:setup}"
+            NLPORTAL_BEHEER_WACHTWOORDHASH: "{noop}${BACKEND_BEHEER_PASSWORD:?draai eerst mise run dev:setup}"
             NLPORTAL_FEATUREFLAGS_FILE: /etc/nl-portal/flags/nl-portal.flagd.json
             SPRING_CONFIG_IMPORT: optional:configtree:/etc/nl-portal/koppelingen/
         volumes:

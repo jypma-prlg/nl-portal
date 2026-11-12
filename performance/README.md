@@ -34,11 +34,11 @@ PERF_USERNAME=burger-001 PERF_PASSWORD=perf-wachtwoord PERF_CLIENT_ID=nl-portal-
 |---|---|
 | `PERF_SEED_GEBRUIKERS`, `PERF_SEED_ZAKEN`, `PERF_SEED_TAKEN`, `PERF_SEED_DOCUMENTEN` (per zaak) | 10, 5, 2, 2 |
 | `PERF_SEED_PASSWORD` (valt terug op `PERF_PASSWORD`) | `perf-wachtwoord` |
-| `PERF_KEYCLOAK_ADMIN`, `PERF_KEYCLOAK_ADMIN_PASSWORD` | `admin`, `admin` |
+| `PERF_KEYCLOAK_ADMIN`, `PERF_KEYCLOAK_ADMIN_PASSWORD` | `admin`, het gegenereerde `KEYCLOAK_ADMIN_PASSWORD` uit `docker-compose/.env` |
 | `PERF_OPENZAAK_URL`, `PERF_OBJECTEN_URL` | `http://localhost:8001`, `http://localhost:8010` |
-| `PERF_ZGW_CLIENT_ID`, `PERF_ZGW_SECRET`, `PERF_OBJECTEN_TOKEN` | de lokale demo-gegevens uit `docker-compose/imports/backend.env` |
+| `PERF_ZGW_CLIENT_ID`, `PERF_ZGW_SECRET`, `PERF_OBJECTEN_TOKEN` | `nl-portal`, de gegenereerde `OPENZAAK_NLPORTAL_SECRET` en `OBJECTS_API_TOKEN` uit `docker-compose/.env` |
 
-Alle standaardwaarden zijn lokale demo-gegevens; zet voor een andere omgeving eigen waarden in `mise.local.toml`. De BSN's van de seed-gebruikers staan niet in de BRP-mock: de profiel/BRP-journey vraagt dus eerst om aanvullende mockdata.
+Secrets en tokens hebben geen vaste standaardwaarde: `mise run perf:seed` leest ze uit `docker-compose/.env` (draai eerst `mise run dev:setup`). De overige standaardwaarden zijn lokale demo-gegevens; zet voor een andere omgeving eigen waarden in `mise.local.toml`. De BSN's van de seed-gebruikers staan niet in de BRP-mock: de profiel/BRP-journey vraagt dus eerst om aanvullende mockdata.
 
 ## Draaien
 

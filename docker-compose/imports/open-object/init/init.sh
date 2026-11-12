@@ -5,5 +5,5 @@ until python /app/src/manage.py migrate --check >/dev/null 2>&1; do
     echo "Waiting for open-object migrations..."
     sleep 5
 done
-python /app/src/manage.py loaddata configuration objecttypes objects
+python /app/src/manage.py loaddata /app/generated/configuration.json objecttypes objects
 echo ">>>> Done <<<<"

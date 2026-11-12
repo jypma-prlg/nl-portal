@@ -6,5 +6,5 @@ until python /app/src/manage.py migrate --check >/dev/null 2>&1; do
     sleep 5
 done
 python /app/src/manage.py load_upl --file /app/init/UPL-actueel.csv
-python /app/src/manage.py loaddata configuration demodata
+python /app/src/manage.py loaddata /app/generated/configuration.json demodata
 echo ">>>> Done <<<<"
