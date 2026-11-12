@@ -59,6 +59,10 @@ legt vast *dat* en *hoe* beslissingen worden vastgelegd.
   Configuratie en thema per omgeving uit config-files, zonder configuration panel; rolling restart in
   plaats van hot reload; validatie (incl. contrast) in CI en bij opstart.
 
+- [`0020-levenscyclus-feature-flags-en-privacy-evaluatiecontext.md`](../../development/adr/0020-levenscyclus-feature-flags-en-privacy-evaluatiecontext.md) — **geaccepteerd**.
+  Aanvulling op ADR 0014: toggle-typen en foutgedrag, naamgeving, eigenaar en vervaldatum, en een
+  evaluatiecontext zonder persoonsgegevens (opaque id of HMAC, nooit BSN of naam).
+
 ## Overige kandidaten
 
 Nog niet als ADR vastgelegd:

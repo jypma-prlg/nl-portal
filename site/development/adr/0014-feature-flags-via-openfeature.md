@@ -4,8 +4,8 @@
 
 Geaccepteerd en deels uitgevoerd (#154, onderdeel van #143). Beslissing 7 (rolling update in plaats van
 hot reload) is toegevoegd in #389. De keuze van een productie-provider is
-bewust uitgesteld (spike #147). De afspraken over levenscyclus en privacy van de evaluatiecontext volgen
-in een eigen ADR (#148).
+bewust uitgesteld (spike #147). De afspraken over levenscyclus en privacy van de evaluatiecontext staan
+in [ADR 0020](./0020-levenscyclus-feature-flags-en-privacy-evaluatiecontext.md) (#148).
 
 ## Context
 
