@@ -21,7 +21,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.handler.logging.LogLevel
 import nl.nlportal.core.ssl.ClientSslContextResolver
 import nl.nlportal.core.util.Mapper
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import nl.nlportal.verificatie.autoconfigure.VerificatieModuleConfiguration.VerificatieConfigurationProperties
 import nl.nlportal.verificatie.client.domain.VerificatieCreateApiRequest
 import nl.nlportal.verificatie.client.domain.VerificatieCreateApiResponse
@@ -127,7 +127,7 @@ class VerificatieClient(
 
     private fun getToken(): String? {
         if (verificatieConfigurationProperties.clientId != null && verificatieConfigurationProperties.secret != null) {
-            return IdTokenGenerator().generateToken(
+            return ZgwJwtGenerator().generateToken(
                 verificatieConfigurationProperties.secret!!,
                 verificatieConfigurationProperties.clientId!!,
             )

@@ -50,6 +50,7 @@ network namespace), so from your host every service is reachable on `localhost:<
 | NL Portal Backend (build from source)   | 8080  | RUN_MODE=local    |
 | NL Portal Frontend (build from source)  | 3000  | RUN_MODE=local    |
 | NL Portal Backend (published image)     | 8080  | RUN_MODE=remote   |
+| NL Portal Backend beheerpoort (`/actuator/modulestatus`) | 8091 | RUN_MODE=local, remote |
 | NL Portal Frontend (published image)    | 3000  | RUN_MODE=remote   |
 | Keycloak                                | 8082  | - (core)          |
 | Keycloak Database (postgres)            | -     | - (core)          |
@@ -63,10 +64,6 @@ network namespace), so from your host every service is reachable on `localhost:<
 | Redis                                   | -     | zgw (sub-profiles)|
 | Haalcentraal BRP                        | 5010  | haalcentraal      |
 | Haalcentraal Bewoning                   | 5011  | haalcentraal      |
-| Configuration Panel Router              | 3001  | config            |
-| Configuration Panel Backend             | 8090  | config            |
-| Configuration Panel Frontend            | 8091  | config            |
-| Configuration Panel Database (postgres) | -     | config            |
 | ClamAV virus scan                       | 3310  | (default)         |
 
 > **NB!** `RUN_MODE` selects exactly one app-run mode, so `local` and `remote` can never bind the
@@ -96,10 +93,10 @@ the product without a local build. The tag is required and comes from `NL_PORTAL
 ```shell
 RUN_MODE=remote NL_PORTAL_IMAGE_TAG=<tag> docker compose --profile zgw --profile haalcentraal up -d
 ```
-> Note: no release has been published under `ghcr.io/pinkroccade` yet, so only snapshot tags
-> (`<version>-main-<timestamp>-<sha>-SNAPSHOT`, one per push to `main`) exist; pick one from the
-> package pages of `nl-portal-backend` and `nl-portal-frontend` in the pinkroccade organisation.
-> Once releases exist, a version (`1.2.3`), minor (`1.2`) or major (`1`) tag works too. The older
+> Release `0.1.0` is published under `ghcr.io/pinkroccade`; version (`0.1.0`), minor (`0.1`), major (`0`)
+> and `latest` tags all work. Snapshot tags (`<version>-main-<timestamp>-<sha>-SNAPSHOT`, one per push
+> to `main`) also exist. Each release image is signed and carries a CycloneDX SBOM attestation and the
+> label `nl.nlportal.sbom` (see [SBOM](../site/development/workflows/sbom.md)). The older
 > `ghcr.io/nl-portal/*` images are Ritense's and no longer receive updates from this repository.
 > Either way, make sure the `imports/` fixtures and configuration in this
 > stack are compatible with the chosen tag.
@@ -146,10 +143,25 @@ shippable app); changing a library rebuilds it and the app hot-reloads. Full con
 ### Configuratie en extern netwerk
 Alles start met `docker compose up`; knoppen staan in een `.env` (kopieer `.env.example`).
 
-- **Flags:** `imports/flags/nl-portal.flagd.json` (flagd-bestand) wordt read-only in de backend gemount; wijzigingen worden binnen enkele seconden opgepikt.
+- **Flags:** `imports/flags/nl-portal.flagd.json` (flagd-bestand) wordt read-only in de backend gemount; een wijziging werkt na een herstart van de backend (op een cluster via een rolling update). Welke flags er zijn, wat ze doen en welke frontend-toggles nog via `imports/backend.env` lopen: [feature flags-referentie](../site/hosting-en-configuratie/feature-flags.md).
 - **Koppelingen:** `imports/koppelingen/` bevat per koppeling endpoint en authenticatie, met geheimen als bestand in `secrets/` (gitignored). Zie [imports/koppelingen/README.md](imports/koppelingen/README.md).
 - **Netwerk `mijngemeente`:** met `NETWERK=mijngemeente` sluit de stack aan op het externe Docker-netwerk met de API's (ZGW, Haal Centraal, Diftar). Maak het netwerk eenmalig aan met `docker network create mijngemeente`.
 - **Pentest-doelwit:** `RUN_MODE=local`: gebouwd uit de bronnen, met de geïmporteerde realm en testgebruikers.
+
+### Performance-overlay en tracing
+`compose.perf.yaml` is een overlay voor performancetesten (zie
+[ADR 0018](../site/development/adr/0018-performancetesten-met-k6-en-otel-agent-in-overlay.md)). Hij werkt
+met `RUN_MODE=local` of `remote` (niet met `sources`, want dan draait de backend niet in compose).
+
+- `mise run perf:stack-up`: de stack zonder tracing. Zo draaien baselineruns.
+- `mise run perf:stack-up-tracing`: dezelfde stack plus de OpenTelemetry Java-agent op de portal-backend,
+  OTel aan op OpenZaak en Objecten, en Grafana Tempo als collector (100% sampling). Zo draait de diagnostische run.
+- `mise run perf:stack-down`: stopt de stack en ruimt de volumes op.
+
+De agent komt alleen via een volume in de backend-container (init-service `otel-javaagent`); de
+backend-image en het release-artefact blijven ongewijzigd. Een trage request vind je terug in Tempo
+op `http://localhost:3200/api/traces/<trace-id>`; de trace-id is het tweede deel van de `traceparent`-header
+die k6 meestuurt (`00-<trace-id>-<span-id>-01`). Een trace loopt van portal-backend naar OpenZaak.
 
 ### Starting up supporting services only
 To run only the supporting services (e.g. when running the application from your IDE),

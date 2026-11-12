@@ -100,8 +100,8 @@ published container image `ghcr.io/pinkroccade/nl-portal-frontend`.
 
 Runtime configuration comes from two places:
 
-- **Feature toggles and properties** are served by the backend at `GET /api/public/features` (from
-  `nl-portal.config.features.*`) and read by the `user-interface` app context. `window.*` no longer
+- **Feature toggles and properties** are served by the backend at `GET /api/public/frontend` (from
+  `nl-portal.frontend.*`) and read by the `user-interface` app context. `window.*` no longer
   carries feature config.
 - **OIDC and API URLs** are the only `window.*` globals left, set by `packages/app/public/config.js`
   (local dev defaults) and, in a container, `config.template.js` (populated from environment

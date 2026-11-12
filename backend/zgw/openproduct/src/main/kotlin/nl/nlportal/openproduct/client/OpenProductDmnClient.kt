@@ -19,7 +19,7 @@ import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.handler.logging.LogLevel
 import nl.nlportal.core.ssl.ClientSslContextResolver
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import nl.nlportal.openproduct.autoconfigure.OpenProductModuleConfiguration.OpenProductConfigurationProperties.OpenProductDmnConfigurationProperties
 import nl.nlportal.openproduct.client.domain.OpenProductDmnRequest
 import nl.nlportal.openproduct.client.domain.OpenProductDmnResponse
@@ -104,7 +104,7 @@ class OpenProductDmnClient(
 
     private fun getToken(): String? {
         if (dmnConfigProperties.clientId.isNotEmpty() && dmnConfigProperties.secret.isNotEmpty()) {
-            return IdTokenGenerator().generateToken(
+            return ZgwJwtGenerator().generateToken(
                 dmnConfigProperties.secret,
                 dmnConfigProperties.clientId,
             )

@@ -22,7 +22,6 @@ val isLib = true
 dependencies {
 
     api(project(":graphql"))
-    api(project(":zgw:idtoken-authentication"))
 
     implementation(Dependencies.springBootStarter)
 

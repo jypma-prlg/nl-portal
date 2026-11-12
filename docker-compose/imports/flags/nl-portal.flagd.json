@@ -4,7 +4,7 @@
     "ops.frontend.message-count": {
       "state": "ENABLED",
       "variants": { "on": true, "off": false },
-      "defaultVariant": "off"
+      "defaultVariant": "on"
     }
   }
 }

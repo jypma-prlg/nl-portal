@@ -124,12 +124,6 @@ object ModuleLayers {
                 "het verifiëren van contactgegevens van burgers, zoals een e-mailadres of telefoonnummer",
             ),
             ModuleMapping(
-                ":zgw:idtoken-authentication",
-                "nl.nlportal.idtokenauthentication",
-                Layer.FEATURE,
-                "inloggen met een ID-token van een externe identiteitsprovider",
-            ),
-            ModuleMapping(
                 // common-ground-authentication-test shares the package prefix: it is test support
                 // for authentication and ships production classes below nl.nlportal.commonground.
                 listOf(":zgw:common-ground-authentication", ":zgw:common-ground-authentication-test"),

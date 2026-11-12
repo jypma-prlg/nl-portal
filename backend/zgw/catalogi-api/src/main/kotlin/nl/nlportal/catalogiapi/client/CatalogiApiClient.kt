@@ -24,7 +24,7 @@ import nl.nlportal.catalogiapi.domain.ResultaatType
 import nl.nlportal.catalogiapi.domain.StatusType
 import nl.nlportal.catalogiapi.domain.ZaakStatusType
 import nl.nlportal.catalogiapi.domain.ZaakType
-import nl.nlportal.idtokenauthentication.service.IdTokenGenerator
+import nl.nlportal.core.koppeling.ZgwJwtGenerator
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.client.ExchangeStrategies
@@ -36,7 +36,7 @@ import java.util.UUID
 
 class CatalogiApiClient(
     private val catalogiApiConfig: CatalogiApiConfigProperties,
-    private val idTokenGenerator: IdTokenGenerator,
+    private val zgwJwtGenerator: ZgwJwtGenerator,
 ) {
     suspend fun getStatusTypes(zaakType: String): List<StatusType> {
         val params = LinkedMultiValueMap<String, String>()
@@ -104,7 +104,7 @@ class CatalogiApiClient(
 
     private fun webClient(): WebClient {
         val token =
-            idTokenGenerator.generateToken(
+            zgwJwtGenerator.generateToken(
                 catalogiApiConfig.secret.requireConfigured("catalogiapi", "secret"),
                 catalogiApiConfig.clientId.requireConfigured("catalogiapi", "clientId"),
             )

@@ -6,6 +6,7 @@ java = "temurin-25"
 syft = "1.57.0"
 grype = "0.121.2"
 gitleaks = "8.30.1"
+k6 = "2.3.0"
 
 # Taken heten <domein>:<actie>. De aggregaten zonder prefix (build, test, lint, arch-check) roepen via
 # `depends` de domeintaken aan. Taken van meer dan een regel staan als bestand onder mise-tasks/.
@@ -20,11 +21,11 @@ depends = ["backend:build", "frontend:build"]
 
 [tasks.test]
 description = "Draai de unit-tests van backend, frontend en scripts (integratietests: backend:integration-test)"
-depends = ["backend:test", "frontend:test", "scripts:test"]
+depends = ["backend:test", "frontend:test", "scripts:test", "perf:test"]
 
 [tasks.lint]
 description = "Lint, typecheck en formatteringscontrole van backend en frontend"
-depends = ["backend:lint", "frontend:lint", "frontend:typecheck", "frontend:prettier"]
+depends = ["backend:lint", "frontend:lint", "frontend:typecheck", "frontend:prettier", "perf:check"]
 
 [tasks.arch-check]
 description = "Bewaak de architectuurregels (backend: ArchUnit; frontend: package-boundaries valt onder frontend:lint)"
@@ -158,6 +159,20 @@ description = "Controleer de frontend-opmaak met Prettier (zonder te wijzigen)"
 dir = "frontend"
 depends = ["frontend:install"]
 run = "pnpm prettier"
+
+# --- Performance (k6, ADR 0018) ---
+
+[tasks."perf:test"]
+description = "Draai de unit-tests van de k6-helpers (performance/lib/*.test.ts)"
+run = 'node --test "performance/lib/*.test.ts"'
+
+[tasks."perf:check"]
+description = "Controleer dat de k6-scripts laden (syntax en imports), zonder stack"
+run = "k6 inspect -e PERF_USERNAME=check -e PERF_PASSWORD=check performance/scenarios/smoke.ts"
+
+[tasks."perf:smoke"]
+description = "Draai de k6-smoke-test (1 gebruiker) tegen de draaiende compose-stack; faalt bij een fout of gemiste threshold. Vereist PERF_USERNAME en PERF_PASSWORD"
+run = "k6 run performance/scenarios/smoke.ts"
 
 # --- Scripts, docs, architectuurmodel, compliance ---
 
@@ -299,3 +314,20 @@ run = "node scripts/sonar-issues.mjs"
 [tasks."release:cut-rc"]
 description = "Bepaal de volgende SemVer-versie uit Conventional Commits sinds de laatste tag, werk version.txt + CHANGELOG.md bij en commit beide op een nieuwe rc/<versie>-branch (pusht niet; zie ADR 0004)"
 run = "node scripts/release-cut-rc.mjs"
+
+# --- Performance-stack (overlay docker-compose/compose.perf.yaml) ---
+
+[tasks."perf:stack-up"]
+description = "Start de compose-stack met de perf-overlay zonder tracing (baseline; RUN_MODE standaard local)"
+dir = "docker-compose"
+run = 'RUN_MODE="${RUN_MODE:-local}" docker compose -f docker-compose.yaml -f compose.perf.yaml --profile zgw up -d --build'
+
+[tasks."perf:stack-up-tracing"]
+description = "Start de compose-stack met de perf-overlay, OTel-agent en Tempo (100% tracing, diagnose; RUN_MODE standaard local)"
+dir = "docker-compose"
+run = 'RUN_MODE="${RUN_MODE:-local}" PERF_JAVA_AGENT=true PERF_OTEL_SDK_DISABLED=false COMPOSE_PROFILES=zgw,tracing docker compose -f docker-compose.yaml -f compose.perf.yaml up -d --build'
+
+[tasks."perf:stack-down"]
+description = "Stop de perf-stack en verwijder de volumes"
+dir = "docker-compose"
+run = 'RUN_MODE="${RUN_MODE:-local}" COMPOSE_PROFILES=zgw,tracing docker compose -f docker-compose.yaml -f compose.perf.yaml down -v'

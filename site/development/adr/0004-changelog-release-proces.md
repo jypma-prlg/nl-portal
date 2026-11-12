@@ -2,7 +2,9 @@
 
 ## Status
 
-Voorgesteld. Zie de bijbehorende spec,
+Voorgesteld. Gedeeltelijk vervangen door [ADR 0019](./0019-trunk-based-continuous-delivery.md):
+de `rc/*`-branch en `release:cut-rc` vervallen, de changelog-afleiding uit Conventional Commits blijft.
+Zie de bijbehorende spec,
 [`0004-changelog-release-proces-spec.md`](./0004-changelog-release-proces-spec.md).
 
 ## Context

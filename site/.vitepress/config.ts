@@ -22,6 +22,8 @@ export default defineConfig({
   title: "NL Portal",
   description: "NL Portal documentatie",
   srcDir: ".",
+  // GitHub Pages serveert onder /nl-portal/; lokaal en in CI-validatie blijft het "/".
+  base: process.env.DOCS_BASE ?? "/",
   cleanUrls: true,
   // Fail the build on any broken internal link or anchor — load-bearing while
   // ~80 files moved from the old docs/ and documentation/ trees into this site.

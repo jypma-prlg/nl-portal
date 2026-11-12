@@ -1,0 +1,29 @@
+# Grafana Tempo als trace-collector voor de performance-overlay (compose.perf.yaml).
+# Monolithische modus met lokale opslag: bedoeld voor een diagnostische run, niet voor productie.
+server:
+    http_listen_port: 3200
+
+distributor:
+    receivers:
+        otlp:
+            protocols:
+                grpc:
+                    endpoint: 0.0.0.0:4317
+                http:
+                    endpoint: 0.0.0.0:4318
+
+# Een diagnostische run is kort: schrijf snel weg, zodat traces direct opvraagbaar zijn.
+ingester:
+    max_block_duration: 1m
+
+compactor:
+    compaction:
+        block_retention: 2h
+
+storage:
+    trace:
+        backend: local
+        wal:
+            path: /var/tempo/wal
+        local:
+            path: /var/tempo/blocks
