@@ -114,6 +114,7 @@ Repeatable tasks run through [mise](https://mise.jdx.dev/) from the repo root: `
 - Backend build, tests, layout: [backend/README.md](./backend/README.md)
 - Frontend workspace, scripts: [frontend/README.md](./frontend/README.md)
 - Compose profiles, ports, fixtures: [docker-compose/README.md](./docker-compose/README.md)
+- Demo-fixtures (werking, gebruik, bijwerken): [site/development/demo-fixtures.md](site/development/demo-fixtures.md)
 - Contributing, branch model, commits: [CONTRIBUTING.md](./CONTRIBUTING.md)
 - Hosting and configuration (deployment, Keycloak, module dependencies): see
   [Hosting & configuratie](site/hosting-en-configuratie/index.md)

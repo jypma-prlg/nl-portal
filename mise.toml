@@ -217,6 +217,7 @@ description = "Genereer arc42-hoofdstuk 5/11 en site/likec4/capabilities.generat
 run = "node scripts/generate-capabilities-docs.mjs"
 
 # docs:capabilities-check staat in mise-tasks/docs/capabilities-check
+# fixtures:check staat in mise-tasks/fixtures/check (laadt de demo-fixtures op een schone compose-stack)
 
 [tasks."compliance:check"]
 description = "Faal als een bron-ID onbekend is of een normatieve bron geen check of afwijkingsbesluit heeft (site/compliance/normatieve-bronnen.md)"

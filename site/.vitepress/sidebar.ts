@@ -86,6 +86,7 @@ export const sidebar: Record<string, SidebarItem[]> = {
         page("development", "glossarium.md"),
         page("development", "repositories.md"),
         page("development", "best-practices.md"),
+        page("development", "demo-fixtures.md"),
       ],
     },
     { text: "Workflows", collapsed: true, items: dirItems("development/workflows") },

@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#MISE description="Laad de demo-fixtures op een schone compose-stack (profiel zgw) en faal als een import-sidecar faalt (zie site/development/demo-fixtures.md)"
+set -uo pipefail
+
+cd "$(dirname "$0")/../../docker-compose"
+
+PROJECT=nl-portal-fixtures-check
+IMPORTS=(nl-portal-openzaak-import nl-portal-open-object-import nl-portal-open-notificaties-import nl-portal-openklant-2-import nl-portal-openproduct-import)
+TIMEOUT_SECONDS="${FIXTURES_CHECK_TIMEOUT:-900}"
+
+# De containers hebben vaste namen: een draaiende dev-stack zou botsen (en wordt dan ook weggegooid).
+if docker ps -a --format '{{.Names}}' | grep -qx 'nl-portal-openzaak'; then
+  echo "Er bestaat al een stack met nl-portal-*-containers. Stop die eerst ('docker compose down -v' in docker-compose/)."
+  exit 2
+fi
+
+# Compose eist een KEYCLOAK_DB_PASSWORD bij het inlezen; Keycloak start hier niet, dus een wegwerpwaarde volstaat
+# en .env/dev:setup blijven onaangeroerd.
+export KEYCLOAK_DB_PASSWORD="fixtures-check"
+export RUN_MODE=sources
+compose() { docker compose -p "$PROJECT" --profile zgw "$@"; }
+
+cleanup() { compose down -v --remove-orphans >/dev/null 2>&1; }
+trap cleanup EXIT
+
+# Alleen de import-sidecars (met hun afhankelijkheden: app, database, redis); geen Keycloak of backend.
+compose up -d "${IMPORTS[@]}" || { echo "Stack starten mislukt."; exit 1; }
+
+failed=0
+deadline=$((SECONDS + TIMEOUT_SECONDS))
+for container in "${IMPORTS[@]}"; do
+  while [ "$(docker inspect -f '{{.State.Status}}' "$container" 2>/dev/null)" != "exited" ]; do
+    if [ "$SECONDS" -ge "$deadline" ]; then
+      echo "FAALT: $container klaar na ${TIMEOUT_SECONDS}s niet (migraties of loaddata hangen)."
+      docker logs --tail 30 "$container"
+      failed=1
+      continue 2
+    fi
+    sleep 5
+  done
+  code="$(docker inspect -f '{{.State.ExitCode}}' "$container" 2>/dev/null || echo 1)"
+  if [ "$code" != "0" ]; then
+    echo "FAALT: $container eindigde met exitcode $code"
+    docker logs --tail 30 "$container"
+    failed=1
+  else
+    echo "OK: $container"
+  fi
+done
+
+exit "$failed"
