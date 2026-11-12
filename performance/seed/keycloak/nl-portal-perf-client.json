@@ -1,0 +1,59 @@
+{
+  "clientId": "nl-portal-perf",
+  "name": "NL Portal perf (alleen voor loadtests)",
+  "description": "Publieke client met direct access grants voor k6; staat bewust niet in de standaard realm-import.",
+  "enabled": true,
+  "publicClient": true,
+  "standardFlowEnabled": false,
+  "implicitFlowEnabled": false,
+  "directAccessGrantsEnabled": true,
+  "serviceAccountsEnabled": false,
+  "protocol": "openid-connect",
+  "fullScopeAllowed": true,
+  "attributes": {
+    "access.token.lifespan": "3600"
+  },
+  "protocolMappers": [
+    {
+      "name": "Middel",
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-usermodel-attribute-mapper",
+      "consentRequired": false,
+      "config": {
+        "introspection.token.claim": "false",
+        "userinfo.token.claim": "false",
+        "user.attribute": "authenticationMethod",
+        "id.token.claim": "true",
+        "lightweight.claim": "true",
+        "access.token.claim": "true",
+        "claim.name": "middel",
+        "jsonType.label": "String"
+      }
+    },
+    {
+      "name": "m2m-audience",
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-audience-mapper",
+      "consentRequired": false,
+      "config": {
+        "introspection.token.claim": "true",
+        "included.client.audience": "nl-portal-m2m",
+        "id.token.claim": "false",
+        "lightweight.claim": "false",
+        "access.token.claim": "true"
+      }
+    }
+  ],
+  "defaultClientScopes": [
+    "web-origins",
+    "profile",
+    "roles",
+    "email"
+  ],
+  "optionalClientScopes": [
+    "address",
+    "phone",
+    "offline_access",
+    "microprofile-jwt"
+  ]
+}
