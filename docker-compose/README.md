@@ -237,6 +237,8 @@ docker compose --profile zgw --profile haalcentraal --profile clamav up -d
 
 ### Demo data imports
 
+> Uitgebreide, Nederlandstalige uitleg (wanneer gebruiken, waar automatisch geladen, bijwerken, `mise run fixtures:check`): [site/development/demo-fixtures.md](../site/development/demo-fixtures.md).
+
 All demo data is seeded as model-serialized Django fixtures loaded with `manage.py loaddata` after
 `migrate`. There is no raw SQL seeding: nothing is mounted into a service's postgres container at
 `/docker-entrypoint-initdb.d/`.
