@@ -12,6 +12,7 @@ services:
         network_mode: "service:localhost"
         env_file: imports/backend.env
         environment:
+            KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_M2M_CLIENT_SECRET:?draai eerst mise run dev:setup}
             NLPORTAL_FEATUREFLAGS_FILE: /etc/nl-portal/flags/nl-portal.flagd.json
             SPRING_CONFIG_IMPORT: optional:configtree:/etc/nl-portal/koppelingen/
         volumes:

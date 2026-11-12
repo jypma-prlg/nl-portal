@@ -14,7 +14,7 @@ cd ../../docker-compose && docker compose --profile zgw --profile haalcentraal u
 cd ../backend && ./gradlew :app-dev:bootRun
 ```
 
-No `.env.properties` is needed. Unlike `:app`, this module is configured entirely from its own
+Only a generated `.env.properties` with the Keycloak client secret is read (`mise run dev:setup`). Unlike `:app`, this module is configured otherwise entirely from its own
 [`src/main/resources/config/application.yml`](src/main/resources/config/application.yml), which inlines
 concrete local-stack values for the whole `nl-portal.config.*` tree, so `bootRun` needs no environment
 setup.

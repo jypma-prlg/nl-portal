@@ -3,3 +3,4 @@
 .env
 imports/koppelingen/nl-portal/koppelingen/*/*
 !imports/koppelingen/nl-portal/koppelingen/*/*.example
+.generated

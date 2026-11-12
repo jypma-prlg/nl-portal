@@ -11,13 +11,13 @@ Active feature work and the demo live in the developer-only dev app `:app-dev`
 
 ## Running locally
 
-Start the supporting services (the default `sources` mode leaves the app ports `8080`/`8000`/`3000`
-free for an IDE/Gradle run), create your local config, then run the app:
+Generate the local environment (random secrets, gitignored), start the supporting services (the default
+`sources` mode leaves the app ports `8080`/`8000`/`3000` free for an IDE/Gradle run), then run the app:
 
 ```shell
-cd ../../docker-compose && docker compose --profile zgw up -d
-cd ../backend/app && cp .env.properties.example .env.properties
-cd .. && ./gradlew :app:bootRun
+mise run dev:setup   # from the repo root: .env.properties, Keycloak realms and docker-compose/.env
+cd docker-compose && docker compose --profile zgw up -d
+cd ../backend && ./gradlew :app:bootRun
 ```
 
 The GraphQL endpoint is served at `/graphql`. Keycloak and ZGW service URLs (and the test
@@ -38,11 +38,12 @@ the *only* config source for a from-source run - it is independent of
 [`docker-compose/imports/backend.env`](../../docker-compose/imports/backend.env), which configures
 the *containerised* backend under `RUN_MODE=local`/`remote`.
 
-`.env.properties` is **gitignored** (it may hold local secrets). Copy the tracked template and adjust
-it for your machine:
+`.env.properties` is **gitignored** (it holds a random Keycloak client secret). `mise run dev:setup` renders
+the tracked template `.env.properties.example` into it, with fresh secrets on every run; adjust the
+result for your machine:
 
 ```shell
-cp .env.properties.example .env.properties
+mise run dev:setup   # from the repo root
 ```
 
 `bootRun` fails with a clear message if the file is missing. The template assumes the supporting

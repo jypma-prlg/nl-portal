@@ -62,3 +62,16 @@ tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
 tasks.named<Jar>("jar") {
     enabled = false
 }
+// Het client-secret van Keycloak komt uit een gitignored bestand dat `mise run dev:setup` genereert.
+// Ontbreekt het, dan start de app wel, maar werkt token exchange niet.
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    val envFile = project.file(".env.properties")
+    if (envFile.isFile) {
+        environment.putAll(
+            envFile
+                .readLines()
+                .filterNot { it.startsWith("#") || it.isBlank() }
+                .associate { line -> line.substringBefore("=").trim() to line.substringAfter("=").trim() },
+        )
+    }
+}
