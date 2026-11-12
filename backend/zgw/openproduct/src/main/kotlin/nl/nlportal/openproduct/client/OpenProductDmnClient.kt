@@ -38,53 +38,51 @@ class OpenProductDmnClient(
     private val clientSslContextResolver: ClientSslContextResolver? = null,
     webClientBuilder: WebClient.Builder,
 ) {
-    val webClient: WebClient
+    /** Built on first use, so SSL files and secret are validated then and not at startup. */
+    val webClient: WebClient by lazy {
+        webClientBuilder
+            .clone()
+            .clientConnector(
+                ReactorClientHttpConnector(
+                    HttpClient
+                        .create()
+                        .wiretap(
+                            "reactor.netty.http.client.HttpClient",
+                            LogLevel.DEBUG,
+                            AdvancedByteBufFormat.TEXTUAL,
+                        ).let { client ->
+                            var result = client
+                            if (clientSslContextResolver != null) {
+                                dmnConfigProperties.ssl?.let {
+                                    val sslContext =
+                                        clientSslContextResolver.resolve(
+                                            it.key,
+                                            it.trustedCertificate,
+                                        )
 
-    init {
-        this.webClient =
-            webClientBuilder
-                .clone()
-                .clientConnector(
-                    ReactorClientHttpConnector(
-                        HttpClient
-                            .create()
-                            .wiretap(
-                                "reactor.netty.http.client.HttpClient",
-                                LogLevel.DEBUG,
-                                AdvancedByteBufFormat.TEXTUAL,
-                            ).let { client ->
-                                var result = client
-                                if (clientSslContextResolver != null) {
-                                    dmnConfigProperties.ssl?.let {
-                                        val sslContext =
-                                            clientSslContextResolver.resolve(
-                                                it.key,
-                                                it.trustedCertificate,
-                                            )
+                                    result = client.secure { builder -> builder.sslContext(sslContext) }
 
-                                        result = client.secure { builder -> builder.sslContext(sslContext) }
-
-                                        logger.debug { "Client SSL context was set: private key=${it.key != null}, trusted certificate=${it.trustedCertificate != null}." }
-                                    }
+                                    logger.debug { "Client SSL context was set: private key=${it.key != null}, trusted certificate=${it.trustedCertificate != null}." }
                                 }
-                                result
-                            },
-                    ),
-                ).apply {
-                    val token = getToken()
-                    if (token != null) {
-                        it.defaultHeader("Authorization", "Bearer $token")
+                            }
+                            result
+                        },
+                ),
+            ).apply {
+                val token = getToken()
+                if (token != null) {
+                    it.defaultHeader("Authorization", "Bearer $token")
+                }
+            }.apply {
+                if (dmnConfigProperties.username.isNotEmpty() && dmnConfigProperties.password.isNotEmpty()) {
+                    it.defaultHeaders { header ->
+                        header.setBasicAuth(
+                            dmnConfigProperties.username,
+                            dmnConfigProperties.password,
+                        )
                     }
-                }.apply {
-                    if (dmnConfigProperties.username.isNotEmpty() && dmnConfigProperties.password.isNotEmpty()) {
-                        it.defaultHeaders { header ->
-                            header.setBasicAuth(
-                                dmnConfigProperties.username,
-                                dmnConfigProperties.password,
-                            )
-                        }
-                    }
-                }.build()
+                }
+            }.build()
     }
 
     suspend fun getDecision(
