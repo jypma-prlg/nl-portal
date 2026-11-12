@@ -26,4 +26,13 @@ interface FeatureGate {
         flag: FeatureFlag,
         context: EvaluationContext,
     ): Boolean
+
+    /**
+     * Evaluates an object flag whose values are free-form booleans, for example the custom toggles of the frontend.
+     * Returns an empty map when the flag is missing or cannot be evaluated.
+     */
+    fun booleanMap(
+        key: String,
+        context: EvaluationContext,
+    ): Map<String, Boolean>
 }

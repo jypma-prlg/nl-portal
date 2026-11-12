@@ -57,6 +57,5 @@ want credentials horen niet in een flag-systeem).
 - `OpenFeatureAPI` is een globale singleton. Tests in dezelfde JVM kunnen elkaars provider overschrijven.
 - Bij een mislukte evaluatie valt een flag terug op de standaardwaarde in de code, niet op het
   meegeleverde bestand. Een permission-flag valt altijd terug op uit.
-- Bestaande toggles en modules worden stapsgewijs gemigreerd (#156, #157 en volgende); tot die tijd
-  bestaan oude properties en flags naast elkaar.
+- De frontend-toggles zijn gemigreerd naar flags (#156); modules volgen (#157 en volgende).
 - Er is geen migratiepad voor de oude toggle-properties (ADR 0012).

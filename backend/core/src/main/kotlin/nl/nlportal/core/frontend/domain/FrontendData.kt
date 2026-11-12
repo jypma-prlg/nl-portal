@@ -17,7 +17,6 @@ package nl.nlportal.core.frontend.domain
 
 import nl.nlportal.core.frontend.configuration.FrontendConfigurationProperties.FrontendProperties
 import nl.nlportal.core.frontend.configuration.FrontendConfigurationProperties.FrontendTheme
-import nl.nlportal.core.frontend.configuration.FrontendConfigurationProperties.FrontendToggles
 import nl.nlportal.core.frontend.configuration.FrontendModuleConfigurationProperties.FrontendModuleProperties
 
 data class FrontendData(

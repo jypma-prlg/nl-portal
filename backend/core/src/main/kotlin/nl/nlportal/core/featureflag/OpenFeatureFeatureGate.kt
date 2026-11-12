@@ -17,6 +17,8 @@ package nl.nlportal.core.featureflag
 
 import dev.openfeature.sdk.Client
 import dev.openfeature.sdk.EvaluationContext
+import dev.openfeature.sdk.ImmutableStructure
+import dev.openfeature.sdk.Value
 
 class OpenFeatureFeatureGate(
     private val client: Client,
@@ -25,4 +27,16 @@ class OpenFeatureFeatureGate(
         flag: FeatureFlag,
         context: EvaluationContext,
     ): Boolean = client.getBooleanValue(flag.key, flag.default, context)
+
+    override fun booleanMap(
+        key: String,
+        context: EvaluationContext,
+    ): Map<String, Boolean> =
+        client
+            .getObjectValue(key, Value(ImmutableStructure()), context)
+            .asStructure()
+            ?.asMap()
+            .orEmpty()
+            .mapNotNull { (name, value) -> value.asBoolean()?.let { name to it } }
+            .toMap()
 }

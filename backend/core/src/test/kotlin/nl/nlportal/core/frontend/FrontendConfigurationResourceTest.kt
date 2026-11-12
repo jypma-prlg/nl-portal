@@ -57,8 +57,9 @@ class FrontendConfigurationResourceTest(
             responseJson.requiredAt("/properties/overviewCurrentCasesPreviewLength").intValue(),
         )
         assertEquals(
-            frontendConfigurationProperties.toggles.casesContactMomentsEnabled,
+            false,
             responseJson.requiredAt("/toggles/casesContactMomentsEnabled").booleanValue(),
+            "toggles come from the bundled flag file when no flag file is configured",
         )
         assertEquals(
             false,

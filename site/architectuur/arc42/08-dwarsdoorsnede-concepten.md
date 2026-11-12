@@ -83,6 +83,6 @@ via een rolling update wordt uitgerold, niet via hot reload; een andere OpenFeat
   thread-gebonden opgeslagen, en bevat nooit persoonsgegevens.
 - **Frontend**: de uitkomst voor de frontend komt via `GET /api/public/frontend`; de browser praat
   nooit met een flag-systeem.
-- **Nu flag-gedreven**: alleen de toggle `messageCountEnabled` (`ops.frontend.message-count`). De
-  overige toggles en de module-activatie volgen (#143).
+- **Nu flag-gedreven**: alle frontend-toggles (`ops.frontend.*`) en de vrije custom-toggles. De
+  module-activatie volgt (#143).
 - **Grens**: credentials en andere secrets horen niet in een flag-systeem.
