@@ -18,6 +18,7 @@ package nl.nlportal.graphql
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
+import nl.nlportal.core.modulegate.ModuleNotAvailableException
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter
 
 class GraphQLExceptionHandler : DataFetcherExceptionResolverAdapter() {
@@ -28,6 +29,7 @@ class GraphQLExceptionHandler : DataFetcherExceptionResolverAdapter() {
         GraphqlErrorBuilder
             .newError()
             .message(ex.message)
+            .also { error -> if (ex is ModuleNotAvailableException) error.extensions(mapOf("code" to "MODULE_NOT_AVAILABLE", "module" to ex.module)) }
             .path(env.executionStepInfo.path)
             .location(env.field.sourceLocation)
             .build()

@@ -20,4 +20,16 @@ Evaluatie gebeurt per request met de [evaluatiecontext](./deployment-guide.md#fe
 | `ops.frontend.overview-maintenance-alert` | ops | uit | Toont de onderhoudsmelding op het overzicht; titel en tekst komen uit `properties.overviewMaintenanceAlert{Title,Text}{Nl,En}`. Via `toggles.overviewMaintenanceAlertEnabled`. |
 | `ops.frontend.custom-toggles` | ops (object) | leeg | Vrije eigen toggles: een object met booleans, bijvoorbeeld `{ "betaBanner": true }`. De frontend ontvangt het als JSON-tekst in `toggles.custom`. Waarden die geen boolean zijn worden genegeerd. Staat niet in de meegeleverde bestanden; voeg hem toe aan je eigen bestand als je custom toggles nodig hebt. |
 
-Het meegeleverde bestand (`backend/core/src/main/resources/feature-flags/default.flagd.json`) zet alle toggles uit. Het compose-bestand `docker-compose/imports/flags/nl-portal.flagd.json` zet ze voor de lokale stack aan, behalve `open-product` en `cases-result-explanation`.
+## Module-flags
+
+Een backendmodule kan per request aan of uit staan met een module-flag `ops.<module>.enabled`. Staat hij uit, dan
+geeft een GraphQL-query een fout `Module '<module>' is niet beschikbaar` (`extensions.code` is `MODULE_NOT_AVAILABLE`) en een
+REST-resource HTTP 503; de velden blijven in het GraphQL-schema staan. De `modules`-lijst van `GET /api/public/frontend` en de
+modulestatus op de beheerpoort volgen dezelfde flag. Een flag die ontbreekt betekent: uit. Hoe je een module hierop overzet staat in
+[het patroon](../development/workflows/module-gate-patroon.md).
+
+| Flag | Type | Standaard | Effect |
+|---|---|---|---|
+| `ops.berichten.enabled` | ops | uit | Zet de module berichten aan: de GraphQL-queries `getBericht`, `getBerichten` en `getUnopenedBerichtenCount` en de download `GET /api/berichten/{berichtId}/document/{documentId}/content`. De module heeft daarnaast nog `nl-portal.config.documentenapis.enabled` en een Objecten API nodig (die blijven opstartinstellingen). Via `modules.berichten.enabled`. De eigenschap `nl-portal.config.berichten.enabled` bestaat niet meer. |
+
+Het meegeleverde bestand (`backend/core/src/main/resources/feature-flags/default.flagd.json`) zet alle toggles en modules uit. Het compose-bestand `docker-compose/imports/flags/nl-portal.flagd.json` zet ze voor de lokale stack aan (en ook `ops.berichten.enabled`), behalve `open-product` en `cases-result-explanation`.

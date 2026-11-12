@@ -16,8 +16,10 @@
 package nl.nlportal.berichten.web.rest
 
 import kotlinx.coroutines.flow.Flow
+import nl.nlportal.berichten.BERICHTEN_MODULE
 import nl.nlportal.berichten.service.BerichtenService
 import nl.nlportal.commonground.authentication.CommonGroundAuthentication
+import nl.nlportal.core.modulegate.ModuleGate
 import nl.nlportal.documentenapi.util.FilenameSanitizer
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.http.HttpHeaders
@@ -35,6 +37,7 @@ import java.util.UUID
 @RequestMapping(value = ["/api/berichten"])
 class BerichtDocumentResource(
     private val berichtenService: BerichtenService,
+    private val moduleGate: ModuleGate,
 ) {
     @GetMapping(value = ["/{berichtId}/document/{documentId}/content"])
     suspend fun downloadStreaming(
@@ -42,6 +45,7 @@ class BerichtDocumentResource(
         @PathVariable documentId: UUID,
         authentication: CommonGroundAuthentication,
     ): ResponseEntity<Flow<DataBuffer>> {
+        moduleGate.require(BERICHTEN_MODULE, authentication)
         val (document, content) =
             berichtenService.getBerichtDocumentContent(authentication, berichtId, documentId)
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Bericht not found")

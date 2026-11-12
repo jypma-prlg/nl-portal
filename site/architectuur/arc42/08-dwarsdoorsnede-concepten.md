@@ -83,6 +83,8 @@ via een rolling update wordt uitgerold, niet via hot reload; een andere OpenFeat
   thread-gebonden opgeslagen, en bevat nooit persoonsgegevens.
 - **Frontend**: de uitkomst voor de frontend komt via `GET /api/public/frontend`; de browser praat
   nooit met een flag-systeem.
-- **Nu flag-gedreven**: alle frontend-toggles (`ops.frontend.*`) en de vrije custom-toggles. De
-  module-activatie volgt (#143).
+- **Nu flag-gedreven**: alle frontend-toggles (`ops.frontend.*`), de vrije custom-toggles en de module
+  berichten (`ops.berichten.enabled`): `ModuleGate` (module `core`) beslist per request of een query of
+  resource beschikbaar is en de `modules`-lijst volgt dezelfde flag; zie
+  [het patroon](../../development/workflows/module-gate-patroon.md). De andere modules volgen (#143).
 - **Grens**: credentials en andere secrets horen niet in een flag-systeem.

@@ -15,10 +15,14 @@
  */
 package nl.nlportal.core.modulestatus
 
+import nl.nlportal.core.modulegate.ModuleFlag
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @SpringBootTest(
@@ -30,10 +34,17 @@ import org.springframework.test.web.reactive.server.WebTestClient
     ],
 )
 @AutoConfigureWebTestClient
+@Import(ModuleStatusEndpointTest.VoorbeeldModule::class)
 class ModuleStatusEndpointTest(
     @Autowired private val client: WebTestClient,
     @Autowired private val registry: ModuleStatusRegistry,
 ) {
+    @TestConfiguration
+    class VoorbeeldModule {
+        @Bean
+        fun voorbeeldModuleFlag() = ModuleFlag("voorbeeld")
+    }
+
     @Test
     fun `zonder inloggegevens is het endpoint niet toegankelijk`() {
         client
@@ -87,5 +98,19 @@ class ModuleStatusEndpointTest(
             .isEqualTo("DISABLED")
             .jsonPath("$[?(@.module=='taak')].status")
             .isEqualTo("UNKNOWN")
+    }
+
+    @Test
+    fun `een module met een module-flag staat erin als DISABLED zolang de flag uit staat`() {
+        client
+            .get()
+            .uri("/actuator/modulestatus")
+            .headers { it.setBasicAuth("beheer", "geheim") }
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody()
+            .jsonPath("$[?(@.module=='voorbeeld')].status")
+            .isEqualTo("DISABLED")
     }
 }

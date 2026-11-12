@@ -16,9 +16,11 @@
 package nl.nlportal.berichten.graphql
 
 import java.util.UUID
+import nl.nlportal.berichten.BERICHTEN_MODULE
 import nl.nlportal.berichten.domain.Bericht
 import nl.nlportal.berichten.service.BerichtenService
 import nl.nlportal.commonground.authentication.CommonGroundAuthentication
+import nl.nlportal.core.modulegate.ModuleGate
 import nl.nlportal.documentenapi.domain.Document
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -28,16 +30,19 @@ import org.springframework.stereotype.Controller
 @Controller
 class BerichtenQuery(
     private val berichtenService: BerichtenService,
+    private val moduleGate: ModuleGate,
 ) {
     @QueryMapping
     suspend fun getBericht(
         authentication: CommonGroundAuthentication,
         @Argument id: UUID,
-    ): Bericht? =
-        berichtenService.getBericht(
+    ): Bericht? {
+        moduleGate.require(BERICHTEN_MODULE, authentication)
+        return berichtenService.getBericht(
             authentication = authentication,
             id = id,
         )
+    }
 
     @QueryMapping
     suspend fun getBerichten(
@@ -45,20 +50,21 @@ class BerichtenQuery(
         @Argument pageNumber: Int? = 1,
         @Argument pageSize: Int? = 20,
         @Argument onderwerp: String? = null,
-    ): BerichtenPage =
-        berichtenService.getBerichtenPage(
+    ): BerichtenPage {
+        moduleGate.require(BERICHTEN_MODULE, authentication)
+        return berichtenService.getBerichtenPage(
             authentication = authentication,
             pageNumber = pageNumber ?: 1,
             pageSize = pageSize ?: 20,
             onderwerp = onderwerp,
         )
+    }
 
     @QueryMapping
-    suspend fun getUnopenedBerichtenCount(authentication: CommonGroundAuthentication): Int =
-        berichtenService
-            .getUnopenedBerichtenCount(
-                authentication = authentication,
-            )
+    suspend fun getUnopenedBerichtenCount(authentication: CommonGroundAuthentication): Int {
+        moduleGate.require(BERICHTEN_MODULE, authentication)
+        return berichtenService.getUnopenedBerichtenCount(authentication = authentication)
+    }
 
     @SchemaMapping(typeName = "Bericht", field = "documenten")
     suspend fun documenten(
