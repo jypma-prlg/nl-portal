@@ -15,7 +15,9 @@
  */
 package nl.nlportal.core.modulestatus
 
+import nl.nlportal.core.featureflag.FeatureContextFactory
 import nl.nlportal.core.frontend.configuration.FrontendModuleConfigurationProperties
+import nl.nlportal.core.modulegate.ModuleGate
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation
 
@@ -24,7 +26,10 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation
 class ModuleStatusEndpoint(
     private val registry: ModuleStatusRegistry,
     private val modules: FrontendModuleConfigurationProperties,
+    private val moduleGate: ModuleGate,
+    private val featureContextFactory: FeatureContextFactory,
 ) {
+    /** Modules with a module flag are on or off by that flag; the others by their old `enabled` property. */
     @ReadOperation
-    fun modules(): List<ModuleStatus> = registry.snapshot(modules.config.mapValues { it.value.enabled })
+    fun modules(): List<ModuleStatus> = registry.snapshot(modules.config.mapValues { it.value.enabled } + moduleGate.status(featureContextFactory.create(null)))
 }

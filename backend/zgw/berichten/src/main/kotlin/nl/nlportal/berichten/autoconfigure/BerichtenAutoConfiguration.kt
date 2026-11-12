@@ -15,10 +15,13 @@
  */
 package nl.nlportal.berichten.autoconfigure
 
+import nl.nlportal.berichten.BERICHTEN_MODULE
 import nl.nlportal.berichten.graphql.BerichtenQuery
 import nl.nlportal.berichten.security.config.BerichtDocumentResourceHttpSecurityConfigurer
 import nl.nlportal.berichten.service.BerichtenService
 import nl.nlportal.berichten.web.rest.BerichtDocumentResource
+import nl.nlportal.core.modulegate.ModuleFlag
+import nl.nlportal.core.modulegate.ModuleGate
 import nl.nlportal.core.security.config.HttpSecurityConfigurer
 import nl.nlportal.documentenapi.service.DocumentenApiService
 import nl.nlportal.zgw.objectenapi.service.ObjectenApiService
@@ -30,8 +33,12 @@ import org.springframework.context.annotation.Bean
 
 @AutoConfiguration
 @EnableConfigurationProperties(BerichtenConfiguration::class)
-@ConditionalOnProperty(prefix = "nl-portal.config", name = ["berichten.enabled", "documentenapis.enabled"], havingValue = "true")
+@ConditionalOnProperty(prefix = "nl-portal.config", name = ["documentenapis.enabled"], havingValue = "true")
 class BerichtenAutoConfiguration {
+    /** Lets the frontend module list and the module status know the module flag. */
+    @Bean
+    fun berichtenModuleFlag(): ModuleFlag = BERICHTEN_MODULE
+
     @Bean
     fun berichtenService(
         objectenApiService: ObjectenApiService,
@@ -46,11 +53,17 @@ class BerichtenAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BerichtenQuery::class)
-    fun berichtenQuery(berichtenService: BerichtenService): BerichtenQuery = BerichtenQuery(berichtenService)
+    fun berichtenQuery(
+        berichtenService: BerichtenService,
+        moduleGate: ModuleGate,
+    ): BerichtenQuery = BerichtenQuery(berichtenService, moduleGate)
 
     @Bean
     @ConditionalOnMissingBean(BerichtDocumentResource::class)
-    fun berichtDocumentResource(berichtenService: BerichtenService): BerichtDocumentResource = BerichtDocumentResource(berichtenService)
+    fun berichtDocumentResource(
+        berichtenService: BerichtenService,
+        moduleGate: ModuleGate,
+    ): BerichtDocumentResource = BerichtDocumentResource(berichtenService, moduleGate)
 
     @Bean
     @ConditionalOnMissingBean(BerichtDocumentResourceHttpSecurityConfigurer::class)

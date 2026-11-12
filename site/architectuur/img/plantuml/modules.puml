@@ -39,6 +39,7 @@ note as tenancy_rules
   tenantRegistryComplete: elke tenant levert bij het opstarten een volledig register op (voorgesteld, niet actief)
 end note
 form --> zgw_objectenapi #green : bewaakt
+graphql --> core #grey
 haalcentraal_brp --> core #grey
 haalcentraal_brp ..> zgw_common_ground_authentication #orange : gat
 kvk --> core #grey

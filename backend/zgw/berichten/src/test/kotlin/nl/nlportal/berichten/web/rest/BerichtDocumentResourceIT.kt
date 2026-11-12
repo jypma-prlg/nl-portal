@@ -15,8 +15,10 @@
  */
 package nl.nlportal.berichten.web.rest
 
+import nl.nlportal.berichten.BerichtenFlagFile
 import nl.nlportal.berichten.TestHelper
 import nl.nlportal.commonground.authentication.WithBurgerUser
+import nl.nlportal.core.modulegate.ModuleGate
 import nl.nlportal.documentenapi.client.DocumentApisConfig
 import nl.nlportal.zgw.objectenapi.autoconfiguration.ObjectsApiClientConfig
 import okhttp3.mockwebserver.Dispatcher
@@ -30,6 +32,8 @@ import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @SpringBootTest
@@ -39,6 +43,7 @@ class BerichtDocumentResourceIT(
     @Autowired private val webTestClient: WebTestClient,
     @Autowired private val objectsApiClientConfig: ObjectsApiClientConfig,
     @Autowired private val documentApisConfig: DocumentApisConfig,
+    @Autowired private val moduleGate: ModuleGate,
 ) {
     lateinit var mockServer: MockWebServer
 
@@ -53,6 +58,7 @@ class BerichtDocumentResourceIT(
 
     @AfterEach
     internal fun tearDown() {
+        BerichtenFlagFile.switchTo(true, moduleGate)
         mockServer.shutdown()
     }
 
@@ -115,6 +121,22 @@ class BerichtDocumentResourceIT(
             .valueMatches("Content-Disposition", "attachment; filename=\".*\"")
     }
 
+    @Test
+    @WithBurgerUser("999990755")
+    fun `should return 503 when the module flag is off`() {
+        BerichtenFlagFile.switchTo(false, moduleGate)
+
+        webTestClient
+            .get()
+            .uri("/api/berichten/$OPENED_BERICHT_ID/document/$KNOWN_DOC_ID/content")
+            .exchange()
+            .expectStatus()
+            .isEqualTo(503)
+            .expectBody()
+            .jsonPath("$.detail")
+            .isEqualTo("Module 'berichten' is niet beschikbaar")
+    }
+
     private fun setupDispatcher() {
         val dispatcher: Dispatcher =
             object : Dispatcher() {
@@ -151,6 +173,10 @@ class BerichtDocumentResourceIT(
     }
 
     companion object {
+        @JvmStatic
+        @DynamicPropertySource
+        fun featureFlags(registry: DynamicPropertyRegistry) = BerichtenFlagFile.register(registry)
+
         private const val OPENED_BERICHT_ID = "a4961c4a-29a7-4cc7-9d5d-bceed1dfccba"
         private const val UNOPENED_BERICHT_ID = "9e021130-8cbd-4c6f-846a-677448e21ce8"
         private const val UNKNOWN_BERICHT_ID = "00000000-0000-0000-0000-000000000001"

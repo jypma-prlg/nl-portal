@@ -16,7 +16,9 @@
 package nl.nlportal.core.modulestatus
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import nl.nlportal.core.featureflag.FeatureContextFactory
 import nl.nlportal.core.frontend.configuration.FrontendModuleConfigurationProperties
+import nl.nlportal.core.modulegate.ModuleGate
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint
 import org.springframework.core.env.Environment
 import org.springframework.boot.autoconfigure.AutoConfiguration
@@ -47,7 +49,9 @@ class ModuleStatusAutoConfiguration {
     fun moduleStatusEndpoint(
         registry: ModuleStatusRegistry,
         modules: FrontendModuleConfigurationProperties,
-    ) = ModuleStatusEndpoint(registry, modules)
+        moduleGate: ModuleGate,
+        featureContextFactory: FeatureContextFactory,
+    ) = ModuleStatusEndpoint(registry, modules, moduleGate, featureContextFactory)
 
     /**
      * Eigen keten voor het beheerendpoint, los van de JWT-keten van de gebruikers: HTTP Basic met een beheerrol.

@@ -18,8 +18,10 @@ package nl.nlportal.berichten.graphql
 import tools.jackson.databind.JsonNode
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
+import nl.nlportal.berichten.BerichtenFlagFile
 import nl.nlportal.berichten.TestHelper
 import nl.nlportal.commonground.authentication.WithBurgerUser
+import nl.nlportal.core.modulegate.ModuleGate
 import nl.nlportal.core.util.Mapper
 import nl.nlportal.documentenapi.client.DocumentApisConfig
 import nl.nlportal.zgw.objectenapi.autoconfiguration.ObjectsApiClientConfig
@@ -37,6 +39,8 @@ import org.springframework.boot.graphql.test.autoconfigure.tester.AutoConfigureH
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.graphql.test.tester.HttpGraphQlTester
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 
 @SpringBootTest
 @AutoConfigureHttpGraphQlTester
@@ -46,6 +50,7 @@ class BerichtenQueryIT(
     @Autowired private val httpGraphQlTester: HttpGraphQlTester,
     @Autowired private val objectsApiClientConfig: ObjectsApiClientConfig,
     @Autowired private val documentApisConfig: DocumentApisConfig,
+    @Autowired private val moduleGate: ModuleGate,
 ) {
     lateinit var mockObjectenApi: MockWebServer
 
@@ -60,6 +65,7 @@ class BerichtenQueryIT(
 
     @AfterEach
     internal fun tearDown() {
+        BerichtenFlagFile.switchTo(true, moduleGate)
         mockObjectenApi.shutdown()
     }
 
@@ -148,6 +154,25 @@ class BerichtenQueryIT(
         assertEquals(11, responseBody.intValue())
     }
 
+    @WithBurgerUser("999990755")
+    @Test
+    fun `every query is not available when the module flag is off`() {
+        BerichtenFlagFile.switchTo(false, moduleGate)
+
+        listOf(
+            TestHelper.graphqlBerichtenPageRequest,
+            TestHelper.graphqlValidBerichtRequest,
+            TestHelper.graphqlUnopenedBerichtenCountRequest,
+        ).forEach { query ->
+            httpGraphQlTester
+                .document(query)
+                .execute()
+                .errors()
+                .expect { it.message == "Module 'berichten' is niet beschikbaar" && it.extensions["code"] == "MODULE_NOT_AVAILABLE" }
+                .verify()
+        }
+    }
+
     fun setupMockObjectsApiServer() {
         val dispatcher: Dispatcher =
             object : Dispatcher() {
@@ -189,5 +214,11 @@ class BerichtenQueryIT(
                 }
             }
         mockObjectenApi.dispatcher = dispatcher
+    }
+
+    companion object {
+        @JvmStatic
+        @DynamicPropertySource
+        fun featureFlags(registry: DynamicPropertyRegistry) = BerichtenFlagFile.register(registry)
     }
 }
