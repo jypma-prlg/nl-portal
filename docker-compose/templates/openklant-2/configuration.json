@@ -4,7 +4,7 @@
     "pk": 10,
     "fields": {
       "identifier": "test_token",
-      "token": "ac045222c9e7cde8120b48735560f9b920bb58cd",
+      "token": "{{OPENKLANT_API_TOKEN}}",
       "contact_person": "Admin",
       "email": "admin@example.com",
       "organization": "",

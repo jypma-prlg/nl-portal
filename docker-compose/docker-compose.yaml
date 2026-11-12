@@ -57,9 +57,9 @@ services:
             - OTEL_SDK_DISABLED=true
             - DB_HOST=nl-portal-openzaak-database
             - DB_PORT=5432
-            - SECRET_KEY=veryRestrictedSecretKey
+            - SECRET_KEY=${OPENZAAK_SECRET_KEY:?draai eerst mise run dev:setup}
             - DB_USER=openzaak
-            - DB_PASSWORD=openzaak
+            - DB_PASSWORD=${OPENZAAK_DB_PASSWORD:?draai eerst mise run dev:setup}
             - DB_NAME=openzaak
             - CACHE_DEFAULT=nl-portal-redis:6379/0
             - CACHE_AXES=nl-portal-redis:6379/0
@@ -69,7 +69,7 @@ services:
             - OPENZAAK_SUPERUSER_EMAIL=admin@example.org
             - CELERY_BROKER_URL=redis://nl-portal-redis:6379/1
             - CELERY_RESULT_BACKEND=redis://nl-portal-redis:6379/1
-            - DJANGO_SUPERUSER_PASSWORD=admin
+            - DJANGO_SUPERUSER_PASSWORD=${OPENZAAK_ADMIN_PASSWORD:?draai eerst mise run dev:setup}
             - SENDFILE_BACKEND=django_sendfile.backends.simple
             - DISABLE_2FA=true
         depends_on:
@@ -92,6 +92,7 @@ services:
             - ./imports/openzaak/fixtures:/app/src/openzaak/fixtures
             - ./imports/openzaak/private-media:/app/private-media
             - ./imports/openzaak/init:/app/init
+            - ./.generated/openzaak:/app/generated:ro
         depends_on:
             - nl-portal-openzaak
             - nl-portal-openzaak-database
@@ -106,7 +107,7 @@ services:
             - openzaak
         environment:
             - POSTGRES_USER=openzaak
-            - POSTGRES_PASSWORD=openzaak
+            - POSTGRES_PASSWORD=${OPENZAAK_DB_PASSWORD:?draai eerst mise run dev:setup}
             - POSTGRES_DB=openzaak
 
     nl-portal-openklant-2:
@@ -126,13 +127,13 @@ services:
             - IS_HTTPS=no
             - DB_NAME=openklant
             - DB_USER=openklant
-            - DB_PASSWORD=openklant
+            - DB_PASSWORD=${OPENKLANT_DB_PASSWORD:?draai eerst mise run dev:setup}
             - DB_HOST=nl-portal-openklant-2-db
             - ALLOWED_HOSTS=*
             - CACHE_DEFAULT=nl-portal-redis:6379/2
             - CACHE_AXES=nl-portal-redis:6379/2
             - SUBPATH=${SUBPATH:-/}
-            - SECRET_KEY=${SECRET_KEY:-django-insecure-f8s@b*ds4t84-q_2#c0j0506@!l2q6r5_pq5e!vm^_9c*#^66b}
+            - SECRET_KEY=${OPENKLANT_SECRET_KEY:?draai eerst mise run dev:setup}
             - CELERY_BROKER_URL=redis://nl-portal-redis:6379/3
             - CELERY_RESULT_BACKEND=redis://nl-portal-redis:6379/3
             - DISABLE_2FA=true
@@ -151,6 +152,7 @@ services:
         volumes:
             - ./imports/openklant-2/fixtures:/app/src/openklant/fixtures
             - ./imports/openklant-2/init:/app/init
+            - ./.generated/openklant-2:/app/generated:ro
         depends_on:
             - nl-portal-openklant-2
             - nl-portal-openklant-2-db
@@ -164,7 +166,7 @@ services:
             - openklant
         environment:
             - POSTGRES_USER=openklant
-            - POSTGRES_PASSWORD=openklant
+            - POSTGRES_PASSWORD=${OPENKLANT_DB_PASSWORD:?draai eerst mise run dev:setup}
             - POSTGRES_DB=openklant
 
     nl-portal-open-object:
@@ -179,9 +181,10 @@ services:
             - OPENOBJECT_PORT=8010
             - OTEL_SDK_DISABLED=true
             - CORS_ALLOW_ALL_ORIGINS=true
-            - SECRET_KEY=${SECRET_KEY:-1(@f(-6s_u(5fd&1sg^uvu2s(c-9sapw)1era8q&)g)h@cwxxg}
+            - SECRET_KEY=${OBJECTS_SECRET_KEY:?draai eerst mise run dev:setup}
             - DJANGO_SETTINGS_MODULE=objects.conf.docker
             - DB_HOST=nl-portal-open-object-database
+            - DB_PASSWORD=${OBJECTS_DB_PASSWORD:?draai eerst mise run dev:setup}
             - DEBUG=true
             - TWO_FACTOR_FORCE_OTP_ADMIN=False
             - TWO_FACTOR_PATCH_ADMIN=False
@@ -197,7 +200,7 @@ services:
             - OTEL_SERVICE_NAME=open-object
             - OBJECTS_SUPERUSER_USERNAME=admin
             - OBJECTS_SUPERUSER_EMAIL=admin@example.org
-            - OBJECTS_SUPERUSER_PASSWORD=admin
+            - OBJECTS_SUPERUSER_PASSWORD=${OBJECTS_ADMIN_PASSWORD:?draai eerst mise run dev:setup}
         depends_on:
             - nl-portal-open-object-database
             - nl-portal-redis
@@ -226,7 +229,7 @@ services:
             - objecten
         environment:
             - POSTGRES_USER=objects
-            - POSTGRES_PASSWORD=objects
+            - POSTGRES_PASSWORD=${OBJECTS_DB_PASSWORD:?draai eerst mise run dev:setup}
             - POSTGRES_DB=objects
 
     nl-portal-open-object-import:
@@ -242,6 +245,7 @@ services:
         volumes:
             - ./imports/open-object/fixtures:/app/src/objects/fixtures
             - ./imports/open-object/init:/app/init
+            - ./.generated/open-object:/app/generated:ro
         depends_on:
             - nl-portal-open-object
             - nl-portal-open-object-database
@@ -258,7 +262,7 @@ services:
             - OPENNOTIFICATIES_PORT=8012
             - OTEL_SDK_DISABLED=true
             - DJANGO_SETTINGS_MODULE=nrc.conf.docker
-            - SECRET_KEY=${SECRET_KEY:-4wHY2Cp5`4(q%)]cuWxPQJRp5kN?g+`.Xah>%6Fsq6+)R>p_}
+            - SECRET_KEY=${NOTIFICATIES_SECRET_KEY:?draai eerst mise run dev:setup}
             - ALLOWED_HOSTS=*
             - CACHE_DEFAULT=nl-portal-redis:6379/7
             - CACHE_AXES=nl-portal-redis:6379/7
@@ -266,16 +270,16 @@ services:
             - DB_HOST=nl-portal-open-notificaties-database
             - DB_NAME=notifications
             - DB_USER=notifications
-            - DB_PASSWORD=notifications
+            - DB_PASSWORD=${NOTIFICATIES_DB_PASSWORD:?draai eerst mise run dev:setup}
             - RABBITMQ_HOST=open-notificaties-rabbitmq
-            - PUBLISH_BROKER_URL=amqp://guest:guest@nl-portal-open-notificaties-rabbitmq:5672//
-            - CELERY_BROKER_URL=amqp://guest:guest@nl-portal-open-notificaties-rabbitmq:5672//
+            - PUBLISH_BROKER_URL=amqp://notificaties:${NOTIFICATIES_RABBITMQ_PASSWORD:?draai eerst mise run dev:setup}@nl-portal-open-notificaties-rabbitmq:5672//
+            - CELERY_BROKER_URL=amqp://notificaties:${NOTIFICATIES_RABBITMQ_PASSWORD:?draai eerst mise run dev:setup}@nl-portal-open-notificaties-rabbitmq:5672//
             - CELERY_RESULT_BACKEND=redis://nl-portal-redis:6379/8
             - CELERY_LOGLEVEL=DEBUG
             - CELERY_WORKER_CONCURRENCY=${CELERY_WORKER_CONCURRENCY:-4}
             - OPENNOTIFICATIES_SUPERUSER_USERNAME=admin
             - OPENNOTIFICATIES_SUPERUSER_EMAIL=admin@localhost
-            - DJANGO_SUPERUSER_PASSWORD=admin
+            - DJANGO_SUPERUSER_PASSWORD=${NOTIFICATIES_ADMIN_PASSWORD:?draai eerst mise run dev:setup}
             - LOG_NOTIFICATIONS_IN_DB=yes
             - DISABLE_2FA=true
 
@@ -291,6 +295,7 @@ services:
         volumes:
             - ./imports/open-notificaties/fixtures:/app/src/nrc/fixtures
             - ./imports/open-notificaties/init:/app/init
+            - ./.generated/open-notificaties:/app/generated:ro
         depends_on:
             - nl-portal-open-notificaties
             - nl-portal-open-notificaties-database
@@ -322,15 +327,17 @@ services:
             - objecten
         environment:
             - POSTGRES_USER=notifications
-            - POSTGRES_PASSWORD=notifications
+            - POSTGRES_PASSWORD=${NOTIFICATIES_DB_PASSWORD:?draai eerst mise run dev:setup}
             - POSTGRES_DB=notifications
-            - POSTGRES_HOST_AUTH_METHOD=trust
 
     nl-portal-open-notificaties-rabbitmq:
         image: rabbitmq:3.13-management
         container_name: nl-portal-open-notificaties-rabbitmq
         profiles:
             -   objecten
+        environment:
+            - RABBITMQ_DEFAULT_USER=notificaties
+            - RABBITMQ_DEFAULT_PASS=${NOTIFICATIES_RABBITMQ_PASSWORD:?draai eerst mise run dev:setup}
 
     nl-portal-openproduct:
         image: maykinmedia/open-product:1.10.0
@@ -347,10 +354,10 @@ services:
             - OPENPRODUCT_PORT=8015
             - OTEL_SDK_DISABLED=true
             - DJANGO_SETTINGS_MODULE=openproduct.conf.docker
-            - SECRET_KEY=${SECRET_KEY:-django-insecure-@4wj9(+*bu7*v&%on7+e_8!d1ckl%r=6+sz#d2!pw^@lb0+=}
+            - SECRET_KEY=${OPENPRODUCT_SECRET_KEY:?draai eerst mise run dev:setup}
             - DB_NAME=openproduct
             - DB_USER=openproduct
-            - DB_PASSWORD=openproduct
+            - DB_PASSWORD=${OPENPRODUCT_DB_PASSWORD:?draai eerst mise run dev:setup}
             - DB_HOST=nl-portal-openproduct-database
             - DB_PORT=5432
             - CACHE_DEFAULT=nl-portal-redis:6379/9
@@ -361,7 +368,7 @@ services:
             - DISABLE_2FA=true
             - OPENPRODUCT_SUPERUSER_USERNAME=admin
             - OPENPRODUCT_SUPERUSER_EMAIL=admin@example.org
-            - OPENPRODUCT_SUPERUSER_PASSWORD=admin
+            - OPENPRODUCT_SUPERUSER_PASSWORD=${OPENPRODUCT_ADMIN_PASSWORD:?draai eerst mise run dev:setup}
 
     nl-portal-openproduct-import:
         image: maykinmedia/open-product:1.10.0
@@ -376,6 +383,7 @@ services:
         volumes:
             - ./imports/openproduct/fixtures:/app/src/openproduct/fixtures
             - ./imports/openproduct/init:/app/init
+            - ./.generated/openproduct:/app/generated:ro
         depends_on:
             - nl-portal-openproduct
             - nl-portal-openproduct-database
@@ -400,7 +408,7 @@ services:
             - openproduct
         environment:
             - POSTGRES_USER=${DB_USER:-openproduct}
-            - POSTGRES_PASSWORD=${DB_PASSWORD:-openproduct}
+            - POSTGRES_PASSWORD=${OPENPRODUCT_DB_PASSWORD:?draai eerst mise run dev:setup}
             - POSTGRES_DB=openproduct
 
     nl-portal-redis:

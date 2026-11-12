@@ -38,7 +38,7 @@ the *only* config source for a from-source run - it is independent of
 [`docker-compose/imports/backend.env`](../../docker-compose/imports/backend.env), which configures
 the *containerised* backend under `RUN_MODE=local`/`remote`.
 
-`.env.properties` is **gitignored** (it holds a random Keycloak client secret). `mise run dev:setup` renders
+`.env.properties` is **gitignored** (it holds the random Keycloak client secret and the secrets and tokens of the ZGW components). `mise run dev:setup` renders
 the tracked template `.env.properties.example` into it, with fresh secrets on every run; adjust the
 result for your machine:
 

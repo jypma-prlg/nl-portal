@@ -66,13 +66,13 @@ nl-portal:
             properties:
                 url: http://localhost:8001
                 clientId: nl-portal
-                secret: DGXJs3GKU84LFZWWfdb!nk6gpL6mL9@A
+                secret: ${OPENZAAK_NLPORTAL_SECRET}
         catalogiapi:
             enabled: true
             properties:
                 url: http://localhost:8001
                 clientId: nl-portal
-                secret: DGXJs3GKU84LFZWWfdb!nk6gpL6mL9@A
+                secret: ${OPENZAAK_NLPORTAL_SECRET}
         documentenapis:
             enabled: true
             properties:
@@ -95,7 +95,7 @@ nl-portal:
                     openzaak:
                         url: http://localhost:8001/documenten/api/v1
                         clientId: nl-portal
-                        secret: DGXJs3GKU84LFZWWfdb!nk6gpL6mL9@A
+                        secret: ${OPENZAAK_NLPORTAL_SECRET}
                         rsin: "051845623"
                         documentTypeUrl: http://localhost:8001/catalogi/api/v1/informatieobjecttypen/36e40d95-e411-4884-b08f-e5864ec8167f
         virusscan:
@@ -109,18 +109,18 @@ nl-portal:
             properties:
                 url: http://localhost:8001
                 clientId: nl-portal
-                secret: DGXJs3GKU84LFZWWfdb!nk6gpL6mL9@A
+                secret: ${OPENZAAK_NLPORTAL_SECRET}
         objectenapi:
             enabled: true
             properties:
                 url: http://localhost:8010
-                token: 182c13e2209161852c53cef53a879f7a2f923430
+                token: ${OBJECTS_API_TOKEN}
         openklant2:
             enabled: true
             properties:
                 contactgegevens-api-url: http://localhost:8014/contactgegevens/api/v1
                 klantinteracties-api-url: http://localhost:8014/klantinteracties/api/v1
-                token: ac045222c9e7cde8120b48735560f9b920bb58cd
+                token: ${OPENKLANT_API_TOKEN}
         haalcentraal-brp:
             enabled: true
             properties:
@@ -142,7 +142,7 @@ nl-portal:
         openproduct:
             enabled: true
             properties:
-                token: ac045222c9e7cde8120b48735560f9b920bb58cd
+                token: ${OPENPRODUCT_API_TOKEN}
                 product-api-url: http://localhost:8015/producten/api/v1
                 product-type-api-url: http://localhost:8015/producttypen/api/v1
                 prefill:

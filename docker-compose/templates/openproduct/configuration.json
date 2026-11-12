@@ -1,7 +1,7 @@
 [
 {
   "model": "authtoken.token",
-  "pk": "ac045222c9e7cde8120b48735560f9b920bb58cd",
+  "pk": "{{OPENPRODUCT_API_TOKEN}}",
   "fields": {
     "user": 1,
     "created": "2026-07-27T16:00:13.698Z"
@@ -19,7 +19,7 @@
     "api_connection_check_path": "",
     "auth_type": "zgw",
     "client_id": "valtimo_client",
-    "secret": "e09b8bc5-5831-4618-ab28-41411304309d",
+    "secret": "{{OPENZAAK_VALTIMO_CLIENT_SECRET}}",
     "oauth2_token_url": "",
     "oauth2_scope": "",
     "jwt_valid_for": 43200,

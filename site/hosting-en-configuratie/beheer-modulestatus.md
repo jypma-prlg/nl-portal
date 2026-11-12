@@ -43,7 +43,7 @@ In een Compose-bestand schrijf je elke `$` in de hash als `$$`; in een `env_file
 
 ## Docker Compose
 
-`docker-compose/imports/backend.env` zet de beheerpoort op `8091` met de lokale gebruiker en het lokale wachtwoord uit dat bestand (alleen lokaal). Zet die in `BEHEER_GEBRUIKER` en `BEHEER_WACHTWOORD`. Bij `RUN_MODE=local` of `remote` bereik je het endpoint zo:
+`docker-compose/imports/backend.env` zet de beheerpoort op `8091` met de lokale gebruiker `beheer` (alleen lokaal). Het wachtwoord staat niet in dat bestand: `mise run dev:setup` genereert het als `BACKEND_BEHEER_PASSWORD` in `docker-compose/.env`. Zet die in `BEHEER_GEBRUIKER` en `BEHEER_WACHTWOORD`. Bij `RUN_MODE=local` of `remote` bereik je het endpoint zo:
 
 ```shell
 curl -u "$BEHEER_GEBRUIKER:$BEHEER_WACHTWOORD" http://localhost:8091/actuator/modulestatus

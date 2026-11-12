@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { pbkdf2Sync } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -7,11 +8,13 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import {
   APP_DEV_OUTPUT,
+  APP_DEV_SECRETS,
   COMPOSE_ENV,
   COMPOSE_ENV_EXAMPLE,
   SECRET_NAMES,
   TEMPLATES,
   devSetup,
+  djangoPasswordHash,
   generateSecrets,
   render,
   withManagedBlock,
@@ -74,6 +77,26 @@ test("devSetup rendert dezelfde waarden in realm, compose en :app", () => {
       new RegExp(`^KEYCLOAK_CLIENT_SECRET=${secrets.KEYCLOAK_M2M_CLIENT_SECRET}$`, "m"),
     );
     assert.match(read(APP_DEV_OUTPUT), new RegExp(`KEYCLOAK_CLIENT_SECRET=${secrets.KEYCLOAK_M2M_CLIENT_SECRET}`));
+    for (const name of APP_DEV_SECRETS) assert.match(read(APP_DEV_OUTPUT), new RegExp(`^${name}=${secrets[name]}$`, "m"));
+
+    // Open Zaak, Objects, Open Notificaties, Open Klant en Open Product delen de JWT-secrets en tokens
+    // met elkaar en met de backend.
+    const gegenereerd = (p) => read(`docker-compose/.generated/${p}/configuration.json`);
+    assert.ok(gegenereerd("openzaak").includes(secrets.OPENZAAK_NLPORTAL_SECRET));
+    assert.ok(gegenereerd("openzaak").includes(secrets.NOTIFICATIES_OPENZAAK_SECRET));
+    assert.ok(gegenereerd("open-notificaties").includes(secrets.NOTIFICATIES_OPENZAAK_SECRET));
+    assert.ok(gegenereerd("open-notificaties").includes(secrets.NOTIFICATIES_OBJECTS_SECRET));
+    assert.ok(gegenereerd("open-object").includes(secrets.NOTIFICATIES_OBJECTS_SECRET));
+    assert.ok(gegenereerd("open-object").includes(secrets.OBJECTS_API_TOKEN));
+    assert.ok(gegenereerd("openklant-2").includes(secrets.OPENKLANT_API_TOKEN));
+    assert.ok(gegenereerd("openproduct").includes(secrets.OPENPRODUCT_API_TOKEN));
+    for (const { output } of TEMPLATES.filter((t) => t.output.endsWith(".json"))) JSON.parse(read(output));
+
+    // De Open Klant-beheerder krijgt een Django-wachtwoordhash van het gegenereerde wachtwoord.
+    const hashWaarde = JSON.parse(read("docker-compose/.generated/openklant-2/admin_user.json"))[0].fields.password;
+    const [algoritme, iteraties, salt, hash] = hashWaarde.split("$");
+    assert.equal(algoritme, "pbkdf2_sha256");
+    assert.equal(hash, pbkdf2Sync(secrets.OPENKLANT_ADMIN_PASSWORD, salt, Number(iteraties), 32, "sha256").toString("base64"));
     for (const name of SECRET_NAMES) assert.match(read(COMPOSE_ENV), new RegExp(`^${name}=${secrets[name]}$`, "m"));
     assert.ok(read("docker-compose/.generated/keycloak/master-realm.json").includes(secrets.KEYCLOAK_ADMIN_PASSWORD));
     for (const { output } of TEMPLATES) assert.doesNotMatch(read(output), /\{\{[A-Z_]+\}\}/);
@@ -86,6 +109,13 @@ test("devSetup rendert dezelfde waarden in realm, compose en :app", () => {
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("djangoPasswordHash geeft het Django-formaat met een verse salt", () => {
+  const a = djangoPasswordHash("x", undefined, 1000);
+  const b = djangoPasswordHash("x", undefined, 1000);
+  assert.match(a, /^pbkdf2_sha256\$1000\$[0-9a-f]{24}\$[A-Za-z0-9+/]{43}=$/);
+  assert.notEqual(a, b);
 });
 
 test("rooktest: gegenereerde bestanden zijn gitignored", () => {
