@@ -34,7 +34,7 @@ for container in "${IMPORTS[@]}"; do
       echo "FAALT: $container klaar na ${TIMEOUT_SECONDS}s niet (migraties of loaddata hangen)."
       docker logs --tail 30 "$container"
       failed=1
-      break
+      continue 2
     fi
     sleep 5
   done

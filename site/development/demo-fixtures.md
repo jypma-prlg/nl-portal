@@ -15,7 +15,7 @@ Per service draaien twee containers:
 1. De app-container draait de eigen `/start.sh` van het image: migraties en de `admin`/`admin`-superuser.
 2. Een `*-import`-sidecar (zelfde image) mount `imports/<service>/fixtures` en
    `imports/<service>/init`, wacht tot `manage.py migrate --check` slaagt en voert dan
-   `imports/<service>/init/init.sh` uit. Dat script doet alleen `loaddata`.
+   `imports/<service>/init/init.sh` uit. Dat script doet `loaddata` (bij Open Product eerst ook `load_upl`).
 
 | Service | Sidecar | Geladen fixtures |
 |---|---|---|
@@ -54,7 +54,8 @@ Fixtures worden geladen zodra een profiel met een import-sidecar start; er is ge
 | Situatie | Fixtures? |
 |---|---|
 | Profiel `zgw` (`docker compose --profile zgw up -d`) | Alle vijf de sidecars |
-| Profielen `openzaak`, `objecten`, `openklant`, `openproduct` los | Alleen de sidecar van dat profiel |
+| Profielen `openzaak`, `openklant`, `openproduct` los | Alleen de sidecar van dat profiel |
+| Profiel `objecten` | Twee sidecars: Objecten (`open-object-import`) en Open Notificaties (`open-notificaties-import`) |
 | Profielen `haalcentraal`, `clamav`; alleen Keycloak | Geen: dat zijn mocks of services zonder fixtures |
 | `RUN_MODE=sources`, `local` of `remote` (`compose.localhost-*.yaml`) | Geen verschil: alleen de plek van de portal-app verandert |
 | Perf-overlay (`mise run perf:stack-up`, `compose.perf.yaml`, profiel `zgw`) | Ja, dezelfde fixtures. `mise run perf:seed` voegt daar een eigen, deterministische dataset aan toe (testgebruikers `burger-001`..., eigen BSN's buiten de demodata, zaken en taken via de API's). Dat seed-script gebruikt de fixtures niet. |
