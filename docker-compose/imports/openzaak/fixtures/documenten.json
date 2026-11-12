@@ -27,7 +27,6 @@
             "_informatieobjecttype_relative_url": null,
             "_informatieobjecttype_url": null,
             "_informatieobjecttype": 1,
-            "informatieobjecttype": "",
             "canonical": 1,
             "uuid": "f8746ac4-a231-423d-b1fa-4b4dd351fbe4",
             "formaat": "",
@@ -56,9 +55,7 @@
             "_object_relative_url": null,
             "_object_url": null,
             "_zaak": 2,
-            "zaak": "",
-            "_besluit": null,
-            "besluit": null
+            "_besluit": null
         }
     }
 ]

@@ -39,7 +39,6 @@
             "_zaaktype_relative_url": null,
             "_zaaktype_url": null,
             "_zaaktype": 1,
-            "zaaktype": "",
             "registratiedatum": "2021-06-23",
             "verantwoordelijke_organisatie": "100000009",
             "startdatum": "2021-06-23",
@@ -89,7 +88,6 @@
             "_zaaktype_relative_url": null,
             "_zaaktype_url": null,
             "_zaaktype": 1,
-            "zaaktype": "",
             "registratiedatum": "2024-11-04",
             "verantwoordelijke_organisatie": "100000009",
             "startdatum": "2024-11-04",
@@ -139,7 +137,6 @@
             "_zaaktype_relative_url": null,
             "_zaaktype_url": null,
             "_zaaktype": 1,
-            "zaaktype": "",
             "registratiedatum": "2025-10-29",
             "verantwoordelijke_organisatie": "100000009",
             "startdatum": "2025-10-29",
@@ -184,7 +181,6 @@
             "_statustype_relative_url": null,
             "_statustype_url": null,
             "_statustype": 7,
-            "statustype": "",
             "datum_status_gezet": "2021-10-29T15:10:33Z",
             "statustoelichting": "",
             "gezetdoor": null
@@ -201,7 +197,6 @@
             "_statustype_relative_url": null,
             "_statustype_url": null,
             "_statustype": 1,
-            "statustype": "",
             "datum_status_gezet": "2024-10-11T09:18:00Z",
             "statustoelichting": "",
             "gezetdoor": null
@@ -218,7 +213,6 @@
             "_statustype_relative_url": null,
             "_statustype_url": null,
             "_statustype": 2,
-            "statustype": "",
             "datum_status_gezet": "2024-10-11T13:48:39Z",
             "statustoelichting": "",
             "gezetdoor": null
@@ -235,7 +229,6 @@
             "_statustype_relative_url": null,
             "_statustype_url": null,
             "_statustype": 3,
-            "statustype": "",
             "datum_status_gezet": "2024-10-13T11:04:00Z",
             "statustoelichting": "",
             "gezetdoor": null
@@ -252,7 +245,6 @@
             "_statustype_relative_url": null,
             "_statustype_url": null,
             "_statustype": 4,
-            "statustype": "",
             "datum_status_gezet": "2024-10-14T13:48:39Z",
             "statustoelichting": "",
             "gezetdoor": null
@@ -269,7 +261,6 @@
             "_statustype_relative_url": null,
             "_statustype_url": null,
             "_statustype": 5,
-            "statustype": "",
             "datum_status_gezet": "2024-10-14T14:53:39Z",
             "statustoelichting": "",
             "gezetdoor": null
@@ -286,7 +277,6 @@
             "_statustype_relative_url": null,
             "_statustype_url": null,
             "_statustype": 6,
-            "statustype": "",
             "datum_status_gezet": "2024-10-18T13:48:39Z",
             "statustoelichting": "",
             "gezetdoor": null
@@ -303,7 +293,6 @@
             "_statustype_relative_url": null,
             "_statustype_url": null,
             "_statustype": 1,
-            "statustype": "",
             "datum_status_gezet": "2024-11-29T11:04:10Z",
             "statustoelichting": "",
             "gezetdoor": null
@@ -356,7 +345,6 @@
             "_resultaattype_relative_url": null,
             "_resultaattype_url": null,
             "_resultaattype": 1,
-            "resultaattype": "",
             "toelichting": "toelichting resultaat"
         }
     },
@@ -374,7 +362,6 @@
             "_roltype_relative_url": null,
             "_roltype_url": null,
             "_roltype": 1,
-            "roltype": "",
             "omschrijving": "Aanvrager",
             "omschrijving_generiek": "initiator",
             "roltoelichting": "Aanvrager",
@@ -403,7 +390,6 @@
             "_roltype_relative_url": null,
             "_roltype_url": null,
             "_roltype": 1,
-            "roltype": "",
             "omschrijving": "Aanvrager",
             "omschrijving_generiek": "initiator",
             "roltoelichting": "Aanvrager",
@@ -432,7 +418,6 @@
             "_roltype_relative_url": null,
             "_roltype_url": null,
             "_roltype": 1,
-            "roltype": "",
             "omschrijving": "Aanvrager",
             "omschrijving_generiek": "initiator",
             "roltoelichting": "Aanvrager",
@@ -510,7 +495,6 @@
             "_informatieobject_relative_url": null,
             "_informatieobject_url": null,
             "_informatieobject": 1,
-            "informatieobject": "",
             "aard_relatie": "hoort_bij",
             "titel": "Notities",
             "beschrijving": "Notities van de behandelaar",
