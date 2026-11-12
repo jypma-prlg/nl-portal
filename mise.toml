@@ -163,12 +163,16 @@ run = "pnpm prettier"
 # --- Performance (k6, ADR 0018) ---
 
 [tasks."perf:test"]
-description = "Draai de unit-tests van de k6-helpers (performance/lib/*.test.ts)"
-run = 'node --test "performance/lib/*.test.ts"'
+description = "Draai de unit-tests van de k6-helpers (performance/lib/*.test.ts, performance/seed/*.test.ts)"
+run = 'node --test "performance/lib/*.test.ts" "performance/seed/*.test.ts"'
 
 [tasks."perf:check"]
 description = "Controleer dat de k6-scripts laden (syntax en imports), zonder stack"
 run = "k6 inspect -e PERF_USERNAME=check -e PERF_PASSWORD=check performance/scenarios/smoke.ts"
+
+[tasks."perf:seed"]
+description = "Seed de draaiende compose-stack met deterministische perf-data: testgebruikers burger-001.., de perf-only Keycloak-client, zaken, documenten en taken (zie performance/README.md)"
+run = "node performance/seed/seed.ts"
 
 [tasks."perf:smoke"]
 description = "Draai de k6-smoke-test (1 gebruiker) tegen de draaiende compose-stack; faalt bij een fout of gemiste threshold. Vereist PERF_USERNAME en PERF_PASSWORD"
